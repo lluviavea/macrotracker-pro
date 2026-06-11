@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     const entries = await getLogForDate(date)
     return NextResponse.json({ entries })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch log' }, { status: 500 })
   }
 }
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     const rowIndex = await addLogEntry(food, amount, date || new Date().toISOString().slice(0, 10))
     return NextResponse.json({ success: true, rowIndex })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to save entry' }, { status: 500 })
   }
 }
@@ -45,7 +45,7 @@ export async function PUT(req: NextRequest) {
 
     await updateLogEntry(rowIndex, food, amount)
     return NextResponse.json({ success: true })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to update entry' }, { status: 500 })
   }
 }
@@ -57,7 +57,7 @@ export async function DELETE(req: NextRequest) {
 
     await deleteLogEntry(rowIndex)
     return NextResponse.json({ success: true })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete entry' }, { status: 500 })
   }
 }

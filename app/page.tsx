@@ -38,21 +38,25 @@ export default function Home() {
       .catch(() => setLoading(false))
   }, [])
 
-  const loadEntries = useCallback(async (date: string) => {
+  const loadEntries = useCallback(async (date: string): Promise<Entry[]> => {
     try {
       const r = await fetch(`/api/log?date=${date}`)
       const d = await r.json()
-      setEntries(d.entries.map((e: any) => ({
+      return d.entries.map((e: { rowIndex: number; food: string; category: string; amount: number }): Entry => ({
         rowIndex: e.rowIndex,
         foodName: e.food,
         category: e.category,
         amount: e.amount,
         amountInput: String(e.amount),
-      })))
-    } catch {}
+      }))
+    } catch {
+      return []
+    }
   }, [])
 
-  useEffect(() => { loadEntries(logDate) }, [logDate, loadEntries])
+  useEffect(() => {
+    loadEntries(logDate).then(setEntries)
+  }, [logDate, loadEntries])
 
   const findFood = (name: string, cat: string) =>
     foods.find(f => f.name === name && f.category === cat)
@@ -68,8 +72,8 @@ export default function Home() {
       const d = await r.json()
       if (d.success && d.rowIndex) {
         setEntries(prev => [...prev, { rowIndex: d.rowIndex, foodName: food.name, category: food.category, amount: defaultAmount, amountInput: String(defaultAmount) }])
-      } else loadEntries(logDate)
-    } catch { loadEntries(logDate) }
+      } else { loadEntries(logDate).then(setEntries) }
+    } catch { loadEntries(logDate).then(setEntries) }
   }
 
   const updateAmount = async (index: number) => {
