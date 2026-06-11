@@ -139,7 +139,7 @@ export default function Home() {
         body: JSON.stringify({ id: entry.id }),
       })
       if (r.ok) {
-        showToast(`Eliminado: ${entry.foodName}`)
+        showToast(`Eliminado: ${entry.foodName}`, 'warning')
       } else {
         showToast('Error al eliminar', 'error')
         loadEntries(logDate).then(setEntries)

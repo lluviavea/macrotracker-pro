@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 export interface ToastMessage {
   id: number
   text: string
-  type: 'success' | 'error' | 'info'
+  type: 'success' | 'error' | 'info' | 'warning'
 }
 
 let nextId = 0
@@ -37,6 +37,7 @@ export function ToastContainer() {
     success: 'bg-green-600',
     error: 'bg-red-600',
     info: 'bg-gray-700',
+    warning: 'bg-yellow-400 text-yellow-900',
   }
 
   return (
