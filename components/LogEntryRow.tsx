@@ -36,6 +36,7 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
           value={entry.amountInput}
           onChange={e => onAmountInputChange(index, e.target.value)}
           onBlur={() => onAmountBlur(index)}
+          placeholder="0"
           className="w-20 text-center border border-gray-200 rounded-lg px-2 py-1 text-sm"
           min={0}
           step={isUnit ? 1 : 10}

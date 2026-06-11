@@ -365,6 +365,7 @@ export default function AdminPage() {
                     step="0.1"
                     value={form.protein}
                     onChange={e => setForm(f => ({ ...f, protein: e.target.value }))}
+                    placeholder="ej. 20"
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
@@ -375,6 +376,7 @@ export default function AdminPage() {
                     step="0.1"
                     value={form.fat}
                     onChange={e => setForm(f => ({ ...f, fat: e.target.value }))}
+                    placeholder="ej. 15"
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
@@ -385,6 +387,7 @@ export default function AdminPage() {
                     step="0.1"
                     value={form.carbs}
                     onChange={e => setForm(f => ({ ...f, carbs: e.target.value }))}
+                    placeholder="ej. 30"
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
@@ -395,6 +398,7 @@ export default function AdminPage() {
                     step="0.1"
                     value={form.sugar}
                     onChange={e => setForm(f => ({ ...f, sugar: e.target.value }))}
+                    placeholder="ej. 5"
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
@@ -405,6 +409,7 @@ export default function AdminPage() {
                     step="0.1"
                     value={form.fiber}
                     onChange={e => setForm(f => ({ ...f, fiber: e.target.value }))}
+                    placeholder="ej. 3"
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
@@ -415,6 +420,7 @@ export default function AdminPage() {
                     step="1"
                     value={form.calories}
                     onChange={e => setForm(f => ({ ...f, calories: e.target.value }))}
+                    placeholder="ej. 200"
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>

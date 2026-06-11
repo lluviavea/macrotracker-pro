@@ -263,6 +263,7 @@ export default function Home() {
                 value={pendingAmount}
                 onChange={e => setPendingAmount(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') confirmAdd() }}
+                placeholder="0"
                 className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                 autoFocus
                 min={0}
@@ -307,12 +308,19 @@ export default function Home() {
                 return (
                   <div key={key}>
                     <label className="block text-xs text-gray-500 mb-1">{labels[key]}</label>
-                    <input
-                      type="number"
-                      value={editGoals[key]}
-                      onChange={e => setEditGoals(g => ({ ...g, [key]: parseInt(e.target.value) || 0 }))}
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                    />
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={editGoals[key] || ''}
+                        onChange={e => {
+                          const raw = e.target.value
+                          if (raw === '') { setEditGoals(g => ({ ...g, [key]: 0 })); return }
+                          const cleaned = raw.replace(/^0+/, '')
+                          setEditGoals(g => ({ ...g, [key]: parseInt(cleaned, 10) || 0 }))
+                        }}
+                        placeholder={key === 'calories' ? '2000' : key === 'protein' ? '100' : key === 'fat' ? '65' : '250'}
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                      />
                   </div>
                 )
               })}
