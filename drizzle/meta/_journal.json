@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1781213451708,
+      "tag": "0000_new_gabe_jones",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781216647480,
+      "tag": "0001_add_sugar_fiber_micronutrients",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781217787413,
+      "tag": "0002_drop_micronutrients",
+      "breakpoints": true
+    }
+  ]
+}

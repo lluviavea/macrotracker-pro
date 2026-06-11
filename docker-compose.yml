@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: macrotracker-db
+    environment:
+      POSTGRES_USER: macrotracker
+      POSTGRES_PASSWORD: macrotracker
+      POSTGRES_DB: macrotracker
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

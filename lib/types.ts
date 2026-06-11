@@ -8,11 +8,14 @@ export type FoodCategory =
   | 'suplementos'
 
 export interface FoodItem {
+  id: number
   name: string
   category: FoodCategory
   protein: number
   fat: number
   carbs: number
+  sugar: number
+  fiber: number
   calories: number
   measureType: 'gram' | 'unit'
   unitName: string | null
@@ -21,9 +24,10 @@ export interface FoodItem {
 }
 
 export interface Entry {
-  rowIndex: number
+  id: number
   foodName: string
   category: string
   amount: number
   amountInput: string
+  meal: string
 }

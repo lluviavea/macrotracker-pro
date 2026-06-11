@@ -6,7 +6,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # MacroTracker
 
-Food logging app. Foods from Google Sheets, macros calculated locally.
+Food logging app. Food catalog + daily logs in PostgreSQL via Docker.
+Macros calculated locally with a static nutrition lookup table.
 
 ## Conventions (CRITICAL)
 
@@ -15,17 +16,24 @@ Food logging app. Foods from Google Sheets, macros calculated locally.
 - **Pre-commit hook runs lint-staged (ESLint).**
 - **Commit-msg hook enforces conventional commits.**
 - **Commit often, push after every meaningful change.**
+- **DATABASE_URL must be set** in `.env.local` for DB operations.
+- **Docker must be running** before `just run` if DB is needed.
 
 ## Dev Commands
 
 ```bash
-just setup      # mise trust + install + npm install (first time only)
-just run        # Start dev server on :3000
-just build      # Production build
-just start      # Start production server
-just lint       # Run ESLint
-just test       # Run vitest
-just typecheck  # Run tsc --noEmit
+just setup        # mise trust + install + npm install (first time only)
+just db-start     # Start PostgreSQL via Docker Compose
+just db-stop      # Stop PostgreSQL
+just db-migrate   # Push Drizzle schema changes to DB
+just db-seed      # Seed DB from Google Sheets (one-time)
+just db-reset     # Destroy + recreate DB + seed
+just run          # Start dev server on :3000
+just build        # Production build
+just start        # Start production server
+just lint         # Run ESLint
+just test         # Run vitest
+just typecheck    # Run tsc --noEmit
 ```
 
 ## Knowledge Map

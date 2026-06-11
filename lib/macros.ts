@@ -4,6 +4,8 @@ export interface MacroResult {
   protein: number
   fat: number
   carbs: number
+  sugar: number
+  fiber: number
   calories: number
 }
 
@@ -19,6 +21,8 @@ export function calculateMacros(
     protein: Math.round(food.protein * factor * 10) / 10,
     fat: Math.round(food.fat * factor * 10) / 10,
     carbs: Math.round(food.carbs * factor * 10) / 10,
+    sugar: Math.round(food.sugar * factor * 10) / 10,
+    fiber: Math.round(food.fiber * factor * 10) / 10,
     calories: Math.round(food.calories * factor),
   }
 }
@@ -44,9 +48,11 @@ export function calculateTotals(
         protein: acc.protein + m.protein,
         fat: acc.fat + m.fat,
         carbs: acc.carbs + m.carbs,
+        sugar: acc.sugar + m.sugar,
+        fiber: acc.fiber + m.fiber,
         calories: acc.calories + m.calories,
       }
     },
-    { protein: 0, fat: 0, carbs: 0, calories: 0 },
+    { protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0 },
   )
 }

@@ -14,7 +14,9 @@ interface FoodItem {
   category: FoodCategory
   protein: number     // per 100g
   fat: number         // per 100g
-  carbs: number       // per 100g
+  carbs: number       // per 100g (total carbohydrates)
+  sugar: number       // per 100g (sub-category of carbs)
+  fiber: number       // per 100g (sub-category of carbs)
   calories: number    // per 100g
   measureType: 'gram' | 'unit'
   unitName: string | null   // e.g. "huevo", "pieza"
@@ -35,11 +37,12 @@ if (measureType === 'unit' && unitGrams) {
 protein = food.protein * factor
 fat = food.fat * factor
 carbs = food.carbs * factor
+sugar = food.sugar * factor
+fiber = food.fiber * factor
 calories = food.calories * factor
 ```
 
 - `preparation`: `'crudo'` for protein, `'cocido'` for carbs, `null` for others
-- Display rounding: protein/fat/carbs to 1 decimal, calories to integer
+- Display rounding: protein/fat/carbs/sugar/fiber to 1 decimal, calories to integer
 
-Read `docs/google-sheets.md` for how foods are fetched from sheets.
 Read `docs/architecture.md` for the overall architecture.
