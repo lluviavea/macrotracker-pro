@@ -1,15 +1,28 @@
-# Google Sheets Integration
+# Google Sheets (Legacy)
 
-Read this when working with the Google Sheets connection, auth, or data fetching.
+Read this when understanding the original data source.
 
-## Auth
+## Status
 
-- **Method**: Application Default Credentials (ADC) via `GOOGLE_APPLICATION_CREDENTIALS` env var
-- **Key file**: `~/macrotracker-sa-key.json`
-- **Service account email**: `macrotracker-sa@macrotracker-498919.iam.gserviceaccount.com`
-- **Spreadsheet ID**: `1-gLdhqGva8eBhJb6xTzvUmUysj49mv4n_5hb2f7SSMo`
+**DEPRECATED.** The app now uses PostgreSQL via Drizzle ORM. Google Sheets was the original data
+source. The seed script (`lib/db/seed.ts`) now reads directly from the static `NUTRITION_DATA` array
+in `lib/nutrition.ts`, removing the Google Sheets dependency entirely.
 
-## Sheet Names and Structure
+## Seed Script
+
+```bash
+just db-seed
+```
+
+Requirements:
+- Docker PostgreSQL running (`just db-start`)
+- `DATABASE_URL` env var set
+
+The seed script reads:
+1. Each entry in `NUTRITION_DATA` → assigned to a category by position → inserts into `foods`
+2. Note: Log entries are not seeded; they must be created through the app or migrated manually.
+
+## Original Sheet Structure (for reference)
 
 ### Food Category Sheets
 
@@ -23,23 +36,16 @@ Read this when working with the Google Sheets connection, auth, or data fetching
 | CONDIMENTOS | Especias, polvos, salsas |
 | SUPLEMENTOS | Vitaminas, minerales, probióticos |
 
-### LOG Sheet (auto-created)
+### LOG Sheet
 
 Columns: `Fecha | Alimento | Categoria | Cantidad | Unidad | Proteina | Grasa | Carbs | Calorias | Preparacion`
 
-Numbers use comma as decimal separator (MX locale) → parse with `val.replace(',', '.')`
+Numbers use comma as decimal separator (MX locale).
 
-## Key Files
+## Auth
 
-- `lib/google-sheets.ts` — Sheets connector + food fetcher + log CRUD
-- Route `/api/foods/route.ts` — GET all foods
-- Route `/api/log/route.ts` — CRUD for log entries
-
-## MCP Server (for AI agents)
-
-- Server: `xing5/mcp-google-sheets` via `uvx`
-- Config in `opencode.json` at project root
-- Falls back from OAuth to ADC
+- **Method**: Service account via `GOOGLE_APPLICATION_CREDENTIALS`
+- **Spreadsheet ID**: `1-gLdhqGva8eBhJb6xTzvUmUysj49mv4n_5hb2f7SSMo`
 
 Read `docs/nutrition.md` for how food data maps to nutrition values.
-Read `docs/architecture.md` for how data flows through the app.
+Read `docs/architecture.md` for the current database architecture.

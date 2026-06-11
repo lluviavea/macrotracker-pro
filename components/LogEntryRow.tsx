@@ -14,7 +14,8 @@ interface LogEntryRowProps {
 
 export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange, onAmountBlur }: LogEntryRowProps) {
   const food = findFood(foods, entry.foodName, entry.category)
-  const macros = food ? calculateMacros(food, entry.amount) : { protein: 0, fat: 0, carbs: 0, calories: 0 }
+  const liveAmount = parseFloat(entry.amountInput) || 0
+  const macros = food ? calculateMacros(food, liveAmount) : { protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0 }
   const isUnit = food?.measureType === 'unit' && food?.unitName
 
   return (
@@ -25,7 +26,7 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
         <div className="flex gap-1 mt-0.5">
           <span className="text-xs text-gray-400">{entry.category}</span>
           {food?.preparation && (
-            <span className={`text-[10px] px-1.5 rounded-full font-medium ${food.preparation === 'crudo' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'}`}>{food.preparation}</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${food.preparation === 'crudo' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'}`}>{food.preparation}</span>
           )}
         </div>
       </div>
@@ -41,10 +42,10 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
         />
         <span className="text-xs text-gray-500 w-8">{isUnit ? food?.unitName : 'g'}</span>
       </div>
-      <div className="text-right text-xs text-gray-500 w-24 leading-tight">
+      <div className="text-right text-xs text-gray-500 w-28 leading-tight">
         <p>{macros.protein}P</p>
         <p>{macros.fat}F</p>
-        <p>{macros.carbs}C</p>
+        <p>{macros.carbs}C <span className="text-gray-400">({macros.sugar}S / {macros.fiber}Fb)</span></p>
         <p className="font-medium">{macros.calories}kcal</p>
       </div>
     </div>

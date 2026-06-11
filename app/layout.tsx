@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ToastContainer } from "@/components/Toast";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "MacroTracker",
-  description: "Track your daily macros from Google Sheets",
+  description: "Track your daily macros",
 };
 
 export default function RootLayout({
@@ -24,7 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full bg-gray-50 text-gray-900">{children}</body>
+      <body className="min-h-full bg-gray-50 text-gray-900">
+        {children}
+        <ToastContainer />
+      </body>
     </html>
   );
 }
