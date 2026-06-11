@@ -19,3 +19,11 @@ export interface FoodItem {
   unitGrams: number | null
   preparation: 'crudo' | 'cocido' | null
 }
+
+export interface Entry {
+  rowIndex: number
+  foodName: string
+  category: string
+  amount: number
+  amountInput: string
+}

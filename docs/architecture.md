@@ -37,7 +37,7 @@ Page load -> GET /api/log?date=YYYY-MM-DD -> Reads LOG tab for that date
 Food list -> GET /api/foods -> Reads all category sheets
 ```
 
-## Component Tree (planned extraction targets)
+## Component Tree
 
 ```
 Home (page.tsx)
@@ -50,6 +50,13 @@ Home (page.tsx)
 └── FoodGrid
     └── FoodCard          (single food item with add button)
 ```
+
+## Pure Logic Modules
+
+| Module | Responsibility |
+|---|---|
+| `lib/macros.ts` | `calculateMacros`, `findFood`, `calculateTotals` |
+| `lib/nutrition-utils.ts` | `normalizeName`, `lookupNutrition` (from `NUTRITION_DATA`) |
 
 Read `docs/google-sheets.md` for sheet structure and auth.
 Read `docs/nutrition.md` for nutrition data and calculation logic.

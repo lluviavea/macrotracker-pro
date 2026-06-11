@@ -1,7 +1,7 @@
 import { GoogleAuth } from 'google-auth-library'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import type { FoodCategory, FoodItem } from './types'
-import { NUTRITION_DATA } from './nutrition'
+import { normalizeName, lookupNutrition } from './nutrition-utils'
 
 const SHEET_ID = '1-gLdhqGva8eBhJb6xTzvUmUysj49mv4n_5hb2f7SSMo'
 
@@ -20,45 +20,6 @@ function getAuth() {
     keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   })
-}
-
-function normalizeName(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s]/g, '')
-    .trim()
-}
-
-function lookupNutrition(name: string) {
-  const normalized = normalizeName(name)
-
-  for (const entry of NUTRITION_DATA) {
-    if (entry.matches.some(m => normalized.includes(m))) {
-      return {
-        protein: entry.protein,
-        fat: entry.fat,
-        carbs: entry.carbs,
-        calories: entry.calories,
-        measureType: entry.measureType,
-        unitName: entry.unitName ?? null,
-        unitGrams: entry.unitGrams ?? null,
-        preparation: entry.preparation ?? null,
-      }
-    }
-  }
-
-  return {
-    protein: 0,
-    fat: 0,
-    carbs: 0,
-    calories: 0,
-    measureType: 'gram' as const,
-    unitName: null,
-    unitGrams: null,
-    preparation: null,
-  }
 }
 
 export async function getAllFoods(): Promise<FoodItem[]> {

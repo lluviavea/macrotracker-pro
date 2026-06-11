@@ -8,14 +8,24 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 Food logging app. Foods from Google Sheets, macros calculated locally.
 
+## Conventions (CRITICAL)
+
+- **All dev commands go in Justfile, NOT in package.json scripts.** package.json only has `"prepare": "husky"`.
+- **Pre-push hook runs tests + typecheck.** If it blocks you, fix before pushing.
+- **Pre-commit hook runs lint-staged (ESLint).**
+- **Commit-msg hook enforces conventional commits.**
+- **Commit often, push after every meaningful change.**
+
 ## Dev Commands
 
 ```bash
-just setup    # mise trust + install + npm install (first time only)
-just run      # Start dev server on :3000
-just build    # Production build
-just lint     # Run ESLint
-just start    # Start production server
+just setup      # mise trust + install + npm install (first time only)
+just run        # Start dev server on :3000
+just build      # Production build
+just start      # Start production server
+just lint       # Run ESLint
+just test       # Run vitest
+just typecheck  # Run tsc --noEmit
 ```
 
 ## Knowledge Map

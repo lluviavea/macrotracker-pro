@@ -14,3 +14,9 @@ start:
 
 lint:
     npx eslint .
+
+test:
+    npx vitest run
+
+typecheck:
+    npx tsc --noEmit
