@@ -1,2 +1,2 @@
-npx vitest run --reporter=basic
+npx vitest run
 npx tsc --noEmit
