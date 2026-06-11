@@ -2,12 +2,6 @@
   "name": "macrotracker-pro",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
   "dependencies": {
     "google-auth-library": "^10.7.0",
     "google-spreadsheet": "^5.3.0",
