@@ -11,11 +11,11 @@ Macros calculated locally with a static nutrition lookup table.
 
 ## Conventions (CRITICAL)
 
+- **HARD RULE: Commit and push after EVERY unit of work.** Before starting new work, check `git status` and `git log --oneline -3@\{push\}`. If there are uncommitted changes, STOP. Commit them first (atomic, 50/72 rule) and push. Never accumulate work across multiple sessions or features without pushing.
 - **All dev commands go in Justfile, NOT in package.json scripts.** package.json only has `"prepare": "husky"`.
 - **Pre-push hook runs tests + typecheck.** If it blocks you, fix before pushing.
 - **Pre-commit hook runs lint-staged (ESLint).**
 - **Commit-msg hook enforces conventional commits.**
-- **Commit often, push after every meaningful change.**
 - **DATABASE_URL must be set** in `.env.local` for DB operations.
 - **Docker must be running** before `just run` if DB is needed.
 
