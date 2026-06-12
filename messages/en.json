@@ -22,7 +22,8 @@
     "fat": "Fat (g)",
     "carbs": "Carbs (g)",
     "save": "Save",
-    "gram": "g"
+    "gram": "g",
+    "loadError": "Error loading data. Check your connection and try again."
   },
   "Admin": {
     "loading": "Loading...",

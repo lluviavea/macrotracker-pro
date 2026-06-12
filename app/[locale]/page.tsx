@@ -35,38 +35,42 @@ export default function Home() {
   const [goals, setGoals] = useState<Goals>(getGoals)
   const [showGoals, setShowGoals] = useState(false)
   const [editGoals, setEditGoals] = useState<Goals>(getGoals)
+  const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
     fetch('/api/foods')
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error('Failed to fetch foods'); return r.json() })
       .then(d => {
         setFoods(d.foods)
         setLoading(false)
+        setHasError(false)
       })
-      .catch(() => setLoading(false))
+      .catch(() => {
+        setHasError(true)
+        setLoading(false)
+      })
   }, [])
 
   const loadEntries = useCallback(async (date: string): Promise<Entry[]> => {
-    try {
-      const r = await fetch(`/api/log?date=${date}`)
-      const d = await r.json()
-      return d.entries.map(
-        (e: { id: number; food: string; category: string; amount: number; meal: string }): Entry => ({
-          id: e.id,
-          foodName: e.food,
-          category: e.category,
-          amount: e.amount,
-          amountInput: String(e.amount),
-          meal: e.meal ?? '',
-        }),
-      )
-    } catch {
-      return []
-    }
+    const r = await fetch(`/api/log?date=${date}`)
+    if (!r.ok) throw new Error('Failed to load entries')
+    const d = await r.json()
+    return d.entries.map(
+      (e: { id: number; food: string; category: string; amount: number; meal: string }): Entry => ({
+        id: e.id,
+        foodName: e.food,
+        category: e.category,
+        amount: e.amount,
+        amountInput: String(e.amount),
+        meal: e.meal ?? '',
+      }),
+    )
   }, [])
 
   useEffect(() => {
-    loadEntries(logDate).then(setEntries)
+    let cancelled = false
+    loadEntries(logDate).then(entries => { if (!cancelled) setEntries(entries) }).catch(() => { if (!cancelled) setHasError(true) })
+    return () => { cancelled = true }
   }, [logDate, loadEntries])
 
   const displayName = (name: string, nameEn?: string | null) =>
@@ -103,11 +107,11 @@ export default function Home() {
         showToast(t('added', { name: foodDisplay }))
       } else {
         showToast(t('addError', { name: foodDisplay }), 'error')
-        loadEntries(logDate).then(setEntries)
+        loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
       }
     } catch {
       showToast(t('addError', { name: foodDisplay }), 'error')
-      loadEntries(logDate).then(setEntries)
+      loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
     }
   }
 
@@ -129,11 +133,11 @@ export default function Home() {
       })
       if (!r.ok) {
         showToast(t('updateError'), 'error')
-        loadEntries(logDate).then(setEntries)
+        loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
       }
     } catch {
       showToast(t('updateError'), 'error')
-      loadEntries(logDate).then(setEntries)
+      loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
     }
   }
 
@@ -154,11 +158,11 @@ export default function Home() {
         showToast(t('removed', { name: entryDisplay }), 'warning')
       } else {
         showToast(t('deleteError'), 'error')
-        loadEntries(logDate).then(setEntries)
+        loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
       }
     } catch {
       showToast(t('deleteError'), 'error')
-      loadEntries(logDate).then(setEntries)
+      loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
     }
   }
 
@@ -242,6 +246,13 @@ export default function Home() {
           <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600">{t('admin')}</Link>
         </div>
       </header>
+
+      {hasError && (
+        <div className="flex items-center justify-between bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          <p className="text-sm text-red-700">{t('loadError')}</p>
+          <button onClick={() => setHasError(false)} className="text-red-400 hover:text-red-600 text-lg leading-none shrink-0 ml-3">&times;</button>
+        </div>
+      )}
 
       <DateNavigator
         date={logDate}

@@ -118,10 +118,9 @@ export default function AdminPage() {
   useEffect(() => {
     let cancelled = false
     fetch('/api/foods')
-      .then(r => r.json())
-      .then(d => { if (!cancelled) setFoods(d.foods.map(mapFood)) })
+      .then(r => { if (!r.ok) throw new Error('Failed to fetch foods'); return r.json() })
+      .then(d => { if (!cancelled) { setFoods(d.foods.map(mapFood)); setLoading(false) } })
       .catch(() => { if (!cancelled) setLoading(false) })
-      .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
   }, [])
 
