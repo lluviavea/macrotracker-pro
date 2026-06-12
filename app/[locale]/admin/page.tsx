@@ -64,7 +64,7 @@ export default function AdminPage() {
 
     if (search) {
       const q = search.toLowerCase()
-      result = result.filter(f => f.name.toLowerCase().includes(q))
+      result = result.filter(f => f.name.toLowerCase().includes(q) || f.nameEn.toLowerCase().includes(q))
     }
 
     if (sortField) {

@@ -191,7 +191,8 @@ export default function Home() {
   const filteredFoods = foods.filter(
     f =>
       f.category === selectedCategory &&
-      f.name.toLowerCase().includes(search.toLowerCase()),
+      (f.name.toLowerCase().includes(search.toLowerCase()) ||
+        (f.nameEn && f.nameEn.toLowerCase().includes(search.toLowerCase()))),
   )
 
   const mealOptions = [
