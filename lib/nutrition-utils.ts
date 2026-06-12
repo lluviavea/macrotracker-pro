@@ -15,6 +15,7 @@ export function lookupNutrition(name: string) {
   for (const entry of NUTRITION_DATA) {
     if (entry.matches.some(m => normalized.includes(m))) {
       return {
+        nameEn: entry.nameEn ?? null,
         protein: entry.protein,
         fat: entry.fat,
         carbs: entry.carbs,
@@ -30,6 +31,7 @@ export function lookupNutrition(name: string) {
   }
 
   return {
+    nameEn: null,
     protein: 0,
     fat: 0,
     carbs: 0,

@@ -160,6 +160,7 @@ export default function AdminPage() {
     if (found) {
       setForm(f => ({
         ...f,
+        nameEn: suggestion.nameEn ?? f.nameEn,
         protein: String(suggestion.protein),
         fat: String(suggestion.fat),
         carbs: String(suggestion.carbs),
