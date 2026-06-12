@@ -33,9 +33,9 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20" onClick={onClose}>
-      <div className="bg-white rounded-xl shadow-xl p-5 w-72 mx-4" onClick={e => e.stopPropagation()}>
-        <p className="font-medium text-sm mb-3">{t('addModalTitle', { name: displayName })}</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/60" onClick={onClose}>
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-5 w-72 mx-4" onClick={e => e.stopPropagation()}>
+        <p className="font-medium text-sm mb-3 dark:text-gray-100">{t('addModalTitle', { name: displayName })}</p>
         <div className="flex items-center gap-2">
           <input
             type="number"
@@ -43,12 +43,12 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
             onChange={e => setAmount(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') handleConfirm() }}
             placeholder="0"
-            className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+            className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20 dark:bg-gray-800 dark:text-gray-100"
             autoFocus
             min={0}
             step={food.measureType === 'unit' ? 1 : 10}
           />
-          <span className="text-sm text-gray-500 w-10">
+          <span className="text-sm text-gray-500 dark:text-gray-400 w-10">
             {food.measureType === 'unit' && food.unitName ? food.unitName : t('gram')}
           </span>
         </div>
@@ -56,7 +56,7 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
           <select
             value={meal}
             onChange={e => setMeal(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+            className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20 dark:bg-gray-800 dark:text-gray-100"
           >
             {mealOptions.map(opt => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -64,10 +64,10 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
           </select>
         </div>
         <div className="flex gap-2 mt-3">
-          <button onClick={handleConfirm} className="flex-1 bg-black text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-800">
+          <button onClick={handleConfirm} className="flex-1 bg-black dark:bg-white text-white dark:text-black px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200">
             {t('add')}
           </button>
-          <button onClick={onClose} className="px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-100">
+          <button onClick={onClose} className="px-3 py-2 rounded-lg text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
             {t('cancel')}
           </button>
         </div>

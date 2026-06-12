@@ -36,7 +36,7 @@ export function ToastContainer() {
   const colors = {
     success: 'bg-green-600',
     error: 'bg-red-600',
-    info: 'bg-gray-700',
+    info: 'bg-gray-700 dark:bg-gray-600',
     warning: 'bg-yellow-400 text-yellow-900',
   }
 

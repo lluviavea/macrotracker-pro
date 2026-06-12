@@ -24,13 +24,13 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
 
   return (
     <div className="p-3 flex items-center gap-3">
-      <button onClick={() => onRemove(index)} className="text-red-400 hover:text-red-600 text-lg leading-none">&times;</button>
+      <button onClick={() => onRemove(index)} className="text-red-400 hover:text-red-600 dark:hover:text-red-300 text-lg leading-none">&times;</button>
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm truncate">{displayName}</p>
+        <p className="font-medium text-sm truncate dark:text-gray-100">{displayName}</p>
         <div className="flex gap-1 mt-0.5">
-          <span className="text-xs text-gray-400">{entry.category}</span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">{entry.category}</span>
           {food?.preparation && (
-            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${food.preparation === 'crudo' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'}`}>{t(food.preparation)}</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${food.preparation === 'crudo' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400'}`}>{t(food.preparation)}</span>
           )}
         </div>
       </div>
@@ -41,17 +41,17 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
           onChange={e => onAmountInputChange(index, e.target.value)}
           onBlur={() => onAmountBlur(index)}
           placeholder="0"
-          className="w-20 text-center border border-gray-200 rounded-lg px-2 py-1 text-sm"
+          className="w-20 text-center border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1 text-sm dark:bg-gray-800 dark:text-gray-100"
           min={0}
           step={isUnit ? 1 : 10}
         />
-        <span className="text-xs text-gray-500 w-8">{isUnit ? food?.unitName : 'g'}</span>
+        <span className="text-xs text-gray-500 dark:text-gray-400 w-8">{isUnit ? food?.unitName : 'g'}</span>
       </div>
-      <div className="text-right text-xs text-gray-500 w-28 leading-tight">
+      <div className="text-right text-xs text-gray-500 dark:text-gray-400 w-28 leading-tight">
         <p>{macros.protein}P</p>
         <p>{macros.fat}F</p>
-        <p>{macros.carbs}C <span className="text-gray-400">({macros.sugar}S / {macros.fiber}Fb)</span></p>
-        <p className="font-medium">{macros.calories}kcal</p>
+        <p>{macros.carbs}C <span className="text-gray-400 dark:text-gray-500">({macros.sugar}S / {macros.fiber}Fb)</span></p>
+        <p className="font-medium dark:text-gray-100">{macros.calories}kcal</p>
       </div>
     </div>
   )

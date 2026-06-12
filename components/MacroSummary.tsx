@@ -36,16 +36,16 @@ export function MacroSummary({ calories, protein, fat, carbs, sugar, fiber, goal
       {items.map(s => {
         const pct = s.goal && s.goal > 0 ? Math.min(100, Math.round((s.value / s.goal) * 100)) : 0
         return (
-          <div key={s.label} className="bg-white rounded-xl p-4 border border-gray-200 text-center shadow-sm">
-            <p className="text-xs text-gray-500 uppercase">{s.label}</p>
+          <div key={s.label} className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700 text-center shadow-sm">
+            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">{s.label}</p>
             <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-xs text-gray-400">{s.unit}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">{s.unit}</p>
             {s.goal && s.goal > 0 && (
               <div className="mt-2">
-                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                   <div className={`h-full rounded-full transition-all duration-300 ${pct >= 100 ? 'bg-green-500' : s.barColor}`} style={{ width: `${pct}%` }} />
                 </div>
-                <p className="text-[10px] text-gray-400 mt-0.5">{pct}% &middot; {s.goal}{s.unit}</p>
+                <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{pct}% &middot; {s.goal}{s.unit}</p>
               </div>
             )}
           </div>

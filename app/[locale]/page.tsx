@@ -14,6 +14,7 @@ import { FoodGrid } from '@/components/FoodGrid'
 import { LangSwitcher } from '@/components/LangSwitcher'
 import { AddFoodModal } from '@/components/AddFoodModal'
 import { GoalsModal } from '@/components/GoalsModal'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { showToast } from '@/components/Toast'
 
 function getDate() {
@@ -86,25 +87,25 @@ export default function Home() {
     return (
       <div className="max-w-4xl mx-auto p-4 space-y-6 animate-pulse">
         <div className="flex items-center justify-between">
-          <div className="h-8 w-40 bg-gray-200 rounded-lg" />
-          <div className="h-4 w-12 bg-gray-200 rounded" />
+          <div className="h-8 w-40 bg-gray-200 dark:bg-gray-800 rounded-lg" />
+          <div className="h-4 w-12 bg-gray-200 dark:bg-gray-800 rounded" />
         </div>
-        <div className="h-8 w-64 mx-auto bg-gray-200 rounded-lg" />
+        <div className="h-8 w-64 mx-auto bg-gray-200 dark:bg-gray-800 rounded-lg" />
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-24 bg-gray-200 rounded-xl" />
+            <div key={i} className="h-24 bg-gray-200 dark:bg-gray-800 rounded-xl" />
           ))}
         </div>
-        <div className="h-48 bg-gray-200 rounded-xl" />
+        <div className="h-48 bg-gray-200 dark:bg-gray-800 rounded-xl" />
         <div className="flex gap-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-9 w-28 bg-gray-200 rounded-full" />
+            <div key={i} className="h-9 w-28 bg-gray-200 dark:bg-gray-800 rounded-full" />
           ))}
         </div>
-        <div className="h-10 bg-gray-200 rounded-xl" />
+        <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded-xl" />
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-24 bg-gray-200 rounded-xl" />
+            <div key={i} className="h-24 bg-gray-200 dark:bg-gray-800 rounded-xl" />
           ))}
         </div>
       </div>
@@ -115,17 +116,18 @@ export default function Home() {
     <div className="max-w-4xl mx-auto p-4 space-y-6">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{t('title')}</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
           <LangSwitcher />
-          <button onClick={() => setShowGoals(true)} className="text-sm text-gray-400 hover:text-gray-600">{t('goals')}</button>
-          <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600">{t('admin')}</Link>
+          <button onClick={() => setShowGoals(true)} className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">{t('goals')}</button>
+          <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">{t('admin')}</Link>
         </div>
       </header>
 
       {hasError && (
-        <div className="flex items-center justify-between bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-          <p className="text-sm text-red-700">{t('loadError')}</p>
-          <button onClick={() => setHasError(false)} className="text-red-400 hover:text-red-600 text-lg leading-none shrink-0 ml-3">&times;</button>
+        <div className="flex items-center justify-between bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-xl px-4 py-3">
+          <p className="text-sm text-red-700 dark:text-red-400">{t('loadError')}</p>
+          <button onClick={() => setHasError(false)} className="text-red-400 hover:text-red-600 dark:text-red-500 dark:hover:text-red-300 text-lg leading-none shrink-0 ml-3">&times;</button>
         </div>
       )}
 
