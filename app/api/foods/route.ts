@@ -1,9 +1,10 @@
 import { z } from 'zod'
+import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { createFoodSchema, updateFoodSchema, deleteFoodSchema } from '@/lib/validation'
 import { getAllFoods, insertFood, updateFood, deleteFood } from '@/lib/db/foods'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
 
 export async function GET() {
   try {
@@ -15,12 +16,17 @@ export async function GET() {
   }
 }
 
+function revalidateCatalog() {
+  revalidatePath('/api/foods')
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const parsed = createFoodSchema.parse(body)
 
     const id = await insertFood(parsed)
+    revalidateCatalog()
     return NextResponse.json({ success: true, id })
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -37,6 +43,7 @@ export async function PUT(req: NextRequest) {
     const parsed = updateFoodSchema.parse(body)
 
     await updateFood(parsed.id, parsed)
+    revalidateCatalog()
     return NextResponse.json({ success: true })
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -53,6 +60,7 @@ export async function DELETE(req: NextRequest) {
     const parsed = deleteFoodSchema.parse(body)
 
     await deleteFood(parsed.id)
+    revalidateCatalog()
     return NextResponse.json({ success: true })
   } catch (error) {
     if (error instanceof z.ZodError) {
