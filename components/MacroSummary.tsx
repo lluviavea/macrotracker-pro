@@ -23,7 +23,7 @@ export function MacroSummary({ calories, protein, fat, carbs, sugar, fiber, goal
   const t = useTranslations('MacroSummary')
 
   const items = [
-    { label: t('calories'), value: Math.round(calories), unit: t('kcal'), goal: goals?.calories, color: 'text-gray-900 dark:text-gray-100', barColor: 'bg-gray-800' },
+    { label: t('calories'), value: Math.round(calories), unit: t('kcal'), goal: goals?.calories, color: 'text-violet-600 dark:text-violet-400', barColor: 'bg-gray-800' },
     { label: t('protein'), value: Math.round(protein * 10) / 10, unit: t('g'), goal: goals?.protein, color: 'text-red-600', barColor: 'bg-red-500' },
     { label: t('fat'), value: Math.round(fat * 10) / 10, unit: t('g'), goal: goals?.fat, color: 'text-orange-600', barColor: 'bg-orange-500' },
     { label: t('carbs'), value: Math.round(carbs * 10) / 10, unit: t('g'), goal: goals?.carbs, color: 'text-yellow-600', barColor: 'bg-yellow-500' },
