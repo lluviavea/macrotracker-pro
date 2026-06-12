@@ -1,8 +1,9 @@
 import { db } from './index'
-import { foods } from './schema'
+import { foods, logEntries } from './schema'
 import { eq, and } from 'drizzle-orm'
 import type { FoodItem, FoodCategory } from '../types'
 import { normalizeName, lookupNutrition } from '../nutrition-utils'
+import { calculateMacros } from '../macros'
 
 export async function getAllFoods(): Promise<FoodItem[]> {
   const rows = await db.select().from(foods).orderBy(foods.category, foods.name)
@@ -128,6 +129,46 @@ export async function updateFood(
       preparation: data.preparation,
     })
     .where(eq(foods.id, id))
+
+  const foodItem: FoodItem = {
+    id,
+    name: data.name,
+    nameEn: data.nameEn,
+    category: data.category as FoodCategory,
+    protein: data.protein,
+    fat: data.fat,
+    carbs: data.carbs,
+    sugar: data.sugar,
+    fiber: data.fiber,
+    calories: data.calories,
+    measureType: data.measureType as 'gram' | 'unit',
+    unitName: data.unitName,
+    unitGrams: data.unitGrams,
+    preparation: data.preparation as 'crudo' | 'cocido' | null,
+  }
+
+  const logRows = await db
+    .select()
+    .from(logEntries)
+    .where(
+      and(eq(logEntries.foodName, data.name), eq(logEntries.category, data.category)),
+    )
+
+  for (const row of logRows) {
+    const amount = Number(row.amount)
+    const macros = calculateMacros(foodItem, amount)
+    await db
+      .update(logEntries)
+      .set({
+        protein: String(macros.protein),
+        fat: String(macros.fat),
+        carbs: String(macros.carbs),
+        sugar: String(macros.sugar),
+        fiber: String(macros.fiber),
+        calories: macros.calories,
+      })
+      .where(eq(logEntries.id, row.id))
+  }
 }
 
 export async function deleteFood(id: number): Promise<void> {
