@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { LangSwitcher } from '@/components/LangSwitcher'
 import type { FoodCategory } from '@/lib/types'
@@ -48,6 +48,7 @@ const EMPTY_FORM: FoodForm = {
 }
 
 export default function AdminPage() {
+  const locale = useLocale()
   const t = useTranslations('Admin')
   const [foods, setFoods] = useState<FoodRow[]>([])
   const [loading, setLoading] = useState(true)
@@ -298,7 +299,7 @@ export default function AdminPage() {
             <tbody className="divide-y divide-gray-100">
               {filteredAndSorted.map(food => (
                 <tr key={food.id} className="hover:bg-gray-50">
-                  <td className="p-3 font-medium">{food.name}</td>
+                  <td className="p-3 font-medium">{locale === 'en' && food.nameEn ? food.nameEn : food.name}</td>
                   <td className="p-3 text-gray-500 capitalize">{food.category}</td>
                   <td className="p-3 text-right">{food.protein}g</td>
                   <td className="p-3 text-right">{food.fat}g</td>
@@ -316,7 +317,7 @@ export default function AdminPage() {
                         {t('edit')}
                       </button>
                       <button
-                        onClick={() => handleDelete(food.id, food.name)}
+                        onClick={() => handleDelete(food.id, locale === 'en' && food.nameEn ? food.nameEn : food.name)}
                         className="text-xs px-2 py-1 rounded bg-red-50 hover:bg-red-100 text-red-500"
                       >
                         {t('delete')}
