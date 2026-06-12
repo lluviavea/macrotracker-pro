@@ -92,6 +92,7 @@ export function useFoodLog() {
     const entry = entries[index]
     const num = Number(entry.amountInput)
     if (isNaN(num) || num <= 0) return false
+    const snapshot = entries
     setEntries(prev => prev.map((e, i) => (i === index ? { ...e, amount: num } : e)))
     try {
       const r = await fetch('/api/log', {
@@ -99,19 +100,17 @@ export function useFoodLog() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: entry.id, foodName: entry.foodName, category: entry.category, amount: num }),
       })
-      if (!r.ok) {
-        await reloadEntries()
-        return false
-      }
+      if (!r.ok) { setEntries(snapshot); return false }
       return true
     } catch {
-      await reloadEntries()
+      setEntries(snapshot)
       return false
     }
-  }, [entries, reloadEntries])
+  }, [entries])
 
   const deleteEntry = useCallback(async (index: number): Promise<boolean> => {
     const entry = entries[index]
+    const snapshot = entries
     setEntries(prev => prev.filter((_, i) => i !== index))
     try {
       const r = await fetch('/api/log', {
@@ -119,16 +118,13 @@ export function useFoodLog() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: entry.id }),
       })
-      if (!r.ok) {
-        await reloadEntries()
-        return false
-      }
+      if (!r.ok) { setEntries(snapshot); return false }
       return true
     } catch {
-      await reloadEntries()
+      setEntries(snapshot)
       return false
     }
-  }, [entries, reloadEntries])
+  }, [entries])
 
   const changeDate = useCallback((days: number) => {
     const d = new Date(logDate + 'T12:00:00')
