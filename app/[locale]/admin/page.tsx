@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
+import { LangSwitcher } from '@/components/LangSwitcher'
 import type { FoodCategory } from '@/lib/types'
 import { lookupNutrition } from '@/lib/nutrition-utils'
 
@@ -44,6 +46,7 @@ const EMPTY_FORM: FoodForm = {
 }
 
 export default function AdminPage() {
+  const t = useTranslations('Admin')
   const [foods, setFoods] = useState<FoodRow[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
@@ -201,7 +204,7 @@ export default function AdminPage() {
   }
 
   async function handleDelete(id: number, name: string) {
-    if (!confirm(`Eliminar "${name}"?`)) return
+    if (!confirm(t('deleteConfirm', { name }))) return
     await fetch('/api/foods', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -213,25 +216,35 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-500">Cargando...</p>
+        <p className="text-gray-500">{t('loading')}</p>
       </div>
     )
+  }
+
+  const tableLabels: Record<string, string> = {
+    protein: t('protein'),
+    fat: t('fat'),
+    carbs: t('carbs'),
+    sugar: t('sugar'),
+    fiber: t('fiber'),
+    calories: t('calories'),
   }
 
   return (
     <div className="max-w-6xl mx-auto p-4 space-y-6">
       <header className="flex items-center justify-between">
         <div>
-          <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">&larr; Volver al registro</Link>
-          <h1 className="text-2xl font-bold mt-1">Admin &mdash; Cat&aacute;logo de Comidas</h1>
+          <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">{t('back')}</Link>
+          <h1 className="text-2xl font-bold mt-1">{t('title')}</h1>
         </div>
         <div className="flex items-center gap-3">
+          <LangSwitcher />
           <div className="relative flex-1 max-w-xs">
             <input
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Buscar comida..."
+              placeholder={t('searchPlaceholder')}
               className="w-full border border-gray-200 rounded-lg pl-8 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
             />
             <svg className="absolute left-2.5 top-2.5 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -242,7 +255,7 @@ export default function AdminPage() {
             onClick={openAdd}
             className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 shrink-0"
           >
-            + Agregar comida
+            {t('addFoodButton')}
           </button>
         </div>
       </header>
@@ -252,11 +265,10 @@ export default function AdminPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left p-3 font-medium text-gray-500">Nombre</th>
-                <th className="text-left p-3 font-medium text-gray-500">Categor&iacute;a</th>
+                <th className="text-left p-3 font-medium text-gray-500">{t('name')}</th>
+                <th className="text-left p-3 font-medium text-gray-500">{t('category')}</th>
                 {(['protein', 'fat', 'carbs', 'sugar', 'fiber', 'calories'] as const).map(field => {
                   const isActive = sortField === field
-                  const labels: Record<string, string> = { protein: 'Prote\u00edna', fat: 'Grasa', carbs: 'Carbos', sugar: 'Az\u00facar', fiber: 'Fibra', calories: 'Calor\u00edas' }
                   return (
                     <th
                       key={field}
@@ -264,7 +276,7 @@ export default function AdminPage() {
                       className="text-right p-3 font-medium text-gray-500 cursor-pointer hover:text-gray-700 select-none"
                     >
                       <span className="inline-flex items-center gap-1">
-                        {labels[field]}
+                        {tableLabels[field]}
                         {isActive && (
                           <svg className={`w-3 h-3 transition-transform ${sortDir === 'asc' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
@@ -274,8 +286,8 @@ export default function AdminPage() {
                     </th>
                   )
                 })}
-                <th className="text-center p-3 font-medium text-gray-500">Tipo</th>
-                <th className="text-center p-3 font-medium text-gray-500 w-24">Acci&oacute;n</th>
+                <th className="text-center p-3 font-medium text-gray-500">{t('type')}</th>
+                <th className="text-center p-3 font-medium text-gray-500 w-24">{t('action')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -289,20 +301,20 @@ export default function AdminPage() {
                   <td className="p-3 text-right text-pink-600">{food.sugar}g</td>
                   <td className="p-3 text-right text-green-600">{food.fiber}g</td>
                   <td className="p-3 text-right">{food.calories}</td>
-                  <td className="p-3 text-center text-xs text-gray-400">{food.measureType === 'unit' ? food.unitName : 'gramo'}</td>
+                  <td className="p-3 text-center text-xs text-gray-400">{food.measureType === 'unit' ? food.unitName : t('gramUnit')}</td>
                   <td className="p-3 text-center">
                     <div className="flex gap-1 justify-center">
                       <button
                         onClick={() => openEdit(food)}
                         className="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600"
                       >
-                        Editar
+                        {t('edit')}
                       </button>
                       <button
                         onClick={() => handleDelete(food.id, food.name)}
                         className="text-xs px-2 py-1 rounded bg-red-50 hover:bg-red-100 text-red-500"
                       >
-                        Eliminar
+                        {t('delete')}
                       </button>
                     </div>
                   </td>
@@ -314,38 +326,37 @@ export default function AdminPage() {
 
         {filteredAndSorted.length === 0 && (
           <div className="text-center py-12 text-sm text-gray-400">
-            {search ? 'No se encontraron comidas con ese nombre.' : 'No hay comidas registradas. Agrega la primera.'}
+            {search ? t('noResults') : t('empty')}
           </div>
         )}
       </div>
 
       <div className="text-xs text-gray-400">
-        {filteredAndSorted.length} comida{ filteredAndSorted.length !== 1 ? 's' : '' }
-        {search && ` (filtradas de ${foods.length})`} en el cat&aacute;logo
+        {t('count', { count: filteredAndSorted.length, s: search ? 'true' : 'false', total: foods.length })}
       </div>
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-semibold mb-4">
-              {editingId !== null ? 'Editar comida' : 'Agregar comida'}
+              {editingId !== null ? t('editTitle') : t('addTitle')}
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('nameLabel')}</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                   onBlur={handleNameBlur}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                  placeholder="ej. Pollo, Arroz, Aguacate"
+                  placeholder={t('namePlaceholder')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Categor&iacute;a</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('categoryLabel')}</label>
                 <select
                   value={form.category}
                   onChange={e => setForm(f => ({ ...f, category: e.target.value as FoodCategory }))}
@@ -359,75 +370,75 @@ export default function AdminPage() {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Prote&iacute;na (g)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('proteinLabel')}</label>
                   <input
                     type="number"
                     step="0.1"
                     value={form.protein}
                     onChange={e => setForm(f => ({ ...f, protein: e.target.value }))}
-                    placeholder="ej. 20"
+                    placeholder={t('proteinPlaceholder')}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Grasa (g)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('fatLabel')}</label>
                   <input
                     type="number"
                     step="0.1"
                     value={form.fat}
                     onChange={e => setForm(f => ({ ...f, fat: e.target.value }))}
-                    placeholder="ej. 15"
+                    placeholder={t('fatPlaceholder')}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Carbos (g)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('carbsLabel')}</label>
                   <input
                     type="number"
                     step="0.1"
                     value={form.carbs}
                     onChange={e => setForm(f => ({ ...f, carbs: e.target.value }))}
-                    placeholder="ej. 30"
+                    placeholder={t('carbsPlaceholder')}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Az&uacute;car (g)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('sugarLabel')}</label>
                   <input
                     type="number"
                     step="0.1"
                     value={form.sugar}
                     onChange={e => setForm(f => ({ ...f, sugar: e.target.value }))}
-                    placeholder="ej. 5"
+                    placeholder={t('sugarPlaceholder')}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fibra (g)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('fiberLabel')}</label>
                   <input
                     type="number"
                     step="0.1"
                     value={form.fiber}
                     onChange={e => setForm(f => ({ ...f, fiber: e.target.value }))}
-                    placeholder="ej. 3"
+                    placeholder={t('fiberPlaceholder')}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Calor&iacute;as</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('caloriesLabel')}</label>
                   <input
                     type="number"
                     step="1"
                     value={form.calories}
                     onChange={e => setForm(f => ({ ...f, calories: e.target.value }))}
-                    placeholder="ej. 200"
+                    placeholder={t('caloriesPlaceholder')}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de medida</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('measureTypeLabel')}</label>
                 <div className="flex gap-4">
                   <label className="flex items-center gap-2 text-sm">
                     <input
@@ -438,7 +449,7 @@ export default function AdminPage() {
                       onChange={() => setForm(f => ({ ...f, measureType: 'gram' }))}
                       className="accent-black"
                     />
-                    Gramo (peso)
+                    {t('gramOption')}
                   </label>
                   <label className="flex items-center gap-2 text-sm">
                     <input
@@ -449,7 +460,7 @@ export default function AdminPage() {
                       onChange={() => setForm(f => ({ ...f, measureType: 'unit' }))}
                       className="accent-black"
                     />
-                    Unidad (pieza)
+                    {t('unitOption')}
                   </label>
                 </div>
               </div>
@@ -457,39 +468,39 @@ export default function AdminPage() {
               {form.measureType === 'unit' && (
                 <div className="grid grid-cols-2 gap-3 p-3 bg-gray-50 rounded-lg">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de unidad</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('unitNameLabel')}</label>
                     <input
                       type="text"
                       value={form.unitName}
                       onChange={e => setForm(f => ({ ...f, unitName: e.target.value }))}
                       className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                      placeholder="ej. huevo, tortilla"
+                      placeholder={t('unitNamePlaceholder')}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Gramos por unidad</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('unitGramsLabel')}</label>
                     <input
                       type="number"
                       step="0.1"
                       value={form.unitGrams}
                       onChange={e => setForm(f => ({ ...f, unitGrams: e.target.value }))}
                       className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                      placeholder="ej. 60"
+                      placeholder={t('unitGramsPlaceholder')}
                     />
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Preparaci&oacute;n</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('preparationLabel')}</label>
                 <select
                   value={form.preparation}
                   onChange={e => setForm(f => ({ ...f, preparation: e.target.value }))}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                 >
-                  <option value="">Ninguna</option>
-                  <option value="crudo">Crudo</option>
-                  <option value="cocido">Cocido</option>
+                  <option value="">{t('nonePrep')}</option>
+                  <option value="crudo">{t('rawPrep')}</option>
+                  <option value="cocido">{t('cookedPrep')}</option>
                 </select>
               </div>
             </div>
@@ -499,13 +510,13 @@ export default function AdminPage() {
                 onClick={handleSave}
                 className="flex-1 bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800"
               >
-                {editingId !== null ? 'Guardar cambios' : 'Agregar comida'}
+                {editingId !== null ? t('saveChanges') : t('addFood')}
               </button>
               <button
                 onClick={() => setShowModal(false)}
                 className="px-4 py-2 rounded-lg text-sm font-medium text-gray-500 hover:bg-gray-100"
               >
-                Cancelar
+                {t('cancel')}
               </button>
             </div>
           </div>

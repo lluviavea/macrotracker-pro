@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { FoodItem, Entry } from '@/lib/types'
 import { LogEntryRow } from './LogEntryRow'
 
@@ -11,13 +12,6 @@ interface LogEntryListProps {
   onAmountBlur: (index: number) => void
 }
 
-const MEAL_LABELS: Record<string, string> = {
-  desayuno: 'Desayuno',
-  comida: 'Comida',
-  cena: 'Cena',
-  snack: 'Snack',
-}
-
 const MEAL_COLORS: Record<string, string> = {
   desayuno: 'bg-blue-50 border-blue-200',
   comida: 'bg-orange-50 border-orange-200',
@@ -26,8 +20,10 @@ const MEAL_COLORS: Record<string, string> = {
 }
 
 export function LogEntryList({ entries, foods, onRemove, onAmountInputChange, onAmountBlur }: LogEntryListProps) {
+  const t = useTranslations('LogEntryList')
+
   if (entries.length === 0) {
-    return <div className="text-center py-8 text-sm text-gray-400">Sin alimentos registrados</div>
+    return <div className="text-center py-8 text-sm text-gray-400">{t('empty')}</div>
   }
 
   const grouped: { meal: string; entries: Entry[]; startIndex: number }[] = []
@@ -44,18 +40,25 @@ export function LogEntryList({ entries, foods, onRemove, onAmountInputChange, on
   })
   grouped.push({ meal: currentMeal, entries: entries.slice(groupStart), startIndex: groupStart })
 
+  const mealLabels: Record<string, string> = {
+    desayuno: t('breakfast'),
+    comida: t('lunch'),
+    cena: t('dinner'),
+    snack: t('snack'),
+  }
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
       <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-        <h2 className="font-semibold">Registro</h2>
-        <span className="text-xs text-gray-400">{entries.length} alimentos</span>
+        <h2 className="font-semibold">{t('title')}</h2>
+        <span className="text-xs text-gray-400">{t('count', { count: entries.length })}</span>
       </div>
       {grouped.map(group => (
         <div key={group.meal || '__none'} className={group.meal ? MEAL_COLORS[group.meal] ?? '' : ''}>
           {group.meal && (
             <div className="px-4 py-2 border-b border-inherit">
               <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                {MEAL_LABELS[group.meal] || group.meal}
+                {mealLabels[group.meal] || group.meal}
               </span>
             </div>
           )}

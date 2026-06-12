@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { FoodItem, Entry } from '@/lib/types'
 import { findFood, calculateMacros } from '@/lib/macros'
 
@@ -13,6 +14,7 @@ interface LogEntryRowProps {
 }
 
 export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange, onAmountBlur }: LogEntryRowProps) {
+  const t = useTranslations('LogEntryRow')
   const food = findFood(foods, entry.foodName, entry.category)
   const liveAmount = parseFloat(entry.amountInput) || 0
   const macros = food ? calculateMacros(food, liveAmount) : { protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0 }
@@ -26,7 +28,7 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
         <div className="flex gap-1 mt-0.5">
           <span className="text-xs text-gray-400">{entry.category}</span>
           {food?.preparation && (
-            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${food.preparation === 'crudo' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'}`}>{food.preparation}</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${food.preparation === 'crudo' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'}`}>{t(food.preparation)}</span>
           )}
         </div>
       </div>

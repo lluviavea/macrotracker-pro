@@ -6,6 +6,7 @@ Read this when understanding how the project is structured and how data flows.
 
 - **Framework**: Next.js 16 (App Router) with Turbopack
 - **Styling**: Tailwind CSS v4
+- **i18n**: next-intl v4 (ES + EN, URL prefix routing)
 - **Database**: PostgreSQL 17 (via Docker Compose)
 - **ORM**: Drizzle ORM
 - **Runtime**: Node.js 24
@@ -14,12 +15,27 @@ Read this when understanding how the project is structured and how data flows.
 
 ```
 app/
-  page.tsx          - Main UI (client component, 'use client')
-  layout.tsx        - Root layout with HTML shell
+  [locale]/         - Locale-aware routes (en, es)
+    layout.tsx      - Locale layout (NextIntlClientProvider, lang setter)
+    page.tsx        - Main UI (client component, 'use client')
+    admin/
+      page.tsx      - Admin catalog page
+  layout.tsx        - Root layout with HTML shell, fonts, ToastContainer
   globals.css       - Tailwind v4 base styles
   api/
     foods/route.ts  - GET: fetches all foods from PostgreSQL
     log/route.ts    - CRUD: GET, POST, PUT, DELETE for daily log
+i18n/
+  routing.ts        - next-intl routing config (locales, defaultLocale, prefix)
+  request.ts        - next-intl request config (message loader)
+  navigation.ts     - createNavigation → locale-aware Link, usePathname, useRouter
+middleware.ts       - next-intl middleware (locale detection, redirect)
+messages/
+  en.json           - English translations
+  es.json           - Spanish translations
+components/
+  LangSwitcher.tsx  - Language toggle button (ES ↔ EN)
+  ClientLocale.tsx  - Sets document.documentElement.lang client-side
 lib/
   types.ts          - TypeScript types (FoodItem, FoodCategory, Entry, LogEntry)
   nutrition.ts      - Static nutrition lookup table (NUTRITION_DATA array)
@@ -113,3 +129,38 @@ Home (page.tsx)
 
 Read `docs/nutrition.md` for nutrition data and calculation logic.
 Read `docs/google-sheets.md` for legacy sheet structure (one-time seed source).
+
+## Internationalization (i18n)
+
+Uses **next-intl v4** with URL prefix routing (`/es/...` and `/en/...`).
+
+### Key Files
+
+| File | Purpose |
+|---|---|
+| `i18n/routing.ts` | Defines supported locales (`['en', 'es']`) and `defaultLocale: 'es'` |
+| `i18n/request.ts` | Loads the correct JSON message file per locale |
+| `i18n/navigation.ts` | Creates locale-aware `Link`, `usePathname`, `useRouter` |
+| `middleware.ts` | Automatically detects/redirects locale on first visit |
+| `messages/en.json` | All English UI strings (ICU message format) |
+| `messages/es.json` | All Spanish UI strings |
+
+### How it works
+
+1. Middleware intercepts every non-API request and ensures a valid locale prefix.
+2. Pages live under `app/[locale]/` — locale is read from the URL segment.
+3. `LocaleLayout` wraps children with `NextIntlClientProvider`, passing locale messages.
+4. Every component calls `useTranslations('Namespace')` to get its translated strings.
+5. `LangSwitcher` button calls `router.replace(pathname, { locale })` to switch.
+
+### Adding a new string
+
+1. Add the key to both `messages/en.json` and `messages/es.json` under the right namespace.
+2. Use `const t = useTranslations('Namespace')` and `t('key', { vars })` in the component.
+3. Uses ICU message format — `{count, plural, one {...} other {...}}` for plurals.
+
+### Adding a new locale
+
+1. Add locale code to `i18n/routing.ts` `locales` array.
+2. Create `messages/{locale}.json` with all required keys.
+3. Re-run `next build` to generate static params for the new locale.

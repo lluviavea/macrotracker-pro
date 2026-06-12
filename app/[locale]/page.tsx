@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import type { FoodItem, FoodCategory, Entry } from '@/lib/types'
 import { calculateTotals } from '@/lib/macros'
 import { DateNavigator } from '@/components/DateNavigator'
@@ -10,6 +11,7 @@ import { LogEntryList } from '@/components/LogEntryList'
 import { CategoryTabs } from '@/components/CategoryTabs'
 import { FoodSearch } from '@/components/FoodSearch'
 import { FoodGrid } from '@/components/FoodGrid'
+import { LangSwitcher } from '@/components/LangSwitcher'
 import { showToast } from '@/components/Toast'
 import { getGoals, saveGoals } from '@/lib/goals'
 import type { Goals } from '@/lib/goals'
@@ -19,6 +21,7 @@ function getDate() {
 }
 
 export default function Home() {
+  const t = useTranslations('Home')
   const [foods, setFoods] = useState<FoodItem[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<FoodCategory>('proteina')
@@ -92,13 +95,13 @@ export default function Home() {
             meal: meal ?? '',
           },
         ])
-        showToast(`Agregado: ${food.name}`)
+        showToast(t('added', { name: food.name }))
       } else {
-        showToast(`Error al agregar ${food.name}`, 'error')
+        showToast(t('addError', { name: food.name }), 'error')
         loadEntries(logDate).then(setEntries)
       }
     } catch {
-      showToast(`Error al agregar ${food.name}`, 'error')
+      showToast(t('addError', { name: food.name }), 'error')
       loadEntries(logDate).then(setEntries)
     }
   }
@@ -120,11 +123,11 @@ export default function Home() {
         }),
       })
       if (!r.ok) {
-        showToast('Error al actualizar cantidad', 'error')
+        showToast(t('updateError'), 'error')
         loadEntries(logDate).then(setEntries)
       }
     } catch {
-      showToast('Error al actualizar cantidad', 'error')
+      showToast(t('updateError'), 'error')
       loadEntries(logDate).then(setEntries)
     }
   }
@@ -139,13 +142,13 @@ export default function Home() {
         body: JSON.stringify({ id: entry.id }),
       })
       if (r.ok) {
-        showToast(`Eliminado: ${entry.foodName}`, 'warning')
+        showToast(t('removed', { name: entry.foodName }), 'warning')
       } else {
-        showToast('Error al eliminar', 'error')
+        showToast(t('deleteError'), 'error')
         loadEntries(logDate).then(setEntries)
       }
     } catch {
-      showToast('Error al eliminar', 'error')
+      showToast(t('deleteError'), 'error')
       loadEntries(logDate).then(setEntries)
     }
   }
@@ -182,6 +185,14 @@ export default function Home() {
       f.name.toLowerCase().includes(search.toLowerCase()),
   )
 
+  const mealOptions = [
+    { value: '', label: t('noMeal') },
+    { value: 'desayuno', label: t('breakfast') },
+    { value: 'comida', label: t('lunch') },
+    { value: 'cena', label: t('dinner') },
+    { value: 'snack', label: t('snack') },
+  ]
+
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto p-4 space-y-6 animate-pulse">
@@ -214,10 +225,11 @@ export default function Home() {
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">MacroTracker</h1>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
         <div className="flex items-center gap-3">
-          <button onClick={() => { setEditGoals({ ...goals }); setShowGoals(true) }} className="text-sm text-gray-400 hover:text-gray-600">Metas</button>
-          <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600">Admin</Link>
+          <LangSwitcher />
+          <button onClick={() => { setEditGoals({ ...goals }); setShowGoals(true) }} className="text-sm text-gray-400 hover:text-gray-600">{t('goals')}</button>
+          <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600">{t('admin')}</Link>
         </div>
       </header>
 
@@ -256,7 +268,7 @@ export default function Home() {
       {pendingFood && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20" onClick={() => setPendingFood(null)}>
           <div className="bg-white rounded-xl shadow-xl p-5 w-72 mx-4" onClick={e => e.stopPropagation()}>
-            <p className="font-medium text-sm mb-3">Agregar {pendingFood.name}</p>
+            <p className="font-medium text-sm mb-3">{t('addModalTitle', { name: pendingFood.name })}</p>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -270,7 +282,7 @@ export default function Home() {
                 step={pendingFood.measureType === 'unit' ? 1 : 10}
               />
               <span className="text-sm text-gray-500 w-10">
-                {pendingFood.measureType === 'unit' && pendingFood.unitName ? pendingFood.unitName : 'g'}
+                {pendingFood.measureType === 'unit' && pendingFood.unitName ? pendingFood.unitName : t('gram')}
               </span>
             </div>
             <div className="mt-2">
@@ -279,19 +291,17 @@ export default function Home() {
                 onChange={e => setPendingMeal(e.target.value)}
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
               >
-                <option value="">Sin comida</option>
-                <option value="desayuno">Desayuno</option>
-                <option value="comida">Comida</option>
-                <option value="cena">Cena</option>
-                <option value="snack">Snack</option>
+                {mealOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
             </div>
             <div className="flex gap-2 mt-3">
               <button onClick={confirmAdd} className="flex-1 bg-black text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-800">
-                Agregar
+                {t('add')}
               </button>
               <button onClick={() => setPendingFood(null)} className="px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-100">
-                Cancelar
+                {t('cancel')}
               </button>
             </div>
           </div>
@@ -301,10 +311,10 @@ export default function Home() {
       {showGoals && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20" onClick={() => setShowGoals(false)}>
           <div className="bg-white rounded-xl shadow-xl p-5 w-80 mx-4" onClick={e => e.stopPropagation()}>
-            <p className="font-medium text-sm mb-4">Metas diarias</p>
+            <p className="font-medium text-sm mb-4">{t('goalsTitle')}</p>
             <div className="space-y-3">
               {(['calories', 'protein', 'fat', 'carbs'] as const).map(key => {
-                const labels: Record<string, string> = { calories: 'Calorías', protein: 'Proteína (g)', fat: 'Grasa (g)', carbs: 'Carbs (g)' }
+                const labels: Record<string, string> = { calories: t('calories'), protein: t('protein'), fat: t('fat'), carbs: t('carbs') }
                 return (
                   <div key={key}>
                     <label className="block text-xs text-gray-500 mb-1">{labels[key]}</label>
@@ -330,10 +340,10 @@ export default function Home() {
                 onClick={() => { saveGoals(editGoals); setGoals(editGoals); setShowGoals(false) }}
                 className="flex-1 bg-black text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-800"
               >
-                Guardar
+                {t('save')}
               </button>
               <button onClick={() => setShowGoals(false)} className="px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-100">
-                Cancelar
+                {t('cancel')}
               </button>
             </div>
           </div>

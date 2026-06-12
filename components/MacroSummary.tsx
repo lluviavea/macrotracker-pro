@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+
 interface Goals {
   calories: number
   protein: number
@@ -18,13 +20,15 @@ interface MacroSummaryProps {
 }
 
 export function MacroSummary({ calories, protein, fat, carbs, sugar, fiber, goals }: MacroSummaryProps) {
+  const t = useTranslations('MacroSummary')
+
   const items = [
-    { label: 'Calorías', value: Math.round(calories), unit: 'kcal', goal: goals?.calories, color: 'text-gray-900', barColor: 'bg-gray-800' },
-    { label: 'Proteína', value: Math.round(protein * 10) / 10, unit: 'g', goal: goals?.protein, color: 'text-red-600', barColor: 'bg-red-500' },
-    { label: 'Grasa', value: Math.round(fat * 10) / 10, unit: 'g', goal: goals?.fat, color: 'text-orange-600', barColor: 'bg-orange-500' },
-    { label: 'Carbs', value: Math.round(carbs * 10) / 10, unit: 'g', goal: goals?.carbs, color: 'text-yellow-600', barColor: 'bg-yellow-500' },
-    { label: 'Azúcar', value: sugar !== undefined ? Math.round(sugar * 10) / 10 : 0, unit: 'g', color: 'text-pink-600', barColor: 'bg-pink-400' },
-    { label: 'Fibra', value: fiber !== undefined ? Math.round(fiber * 10) / 10 : 0, unit: 'g', color: 'text-green-600', barColor: 'bg-green-500' },
+    { label: t('calories'), value: Math.round(calories), unit: t('kcal'), goal: goals?.calories, color: 'text-gray-900', barColor: 'bg-gray-800' },
+    { label: t('protein'), value: Math.round(protein * 10) / 10, unit: t('g'), goal: goals?.protein, color: 'text-red-600', barColor: 'bg-red-500' },
+    { label: t('fat'), value: Math.round(fat * 10) / 10, unit: t('g'), goal: goals?.fat, color: 'text-orange-600', barColor: 'bg-orange-500' },
+    { label: t('carbs'), value: Math.round(carbs * 10) / 10, unit: t('g'), goal: goals?.carbs, color: 'text-yellow-600', barColor: 'bg-yellow-500' },
+    { label: t('sugar'), value: sugar !== undefined ? Math.round(sugar * 10) / 10 : 0, unit: t('g'), color: 'text-pink-600', barColor: 'bg-pink-400' },
+    { label: t('fiber'), value: fiber !== undefined ? Math.round(fiber * 10) / 10 : 0, unit: t('g'), color: 'text-green-600', barColor: 'bg-green-500' },
   ]
 
   return (
