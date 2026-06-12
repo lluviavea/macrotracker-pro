@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import type { FoodItem } from '@/lib/types'
 
 interface FoodCardProps {
@@ -9,14 +9,16 @@ interface FoodCardProps {
 }
 
 export function FoodCard({ food, onAdd }: FoodCardProps) {
+  const locale = useLocale()
   const t = useTranslations('FoodCard')
+  const displayName = locale === 'en' && food.nameEn ? food.nameEn : food.name
 
   return (
     <button
       onClick={() => onAdd(food)}
       className="bg-white rounded-xl p-3 border border-gray-200 text-left hover:border-blue-300 hover:shadow-sm transition-all text-sm"
     >
-      <p className="font-medium truncate">{food.name}</p>
+      <p className="font-medium truncate">{displayName}</p>
       <p className="text-xs text-gray-400 mt-1">{food.protein}P &middot; {food.fat}F &middot; {food.carbs}C &middot; {food.calories}kcal</p>
       <p className="text-xs text-gray-400/70">
         {food.sugar > 0 && <span>{food.sugar}{t('sugar')} </span>}

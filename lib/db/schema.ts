@@ -3,6 +3,7 @@ import { pgTable, serial, varchar, decimal, integer, date, timestamp } from 'dri
 export const foods = pgTable('foods', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
+  nameEn: varchar('name_en', { length: 255 }),
   category: varchar('category', { length: 50 }).notNull(),
   protein: decimal('protein', { precision: 10, scale: 2 }).notNull(),
   fat: decimal('fat', { precision: 10, scale: 2 }).notNull(),

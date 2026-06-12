@@ -19,6 +19,7 @@ const macroFields = {
 
 export const createFoodSchema = z.object({
   name: z.string().min(1, 'Name is required'),
+  nameEn: z.string().nullable().default(null),
   category: foodCategoryEnum,
   ...macroFields,
   measureType: measureTypeEnum.default('gram'),
@@ -30,6 +31,7 @@ export const createFoodSchema = z.object({
 export const updateFoodSchema = z.object({
   id: z.number().int().positive(),
   name: z.string().min(1, 'Name is required'),
+  nameEn: z.string().nullable().default(null),
   category: foodCategoryEnum,
   ...macroFields,
   measureType: measureTypeEnum.default('gram'),

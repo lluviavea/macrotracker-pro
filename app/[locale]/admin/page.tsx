@@ -13,6 +13,7 @@ const CATEGORIES: FoodCategory[] = [
 
 interface FoodForm {
   name: string
+  nameEn: string
   category: FoodCategory
   protein: string
   fat: string
@@ -32,6 +33,7 @@ interface FoodRow extends FoodForm {
 
 const EMPTY_FORM: FoodForm = {
   name: '',
+  nameEn: '',
   category: 'proteina',
   protein: '',
   fat: '',
@@ -84,9 +86,10 @@ export default function AdminPage() {
     }
   }
 
-  const mapFood = (f: { id: number; name: string; category: string; protein: number; fat: number; carbs: number; sugar: number; fiber: number; calories: number; measureType: string; unitName: string | null; unitGrams: number | null; preparation: string | null }): FoodRow => ({
+  const mapFood = (f: { id: number; name: string; nameEn: string | null; category: string; protein: number; fat: number; carbs: number; sugar: number; fiber: number; calories: number; measureType: string; unitName: string | null; unitGrams: number | null; preparation: string | null }): FoodRow => ({
     id: f.id,
     name: f.name,
+    nameEn: f.nameEn ?? '',
     category: f.category as FoodCategory,
     protein: String(f.protein),
     fat: String(f.fat),
@@ -130,6 +133,7 @@ export default function AdminPage() {
   function openEdit(food: FoodRow) {
     setForm({
       name: food.name,
+      nameEn: food.nameEn,
       category: food.category,
       protein: food.protein,
       fat: food.fat,
@@ -172,6 +176,7 @@ export default function AdminPage() {
   async function handleSave() {
     const payload = {
       name: form.name,
+      nameEn: form.nameEn || null,
       category: form.category,
       protein: parseFloat(form.protein) || 0,
       fat: parseFloat(form.fat) || 0,
@@ -343,16 +348,28 @@ export default function AdminPage() {
             </h2>
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('nameLabel')}</label>
-                <input
-                  type="text"
-                  value={form.name}
-                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  onBlur={handleNameBlur}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                  placeholder={t('namePlaceholder')}
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('nameLabel')} (ES)</label>
+                  <input
+                    type="text"
+                    value={form.name}
+                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                    onBlur={handleNameBlur}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                    placeholder={t('namePlaceholder')}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('nameLabel')} (EN)</label>
+                  <input
+                    type="text"
+                    value={form.nameEn}
+                    onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                    placeholder="e.g. Chicken, Rice, Avocado"
+                  />
+                </div>
               </div>
 
               <div>

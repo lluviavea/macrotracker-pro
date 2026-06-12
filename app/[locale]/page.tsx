@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import type { FoodItem, FoodCategory, Entry } from '@/lib/types'
 import { calculateTotals } from '@/lib/macros'
@@ -21,6 +21,7 @@ function getDate() {
 }
 
 export default function Home() {
+  const locale = useLocale()
   const t = useTranslations('Home')
   const [foods, setFoods] = useState<FoodItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -68,8 +69,12 @@ export default function Home() {
     loadEntries(logDate).then(setEntries)
   }, [logDate, loadEntries])
 
+  const displayName = (name: string, nameEn?: string | null) =>
+    locale === 'en' && nameEn ? nameEn : name
+
   const addToLog = async (food: FoodItem, customAmount?: number, meal?: string) => {
     const amount = customAmount ?? (food.measureType === 'unit' ? 1 : 100)
+    const foodDisplay = displayName(food.name, food.nameEn)
     try {
       const r = await fetch('/api/log', {
         method: 'POST',
@@ -95,13 +100,13 @@ export default function Home() {
             meal: meal ?? '',
           },
         ])
-        showToast(t('added', { name: food.name }))
+        showToast(t('added', { name: foodDisplay }))
       } else {
-        showToast(t('addError', { name: food.name }), 'error')
+        showToast(t('addError', { name: foodDisplay }), 'error')
         loadEntries(logDate).then(setEntries)
       }
     } catch {
-      showToast(t('addError', { name: food.name }), 'error')
+      showToast(t('addError', { name: foodDisplay }), 'error')
       loadEntries(logDate).then(setEntries)
     }
   }
@@ -135,6 +140,10 @@ export default function Home() {
   const removeFromLog = async (index: number) => {
     const entry = entries[index]
     setEntries(prev => prev.filter((_, i) => i !== index))
+    const entryDisplay = (() => {
+      const food = foods.find(f => f.name === entry.foodName && f.category === entry.category)
+      return displayName(entry.foodName, food?.nameEn)
+    })()
     try {
       const r = await fetch('/api/log', {
         method: 'DELETE',
@@ -142,7 +151,7 @@ export default function Home() {
         body: JSON.stringify({ id: entry.id }),
       })
       if (r.ok) {
-        showToast(t('removed', { name: entry.foodName }), 'warning')
+        showToast(t('removed', { name: entryDisplay }), 'warning')
       } else {
         showToast(t('deleteError'), 'error')
         loadEntries(logDate).then(setEntries)
@@ -268,7 +277,7 @@ export default function Home() {
       {pendingFood && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20" onClick={() => setPendingFood(null)}>
           <div className="bg-white rounded-xl shadow-xl p-5 w-72 mx-4" onClick={e => e.stopPropagation()}>
-            <p className="font-medium text-sm mb-3">{t('addModalTitle', { name: pendingFood.name })}</p>
+            <p className="font-medium text-sm mb-3">{t('addModalTitle', { name: displayName(pendingFood.name, pendingFood.nameEn) })}</p>
             <div className="flex items-center gap-2">
               <input
                 type="number"

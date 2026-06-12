@@ -9,6 +9,7 @@ export async function getAllFoods(): Promise<FoodItem[]> {
   return rows.map(r => ({
     id: r.id,
     name: r.name,
+    nameEn: r.nameEn,
     category: r.category as FoodCategory,
     protein: Number(r.protein),
     fat: Number(r.fat),
@@ -39,6 +40,7 @@ export async function getFoodByNameAndCategory(
   return {
     id: r.id,
     name: r.name,
+    nameEn: r.nameEn,
     category: r.category as FoodCategory,
     protein: Number(r.protein),
     fat: Number(r.fat),
@@ -55,6 +57,7 @@ export async function getFoodByNameAndCategory(
 
 export async function insertFood(data: {
   name: string
+  nameEn: string | null
   category: string
   protein: number
   fat: number
@@ -71,6 +74,7 @@ export async function insertFood(data: {
     .insert(foods)
     .values({
       name: data.name,
+      nameEn: data.nameEn,
       category: data.category,
       protein: String(data.protein),
       fat: String(data.fat),
@@ -92,6 +96,7 @@ export async function updateFood(
   id: number,
   data: {
     name: string
+    nameEn: string | null
     category: string
     protein: number
     fat: number
@@ -109,6 +114,7 @@ export async function updateFood(
     .update(foods)
     .set({
       name: data.name,
+      nameEn: data.nameEn,
       category: data.category,
       protein: String(data.protein),
       fat: String(data.fat),

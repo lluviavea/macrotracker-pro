@@ -10,6 +10,7 @@ export type FoodCategory =
 export interface FoodItem {
   id: number
   name: string
+  nameEn: string | null
   category: FoodCategory
   protein: number
   fat: number

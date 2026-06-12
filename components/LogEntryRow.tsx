@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import type { FoodItem, Entry } from '@/lib/types'
 import { findFood, calculateMacros } from '@/lib/macros'
 
@@ -14,8 +14,10 @@ interface LogEntryRowProps {
 }
 
 export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange, onAmountBlur }: LogEntryRowProps) {
+  const locale = useLocale()
   const t = useTranslations('LogEntryRow')
   const food = findFood(foods, entry.foodName, entry.category)
+  const displayName = locale === 'en' && food?.nameEn ? food.nameEn : entry.foodName
   const liveAmount = parseFloat(entry.amountInput) || 0
   const macros = food ? calculateMacros(food, liveAmount) : { protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0 }
   const isUnit = food?.measureType === 'unit' && food?.unitName
@@ -24,7 +26,7 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
     <div className="p-3 flex items-center gap-3">
       <button onClick={() => onRemove(index)} className="text-red-400 hover:text-red-600 text-lg leading-none">&times;</button>
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm truncate">{entry.foodName}</p>
+        <p className="font-medium text-sm truncate">{displayName}</p>
         <div className="flex gap-1 mt-0.5">
           <span className="text-xs text-gray-400">{entry.category}</span>
           {food?.preparation && (

@@ -5,6 +5,7 @@ import type { FoodItem } from '../types'
 const egg: FoodItem = {
   id: 1,
   name: 'huevo',
+  nameEn: 'Egg',
   category: 'proteina',
   protein: 13,
   fat: 11,
@@ -21,6 +22,7 @@ const egg: FoodItem = {
 const chicken: FoodItem = {
   id: 2,
   name: 'pollo',
+  nameEn: null,
   category: 'proteina',
   protein: 31,
   fat: 3.6,
@@ -37,6 +39,7 @@ const chicken: FoodItem = {
 const rice: FoodItem = {
   id: 3,
   name: 'arroz',
+  nameEn: null,
   category: 'carbohidratos',
   protein: 2.6,
   fat: 0.3,
@@ -97,6 +100,7 @@ describe('calculateMacros', () => {
     const salt: FoodItem = {
       id: 99,
       name: 'sal',
+      nameEn: null,
       category: 'condimentos',
       protein: 0,
       fat: 0,

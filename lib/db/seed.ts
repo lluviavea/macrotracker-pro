@@ -20,6 +20,9 @@ function assignCategory(index: number): string {
 }
 
 async function seed() {
+  console.log('Clearing existing foods...')
+  await db.delete(foods)
+
   console.log('Seeding foods from NUTRITION_DATA...')
 
   for (let i = 0; i < NUTRITION_DATA.length; i++) {
@@ -29,6 +32,7 @@ async function seed() {
 
     await db.insert(foods).values({
       name: primaryName,
+      nameEn: entry.nameEn,
       category,
       protein: String(entry.protein),
       fat: String(entry.fat),
