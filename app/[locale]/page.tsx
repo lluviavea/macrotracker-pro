@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
-import type { FoodItem, FoodCategory, Entry } from '@/lib/types'
-import { calculateTotals } from '@/lib/macros'
+import type { FoodItem, FoodCategory } from '@/lib/types'
+import { useFoodLog } from '@/lib/useFoodLog'
 import { DateNavigator } from '@/components/DateNavigator'
 import { MacroSummary } from '@/components/MacroSummary'
 import { LogEntryList } from '@/components/LogEntryList'
@@ -12,9 +12,9 @@ import { CategoryTabs } from '@/components/CategoryTabs'
 import { FoodSearch } from '@/components/FoodSearch'
 import { FoodGrid } from '@/components/FoodGrid'
 import { LangSwitcher } from '@/components/LangSwitcher'
+import { AddFoodModal } from '@/components/AddFoodModal'
+import { GoalsModal } from '@/components/GoalsModal'
 import { showToast } from '@/components/Toast'
-import { getGoals, saveGoals } from '@/lib/goals'
-import type { Goals } from '@/lib/goals'
 
 function getDate() {
   return new Date().toISOString().slice(0, 10)
@@ -23,174 +23,57 @@ function getDate() {
 export default function Home() {
   const locale = useLocale()
   const t = useTranslations('Home')
-  const [foods, setFoods] = useState<FoodItem[]>([])
-  const [loading, setLoading] = useState(true)
+
+  const {
+    foods, loading, entries, logDate, goals, hasError, totals,
+    setLogDate, setGoals, setHasError,
+    createEntry, updateEntry, deleteEntry, reloadEntries,
+    changeDate, handleAmountInputChange,
+  } = useFoodLog()
+
   const [selectedCategory, setSelectedCategory] = useState<FoodCategory>('proteina')
-  const [entries, setEntries] = useState<Entry[]>([])
-  const [logDate, setLogDate] = useState(getDate())
   const [search, setSearch] = useState('')
   const [pendingFood, setPendingFood] = useState<FoodItem | null>(null)
-  const [pendingAmount, setPendingAmount] = useState('')
-  const [pendingMeal, setPendingMeal] = useState('')
-  const [goals, setGoals] = useState<Goals>(getGoals)
   const [showGoals, setShowGoals] = useState(false)
-  const [editGoals, setEditGoals] = useState<Goals>(getGoals)
-  const [hasError, setHasError] = useState(false)
-
-  useEffect(() => {
-    fetch('/api/foods')
-      .then(r => { if (!r.ok) throw new Error('Failed to fetch foods'); return r.json() })
-      .then(d => {
-        setFoods(d.foods)
-        setLoading(false)
-        setHasError(false)
-      })
-      .catch(() => {
-        setHasError(true)
-        setLoading(false)
-      })
-  }, [])
-
-  const loadEntries = useCallback(async (date: string): Promise<Entry[]> => {
-    const r = await fetch(`/api/log?date=${date}`)
-    if (!r.ok) throw new Error('Failed to load entries')
-    const d = await r.json()
-    return d.entries.map(
-      (e: { id: number; food: string; category: string; amount: number; meal: string }): Entry => ({
-        id: e.id,
-        foodName: e.food,
-        category: e.category,
-        amount: e.amount,
-        amountInput: String(e.amount),
-        meal: e.meal ?? '',
-      }),
-    )
-  }, [])
-
-  useEffect(() => {
-    let cancelled = false
-    loadEntries(logDate).then(entries => { if (!cancelled) setEntries(entries) }).catch(() => { if (!cancelled) setHasError(true) })
-    return () => { cancelled = true }
-  }, [logDate, loadEntries])
 
   const displayName = (name: string, nameEn?: string | null) =>
     locale === 'en' && nameEn ? nameEn : name
 
-  const addToLog = async (food: FoodItem, customAmount?: number, meal?: string) => {
-    const amount = customAmount ?? (food.measureType === 'unit' ? 1 : 100)
-    const foodDisplay = displayName(food.name, food.nameEn)
-    try {
-      const r = await fetch('/api/log', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          date: logDate,
-          foodName: food.name,
-          category: food.category,
-          amount,
-          meal: meal ?? '',
-        }),
-      })
-      const d = await r.json()
-      if (d.success && d.id) {
-        setEntries(prev => [
-          ...prev,
-          {
-            id: d.id,
-            foodName: food.name,
-            category: food.category,
-            amount,
-            amountInput: String(amount),
-            meal: meal ?? '',
-          },
-        ])
-        showToast(t('added', { name: foodDisplay }))
-      } else {
-        showToast(t('addError', { name: foodDisplay }), 'error')
-        loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
-      }
-    } catch {
-      showToast(t('addError', { name: foodDisplay }), 'error')
-      loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
+  const handleAdd = async (food: FoodItem, amount: number, meal: string) => {
+    const ok = await createEntry(food, amount, meal)
+    const name = displayName(food.name, food.nameEn)
+    if (ok) {
+      showToast(t('added', { name }))
+    } else {
+      showToast(t('addError', { name }), 'error')
+      reloadEntries()
     }
-  }
-
-  const updateAmount = async (index: number) => {
-    const entry = entries[index]
-    const num = Number(entry.amountInput)
-    if (isNaN(num) || num <= 0) return
-    setEntries(prev => prev.map((e, i) => (i === index ? { ...e, amount: num } : e)))
-    try {
-      const r = await fetch('/api/log', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: entry.id,
-          foodName: entry.foodName,
-          category: entry.category,
-          amount: num,
-        }),
-      })
-      if (!r.ok) {
-        showToast(t('updateError'), 'error')
-        loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
-      }
-    } catch {
-      showToast(t('updateError'), 'error')
-      loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
-    }
-  }
-
-  const removeFromLog = async (index: number) => {
-    const entry = entries[index]
-    setEntries(prev => prev.filter((_, i) => i !== index))
-    const entryDisplay = (() => {
-      const food = foods.find(f => f.name === entry.foodName && f.category === entry.category)
-      return displayName(entry.foodName, food?.nameEn)
-    })()
-    try {
-      const r = await fetch('/api/log', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: entry.id }),
-      })
-      if (r.ok) {
-        showToast(t('removed', { name: entryDisplay }), 'warning')
-      } else {
-        showToast(t('deleteError'), 'error')
-        loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
-      }
-    } catch {
-      showToast(t('deleteError'), 'error')
-      loadEntries(logDate).then(setEntries).catch(() => setHasError(true))
-    }
-  }
-
-  const changeDate = (days: number) => {
-    const d = new Date(logDate + 'T12:00:00')
-    d.setDate(d.getDate() + days)
-    setLogDate(d.toISOString().slice(0, 10))
-  }
-
-  const handleFoodSelect = (food: FoodItem) => {
-    setPendingFood(food)
-    setPendingAmount(String(food.measureType === 'unit' ? 1 : 100))
-    setPendingMeal('')
-  }
-
-  const confirmAdd = () => {
-    if (!pendingFood) return
-    const num = parseFloat(pendingAmount) || 0
-    if (num <= 0) return
-    addToLog(pendingFood, num, pendingMeal)
     setPendingFood(null)
   }
 
-  const handleAmountInputChange = (index: number, value: string) => {
-    setEntries(prev => prev.map((e, i) => (i === index ? { ...e, amountInput: value } : e)))
+  const handleRemove = async (index: number) => {
+    const entry = entries[index]
+    const food = foods.find(f => f.name === entry.foodName && f.category === entry.category)
+    const name = displayName(entry.foodName, food?.nameEn)
+    const ok = await deleteEntry(index)
+    if (ok) {
+      showToast(t('removed', { name }), 'warning')
+    } else {
+      showToast(t('deleteError'), 'error')
+    }
   }
 
-  const totals = calculateTotals(foods, entries)
+  const handleUpdateAmount = async (index: number) => {
+    const ok = await updateEntry(index)
+    if (!ok) {
+      showToast(t('updateError'), 'error')
+    }
+  }
+
+  const handleSaveGoals = (newGoals: typeof goals) => {
+    setGoals(newGoals)
+    setShowGoals(false)
+  }
 
   const filteredFoods = foods.filter(
     f =>
@@ -198,14 +81,6 @@ export default function Home() {
       (f.name.toLowerCase().includes(search.toLowerCase()) ||
         (f.nameEn && f.nameEn.toLowerCase().includes(search.toLowerCase()))),
   )
-
-  const mealOptions = [
-    { value: '', label: t('noMeal') },
-    { value: 'desayuno', label: t('breakfast') },
-    { value: 'comida', label: t('lunch') },
-    { value: 'cena', label: t('dinner') },
-    { value: 'snack', label: t('snack') },
-  ]
 
   if (loading) {
     return (
@@ -242,7 +117,7 @@ export default function Home() {
         <h1 className="text-2xl font-bold">{t('title')}</h1>
         <div className="flex items-center gap-3">
           <LangSwitcher />
-          <button onClick={() => { setEditGoals({ ...goals }); setShowGoals(true) }} className="text-sm text-gray-400 hover:text-gray-600">{t('goals')}</button>
+          <button onClick={() => setShowGoals(true)} className="text-sm text-gray-400 hover:text-gray-600">{t('goals')}</button>
           <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600">{t('admin')}</Link>
         </div>
       </header>
@@ -275,100 +150,31 @@ export default function Home() {
       <LogEntryList
         entries={entries}
         foods={foods}
-        onRemove={removeFromLog}
+        onRemove={handleRemove}
         onAmountInputChange={handleAmountInputChange}
-        onAmountBlur={updateAmount}
+        onAmountBlur={handleUpdateAmount}
       />
 
       <CategoryTabs selected={selectedCategory} onSelect={setSelectedCategory} />
 
       <FoodSearch value={search} onChange={setSearch} />
 
-      <FoodGrid foods={filteredFoods} onAdd={handleFoodSelect} />
+      <FoodGrid foods={filteredFoods} onAdd={setPendingFood} />
 
       {pendingFood && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20" onClick={() => setPendingFood(null)}>
-          <div className="bg-white rounded-xl shadow-xl p-5 w-72 mx-4" onClick={e => e.stopPropagation()}>
-            <p className="font-medium text-sm mb-3">{t('addModalTitle', { name: displayName(pendingFood.name, pendingFood.nameEn) })}</p>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                value={pendingAmount}
-                onChange={e => setPendingAmount(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') confirmAdd() }}
-                placeholder="0"
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                autoFocus
-                min={0}
-                step={pendingFood.measureType === 'unit' ? 1 : 10}
-              />
-              <span className="text-sm text-gray-500 w-10">
-                {pendingFood.measureType === 'unit' && pendingFood.unitName ? pendingFood.unitName : t('gram')}
-              </span>
-            </div>
-            <div className="mt-2">
-              <select
-                value={pendingMeal}
-                onChange={e => setPendingMeal(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-              >
-                {mealOptions.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex gap-2 mt-3">
-              <button onClick={confirmAdd} className="flex-1 bg-black text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-800">
-                {t('add')}
-              </button>
-              <button onClick={() => setPendingFood(null)} className="px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-100">
-                {t('cancel')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <AddFoodModal
+          food={pendingFood}
+          onAdd={handleAdd}
+          onClose={() => setPendingFood(null)}
+        />
       )}
 
       {showGoals && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20" onClick={() => setShowGoals(false)}>
-          <div className="bg-white rounded-xl shadow-xl p-5 w-80 mx-4" onClick={e => e.stopPropagation()}>
-            <p className="font-medium text-sm mb-4">{t('goalsTitle')}</p>
-            <div className="space-y-3">
-              {(['calories', 'protein', 'fat', 'carbs'] as const).map(key => {
-                const labels: Record<string, string> = { calories: t('calories'), protein: t('protein'), fat: t('fat'), carbs: t('carbs') }
-                return (
-                  <div key={key}>
-                    <label className="block text-xs text-gray-500 mb-1">{labels[key]}</label>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={editGoals[key] || ''}
-                        onChange={e => {
-                          const raw = e.target.value
-                          if (raw === '') { setEditGoals(g => ({ ...g, [key]: 0 })); return }
-                          const cleaned = raw.replace(/^0+/, '')
-                          setEditGoals(g => ({ ...g, [key]: parseInt(cleaned, 10) || 0 }))
-                        }}
-                        placeholder={key === 'calories' ? '2000' : key === 'protein' ? '100' : key === 'fat' ? '65' : '250'}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                      />
-                  </div>
-                )
-              })}
-            </div>
-            <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
-              <button
-                onClick={() => { saveGoals(editGoals); setGoals(editGoals); setShowGoals(false) }}
-                className="flex-1 bg-black text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-800"
-              >
-                {t('save')}
-              </button>
-              <button onClick={() => setShowGoals(false)} className="px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-100">
-                {t('cancel')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <GoalsModal
+          goals={goals}
+          onSave={handleSaveGoals}
+          onClose={() => setShowGoals(false)}
+        />
       )}
     </div>
   )

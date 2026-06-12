@@ -1,0 +1,77 @@
+'use client'
+
+import { useState } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
+import type { FoodItem } from '@/lib/types'
+
+interface AddFoodModalProps {
+  food: FoodItem
+  onAdd: (food: FoodItem, amount: number, meal: string) => void
+  onClose: () => void
+}
+
+export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
+  const locale = useLocale()
+  const t = useTranslations('Home')
+  const displayName = locale === 'en' && food.nameEn ? food.nameEn : food.name
+
+  const [amount, setAmount] = useState(String(food.measureType === 'unit' ? 1 : 100))
+  const [meal, setMeal] = useState('')
+
+  const mealOptions = [
+    { value: '', label: t('noMeal') },
+    { value: 'desayuno', label: t('breakfast') },
+    { value: 'comida', label: t('lunch') },
+    { value: 'cena', label: t('dinner') },
+    { value: 'snack', label: t('snack') },
+  ]
+
+  const handleConfirm = () => {
+    const num = parseFloat(amount) || 0
+    if (num <= 0) return
+    onAdd(food, num, meal)
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20" onClick={onClose}>
+      <div className="bg-white rounded-xl shadow-xl p-5 w-72 mx-4" onClick={e => e.stopPropagation()}>
+        <p className="font-medium text-sm mb-3">{t('addModalTitle', { name: displayName })}</p>
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            value={amount}
+            onChange={e => setAmount(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') handleConfirm() }}
+            placeholder="0"
+            className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+            autoFocus
+            min={0}
+            step={food.measureType === 'unit' ? 1 : 10}
+          />
+          <span className="text-sm text-gray-500 w-10">
+            {food.measureType === 'unit' && food.unitName ? food.unitName : t('gram')}
+          </span>
+        </div>
+        <div className="mt-2">
+          <select
+            value={meal}
+            onChange={e => setMeal(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+          >
+            {mealOptions.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex gap-2 mt-3">
+          <button onClick={handleConfirm} className="flex-1 bg-black text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-800">
+            {t('add')}
+          </button>
+          <button onClick={onClose} className="px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-100">
+            {t('cancel')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
