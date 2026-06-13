@@ -2,6 +2,7 @@ setup:
     mise trust
     mise install
     npm install
+    hk install --mise
     @if [ ! -f .env.local ]; then cp .env.example .env.local && echo "Created .env.local from .env.example"; fi
     docker compose up -d
     @echo "Waiting for PostgreSQL to be ready..."
@@ -64,3 +65,26 @@ test-e2e-ui:
 
 typecheck:
     npx tsc --noEmit
+
+hooks-install:
+    hk install --mise
+
+# Recipes used by hk git hooks
+
+check-editorconfig *files:
+    ec {{files}}
+
+check-markdown *files:
+    markdownlint-cli2 {{files}}
+
+check-lint *files:
+    npx eslint {{files}}
+
+check-typecheck *files:
+    npx tsc --noEmit
+
+check-test *files:
+    npx vitest run
+
+check-commit-msg msg_file:
+    committed --commit-file "{{msg_file}}"

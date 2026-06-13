@@ -12,10 +12,11 @@ Macros calculated locally with a static nutrition lookup table.
 ## Conventions (CRITICAL)
 
 - **HARD RULE: Commit and push after EVERY unit of work.** Before starting new work, check `git status` and `git log --oneline -3@\{push\}`. If there are uncommitted changes, STOP. Commit them first (atomic, 50/72 rule) and push. Never accumulate work across multiple sessions or features without pushing.
-- **All dev commands go in Justfile, NOT in package.json scripts.** package.json only has `"prepare": "husky"`.
-- **Pre-push hook runs tests + typecheck.** If it blocks you, fix before pushing.
-- **Pre-commit hook runs lint-staged (ESLint).**
-- **Commit-msg hook enforces conventional commits.**
+- **All dev commands go in Justfile, NOT in package.json scripts.** package.json has no scripts.
+- **Git hooks are managed by [hk](https://hk.jdx.dev/)** and configured in `hk.pkl`.
+- **`just setup` installs hk hooks** with `hk install --mise`.
+- **Pre-commit hook** runs editorconfig-checker, markdownlint-cli2, ESLint, typecheck, and tests via just recipes.
+- **Commit-msg hook** validates conventional commits with `committed`.
 - **DATABASE_URL must be set** in `.env.local` for DB operations.
 - **SESSION_SECRET, INITIAL_ADMIN_EMAIL, INITIAL_ADMIN_PASSWORD** must be set in `.env.local`. See `docs/auth.md`.
 - **`just setup` is the one-time onboarding command** — it installs tools/dependencies, creates `.env.local` if missing, starts the DB, migrates, and seeds the admin user and catalog.

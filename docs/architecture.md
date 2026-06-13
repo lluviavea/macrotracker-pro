@@ -243,7 +243,7 @@ Uses **next-intl v4** with URL prefix routing (`/es/...` and `/en/...`).
 4. Every component calls `useTranslations('Namespace')` to get its translated strings.
 5. `LangSwitcher` calls `router.replace(pathname, { locale })` to switch.
 6. Bilingual content: `food.name` is Spanish, `food.nameEn` is English. Display via
-   `locale === 'en' && nameEn ? nameEn : name`.
+    `locale === 'en' && nameEn ? nameEn : name`.
 
 ### Adding a new string
 

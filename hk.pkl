@@ -1,0 +1,48 @@
+amends "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Config.pkl"
+
+exclude = List(
+  "node_modules",
+  ".next",
+  "out",
+  "build",
+  "dist",
+  "coverage",
+  "test-results",
+  "playwright-report",
+  "playwright/.cache",
+  "drizzle"
+)
+
+hooks {
+  ["pre-commit"] {
+    steps {
+      ["editorconfig"] {
+        glob = List("**/*")
+        check = "just check-editorconfig {{files}}"
+      }
+      ["markdown"] {
+        glob = List("**/*.md", "**/*.markdown")
+        check = "just check-markdown {{files}}"
+      }
+      ["lint"] {
+        glob = List("**/*.{ts,tsx,mjs}")
+        check = "just check-lint {{files}}"
+      }
+      ["typecheck"] {
+        glob = List("**/*.{ts,tsx}")
+        check = "just check-typecheck {{files}}"
+      }
+      ["test"] {
+        glob = List("**/*.{ts,tsx}")
+        check = "just check-test {{files}}"
+      }
+    }
+  }
+  ["commit-msg"] {
+    steps {
+      ["committed"] {
+        check = "just check-commit-msg {{commit_msg_file}}"
+      }
+    }
+  }
+}

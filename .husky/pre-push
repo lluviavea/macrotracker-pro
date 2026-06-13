@@ -1,2 +1,0 @@
-npx vitest run
-npx tsc --noEmit

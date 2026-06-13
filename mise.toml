@@ -2,3 +2,7 @@
 node = "24"
 npm = "11"
 just = "1"
+hk = "1.48.0"
+editorconfig-checker = "3.7.0"
+"github:crate-ci/committed" = "1.1.11"
+"npm:markdownlint-cli2" = "0.22.1"

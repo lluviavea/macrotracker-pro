@@ -71,7 +71,7 @@ saveGoals(goals: Goals): void
 3. User edits the 4 numeric inputs (integer parsing, `parseInt`).
 4. User clicks "Save" → `saveGoals(editGoals)` + `onSave(editGoals)` + `onClose()`.
 5. `onSave` calls `setGoals(newGoals)` in the parent hook, which re-renders `MacroSummary` with
-   the new bars.
+    the new bars.
 
 ## Why localStorage instead of the DB?
 
