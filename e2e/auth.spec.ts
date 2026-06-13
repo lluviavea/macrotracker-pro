@@ -8,10 +8,16 @@ test.describe("authentication", () => {
     test.skip(!ADMIN_EMAIL || !ADMIN_PASSWORD, "Admin credentials not configured");
 
     await page.goto("/es/login");
+    await page.waitForLoadState("networkidle");
+
     await page.fill('input[id="email"]', ADMIN_EMAIL!);
     await page.fill('input[id="password"]', ADMIN_PASSWORD!);
-    await page.click('button[type="submit"]');
 
+    const submitButton = page.getByRole("button", { name: /iniciar/i });
+    await expect(submitButton).toBeEnabled();
+    await submitButton.click();
+
+    await page.waitForURL("/es");
     await expect(page).toHaveURL("/es");
     await expect(page.locator("text=Cerrar sesión")).toBeVisible();
 
@@ -24,10 +30,16 @@ test.describe("authentication", () => {
     const password = "Password123!";
 
     await page.goto("/es/register");
+    await page.waitForLoadState("networkidle");
+
     await page.fill('input[id="email"]', email);
     await page.fill('input[id="password"]', password);
-    await page.click('button[type="submit"]');
 
+    const submitButton = page.getByRole("button", { name: /crear/i });
+    await expect(submitButton).toBeEnabled();
+    await submitButton.click();
+
+    await page.waitForURL("/es");
     await expect(page).toHaveURL("/es");
     await expect(page.locator("text=Cerrar sesión")).toBeVisible();
   });
