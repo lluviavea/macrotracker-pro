@@ -38,6 +38,7 @@ just start        # Start production server
 just lint         # Run ESLint
 just test         # Run vitest
 just typecheck    # Run tsc --noEmit
+just hooks-install # Install hk git hooks
 ```
 
 ## Knowledge Map
