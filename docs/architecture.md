@@ -1,93 +1,144 @@
 # Architecture
 
-Read this when understanding how the project is structured and how data flows.
+Read this when understanding how the project is structured, how data flows, or where to add a new
+feature. For cross-cutting concerns, see the dedicated docs:
+
+- Admin catalog → `docs/admin.md`
+- Daily goals → `docs/goals.md`
+- Dark/light mode → `docs/theme.md`
+- Nutrition data & formulas → `docs/nutrition.md`
+- Legacy Google Sheets source → `docs/google-sheets.md`
 
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router) with Turbopack
-- **Styling**: Tailwind CSS v4
+- **Styling**: Tailwind CSS v4 (`@tailwindcss/postcss`)
 - **i18n**: next-intl v4 (ES + EN, URL prefix routing)
 - **Database**: PostgreSQL 17 (via Docker Compose)
-- **ORM**: Drizzle ORM
-- **Runtime**: Node.js 24
+- **ORM**: Drizzle ORM (postgres-js driver)
+- **Validation**: Zod
+- **Theme**: CSS variables + `dark` class on `<html>` (Tailwind v4 dark mode)
+- **Runtime**: Node.js 24 (pinned in `mise.toml`)
 
 ## Project Structure
 
 ```
 app/
-  [locale]/         - Locale-aware routes (en, es)
-    layout.tsx      - Locale layout (NextIntlClientProvider, lang setter)
-    page.tsx        - Main UI (client component, 'use client')
+  [locale]/
+    layout.tsx           - Locale layout (NextIntlClientProvider, lang setter)
+    page.tsx             - Main UI (client component, 'use client')
     admin/
-      page.tsx      - Admin catalog page
-  layout.tsx        - Root layout with HTML shell, fonts, ToastContainer
-  globals.css       - Tailwind v4 base styles
+      page.tsx           - Admin catalog CRUD (table, modal, sort, search)
+  layout.tsx             - Root layout (HTML shell, fonts, ThemeProvider, ToastContainer)
+  globals.css            - Tailwind v4 base styles + CSS variables for theme
   api/
-    foods/route.ts  - GET: fetches all foods from PostgreSQL
-    log/route.ts    - CRUD: GET, POST, PUT, DELETE for daily log
+    foods/route.ts       - GET/POST/PUT/DELETE: food catalog (admin)
+    log/route.ts         - GET/POST/PUT/DELETE: daily log entries
+    nutrition/search/    - (placeholder) nutrition lookup endpoint
 i18n/
-  routing.ts        - next-intl routing config (locales, defaultLocale, prefix)
-  request.ts        - next-intl request config (message loader)
-  navigation.ts     - createNavigation → locale-aware Link, usePathname, useRouter
-middleware.ts       - next-intl middleware (locale detection, redirect)
+  routing.ts             - next-intl routing config (locales, defaultLocale, prefix)
+  request.ts             - next-intl request config (message loader)
+  navigation.ts          - createNavigation → locale-aware Link, usePathname, useRouter
+middleware.ts            - next-intl middleware (locale detection, redirect)
 messages/
-  en.json           - English translations
-  es.json           - Spanish translations
+  en.json                - English translations (ICU format)
+  es.json                - Spanish translations
 components/
-  LangSwitcher.tsx  - Language toggle button (ES ↔ EN)
-  ClientLocale.tsx  - Sets document.documentElement.lang client-side
+  ClientLocale.tsx       - Sets document.documentElement.lang client-side
+  LangSwitcher.tsx       - Language toggle button (ES ↔ EN)
+  ThemeProvider.tsx      - Dark/light mode context (system preference + localStorage)
+  ThemeToggle.tsx        - Sun/moon toggle button
+  Toast.tsx              - Imperative toast API + ToastContainer
+  DateNavigator.tsx      - Date picker + prev/next/today
+  MacroSummary.tsx       - 6 macro cards (calories, P/F/C, sugar, fiber) + goal progress bars
+  LogEntryList.tsx       - List of today's entries
+  LogEntryRow.tsx        - Single entry (food, amount input, delete, macro breakdown)
+  CategoryTabs.tsx       - Category filter buttons
+  FoodSearch.tsx         - Search input (bilingual: ES + EN)
+  FoodGrid.tsx           - Grid of FoodCard
+  FoodCard.tsx           - Single food item with add button
+  AddFoodModal.tsx       - Amount + meal picker before adding to log
+  GoalsModal.tsx         - Edit daily goals (calories, P/F/C)
 lib/
-  types.ts          - TypeScript types (FoodItem, FoodCategory, Entry, LogEntry)
-  nutrition.ts      - Static nutrition lookup table (NUTRITION_DATA array)
-  nutrition-utils.ts - normalizeName, lookupNutrition helpers
-  macros.ts         - calculateMacros, findFood, calculateTotals
-  validation.ts   - Zod schemas for API request validation
+  types.ts               - TypeScript types (FoodItem, FoodCategory, Entry)
+  nutrition.ts           - Static NUTRITION_DATA lookup array (~80 entries)
+  nutrition-utils.ts     - normalizeName, lookupNutrition helpers
+  macros.ts              - calculateMacros, findFood, calculateTotals
+  goals.ts               - Goals type + localStorage get/save
+  validation.ts          - Zod schemas for all API request bodies
+  useFoodLog.ts          - Main client hook (foods, entries, totals, CRUD with optimistic updates)
   db/
-    schema.ts       - Drizzle table definitions (foods, log_entries)
-    index.ts        - Drizzle client (postgres-js driver)
-    foods.ts        - DB food queries (getAllFoods, getFoodByNameAndCategory)
-    logs.ts         - DB log CRUD (getLogForDate, addLogEntry, etc.)
-    seed.ts         - One-time seed from NUTRITION_DATA to PostgreSQL (Google Sheets deprecated)
-docs/               - AI-first documentation (this file)
-drizzle/            - Drizzle Kit migration files
-docker-compose.yml  - PostgreSQL service definition
+    schema.ts            - Drizzle table definitions (foods, log_entries)
+    index.ts             - Drizzle client (postgres-js driver)
+    foods.ts             - Food queries (getAllFoods, getFoodByNameAndCategory, insert, update, delete)
+    logs.ts              - Log CRUD (getLogForDate, addLogEntry, updateLogEntry, deleteLogEntry)
+    seed.ts              - Seeds PostgreSQL from NUTRITION_DATA (Google Sheets deprecated)
+  __tests__/
+    macros.test.ts
+    nutrition-utils.test.ts
+    validation.test.ts
+docs/                    - AI-first documentation (this file + per-concern docs)
+drizzle/                 - Drizzle Kit migration files
+docker-compose.yml       - PostgreSQL service definition
+mise.toml                - Pinned tool versions (node 24, npm 11, just 1)
 ```
 
 ## Data Flow
 
+### Food catalog (admin)
 ```
-User clicks food -> POST /api/log -> getFoodByNameAndCategory() -> INSERT INTO log_entries
-User changes amount -> PUT /api/log -> getFoodByNameAndCategory() -> UPDATE log_entries
-User deletes entry -> DELETE /api/log -> DELETE FROM log_entries
-Page load -> GET /api/log?date=YYYY-MM-DD -> SELECT FROM log_entries WHERE date = ?
-Food list -> GET /api/foods -> SELECT * FROM foods
+Admin opens /admin       -> GET /api/foods        -> SELECT * FROM foods
+Admin saves new food     -> POST /api/foods       -> INSERT INTO foods + revalidatePath('/api/foods')
+Admin edits food         -> PUT  /api/foods       -> UPDATE foods + recalc dependent log_entries
+Admin deletes food       -> DELETE /api/foods     -> DELETE FROM foods
 ```
+
+### Daily log
+```
+User clicks food         -> POST /api/log         -> getFoodByNameAndCategory() -> INSERT log_entries
+User changes amount      -> PUT  /api/log         -> getFoodByNameAndCategory() -> UPDATE log_entries
+User deletes entry       -> DELETE /api/log       -> DELETE FROM log_entries
+Page load                -> GET /api/log?date=... -> SELECT log_entries WHERE date = ?
+Food list                -> GET /api/foods        -> SELECT * FROM foods (cached, 1h revalidation)
+```
+
+### Optimistic updates (client side)
+
+The `useFoodLog` hook in `lib/useFoodLog.ts` uses **snapshot-based rollback** for update/delete:
+
+1. Save current entries state to `snapshot`
+2. Apply optimistic change to state
+3. Send request
+4. If request fails: restore from `snapshot` + set `hasError = true` (shows dismissable banner)
+
+Create-entry does NOT use optimistic updates — the new row is only added to state on success.
 
 ## Database Schema
 
 ### foods
 
-Stores the food catalog. Seeded from Google Sheets (one-time migration).
-
 | Column | Type | Notes |
-|---|---|---|---|
+|---|---|---|
 | id | SERIAL | Primary key |
-| name | VARCHAR(255) | Food name |
-| category | VARCHAR(50) | proteina, carbohidratos, etc. |
-| protein | DECIMAL(10,2) | Per 100g |
+| name | VARCHAR(255) | Spanish food name |
+| name_en | VARCHAR(255) | English name (nullable) |
+| category | VARCHAR(50) | proteina, carbohidratos, grasas, frutas, verduras, condimentos, suplementos |
+| protein | DECIMAL(10,2) | Per 100g (or per `unit_grams`) |
 | fat | DECIMAL(10,2) | Per 100g |
-| carbs | DECIMAL(10,2) | Per 100g (total carbs) |
-| sugar | DECIMAL(10,2) | Per 100g (carbs sub-category) |
-| fiber | DECIMAL(10,2) | Per 100g (carbs sub-category) |
+| carbs | DECIMAL(10,2) | Per 100g (total) |
+| sugar | DECIMAL(10,2) | Per 100g, default 0 (sub-category of carbs) |
+| fiber | DECIMAL(10,2) | Per 100g, default 0 (sub-category of carbs) |
 | calories | INTEGER | Per 100g |
-| measure_type | VARCHAR(10) | 'gram' or 'unit' |
+| measure_type | VARCHAR(10) | `'gram'` or `'unit'` |
 | unit_name | VARCHAR(255) | e.g. "huevo", "pieza" |
-| unit_grams | DECIMAL(10,2) | e.g. 60 for egg |
-| preparation | VARCHAR(10) | 'crudo', 'cocido', or NULL |
+| unit_grams | DECIMAL(10,2) | grams per unit (e.g. 60 for egg) |
+| preparation | VARCHAR(10) | `'crudo'`, `'cocido'`, or NULL |
+| created_at | TIMESTAMP | Auto-set |
+| updated_at | TIMESTAMP | Auto-set |
 
 ### log_entries
 
-Stores daily food logs with pre-calculated macros (denormalized for fast reads).
+Stores daily food logs with **pre-calculated macros** (denormalized for fast reads + historical accuracy when a food is later updated).
 
 | Column | Type | Notes |
 |---|---|---|
@@ -96,28 +147,45 @@ Stores daily food logs with pre-calculated macros (denormalized for fast reads).
 | food_name | VARCHAR(255) | Denormalized food name |
 | category | VARCHAR(50) | Denormalized category |
 | amount | DECIMAL(10,2) | Amount consumed |
-| unit | VARCHAR(50) | 'g' or unit name |
+| unit | VARCHAR(50) | `'g'` or unit name (e.g. `'huevo'`) |
 | protein | DECIMAL(10,2) | Calculated |
 | fat | DECIMAL(10,2) | Calculated |
 | carbs | DECIMAL(10,2) | Calculated |
-| sugar | DECIMAL(10,2) | Calculated (sub-category of carbs) |
-| fiber | DECIMAL(10,2) | Calculated (sub-category of carbs) |
+| sugar | DECIMAL(10,2) | Calculated, default 0 |
+| fiber | DECIMAL(10,2) | Calculated, default 0 |
 | calories | INTEGER | Calculated |
-| preparation | VARCHAR(50) | Preparation method |
+| preparation | VARCHAR(50) | Preparation method (default `''`) |
+| meal | VARCHAR(20) | `desayuno` / `comida` / `cena` / `snack` / `''` |
 | created_at | TIMESTAMP | Auto-set |
+
+When a food is updated via `PUT /api/foods`, the API **recalculates** the macros for all dependent `log_entries` rows so the totals stay accurate (`lib/db/foods.ts` → `updateFood`).
 
 ## Component Tree
 
 ```
-Home (page.tsx)
-├── DateNavigator        (date picker + prev/next)
-├── MacroSummary          (6 cards: calories, protein, fat, carbs, sugar, fiber)
-├── LogEntryList
-│   └── LogEntryRow       (food name, amount input, delete, macro breakdown)
-├── CategoryTabs          (filter buttons)
-├── FoodSearch            (search input)
-└── FoodGrid
-    └── FoodCard          (single food item with add button)
+RootLayout (app/layout.tsx)
+  ├── ThemeProvider             (dark/light context)
+  └── [locale]/layout.tsx       (NextIntlClientProvider)
+        └── page.tsx  (Home)
+              ├── DateNavigator       (date picker + prev/next/today)
+              ├── MacroSummary         (6 cards with goal progress bars)
+              ├── LogEntryList
+              │   └── LogEntryRow      (food, amount input, delete, macro breakdown)
+              ├── CategoryTabs         (filter buttons)
+              ├── FoodSearch           (bilingual search)
+              ├── FoodGrid
+              │   └── FoodCard         (add button)
+              ├── AddFoodModal         (amount + meal picker)
+              ├── GoalsModal           (edit daily goals)
+              ├── ThemeToggle          (sun/moon)
+              └── LangSwitcher         (ES/EN)
+        └── admin/page.tsx  (Admin)
+              ├── Search input         (bilingual)
+              ├── Add button           (opens modal)
+              ├── Food table           (sortable, editable, deletable)
+              └── FoodForm modal       (with auto-fill from NUTRITION_DATA)
+
+ToastContainer is mounted once at the root, siblings to children.
 ```
 
 ## Pure Logic Modules
@@ -126,9 +194,9 @@ Home (page.tsx)
 |---|---|
 | `lib/macros.ts` | `calculateMacros`, `findFood`, `calculateTotals` |
 | `lib/nutrition-utils.ts` | `normalizeName`, `lookupNutrition` (from `NUTRITION_DATA`) |
-
-Read `docs/nutrition.md` for nutrition data and calculation logic.
-Read `docs/google-sheets.md` for legacy sheet structure (one-time seed source).
+| `lib/validation.ts` | Zod schemas for `/api/foods` and `/api/log` request bodies |
+| `lib/goals.ts` | `Goals` type + `getGoals` / `saveGoals` (localStorage) |
+| `lib/useFoodLog.ts` | Main client hook — foods, entries, CRUD, optimistic updates, totals |
 
 ## Internationalization (i18n)
 
@@ -138,7 +206,7 @@ Uses **next-intl v4** with URL prefix routing (`/es/...` and `/en/...`).
 
 | File | Purpose |
 |---|---|
-| `i18n/routing.ts` | Defines supported locales (`['en', 'es']`) and `defaultLocale: 'es'` |
+| `i18n/routing.ts` | Defines supported locales (`['en', 'es']`) and `defaultLocale: 'es'`, `localePrefix: 'always'` |
 | `i18n/request.ts` | Loads the correct JSON message file per locale |
 | `i18n/navigation.ts` | Creates locale-aware `Link`, `usePathname`, `useRouter` |
 | `middleware.ts` | Automatically detects/redirects locale on first visit |
@@ -149,15 +217,17 @@ Uses **next-intl v4** with URL prefix routing (`/es/...` and `/en/...`).
 
 1. Middleware intercepts every non-API request and ensures a valid locale prefix.
 2. Pages live under `app/[locale]/` — locale is read from the URL segment.
-3. `LocaleLayout` wraps children with `NextIntlClientProvider`, passing locale messages.
+3. `[locale]/layout.tsx` wraps children with `NextIntlClientProvider`, passing locale messages.
 4. Every component calls `useTranslations('Namespace')` to get its translated strings.
-5. `LangSwitcher` button calls `router.replace(pathname, { locale })` to switch.
+5. `LangSwitcher` calls `router.replace(pathname, { locale })` to switch.
+6. Bilingual content: `food.name` is Spanish, `food.nameEn` is English. Display via
+   `locale === 'en' && nameEn ? nameEn : name`.
 
 ### Adding a new string
 
 1. Add the key to both `messages/en.json` and `messages/es.json` under the right namespace.
 2. Use `const t = useTranslations('Namespace')` and `t('key', { vars })` in the component.
-3. Uses ICU message format — `{count, plural, one {...} other {...}}` for plurals.
+3. ICU message format — `{count, plural, one {...} other {...}}` for plurals.
 
 ### Adding a new locale
 
