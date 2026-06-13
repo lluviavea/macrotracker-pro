@@ -1,26 +1,23 @@
 # Google Sheets (Legacy)
 
-Read this when understanding the original data source.
+**DEPRECATED.** Kept for historical reference only. No code path reads from Google Sheets anymore.
 
 ## Status
 
-**DEPRECATED.** The app now uses PostgreSQL via Drizzle ORM. Google Sheets was the original data
-source. The seed script (`lib/db/seed.ts`) now reads directly from the static `NUTRITION_DATA` array
-in `lib/nutrition.ts`, removing the Google Sheets dependency entirely.
+The app now uses **PostgreSQL via Drizzle ORM** as its sole data store. The seed script
+(`lib/db/seed.ts`) reads directly from the static `NUTRITION_DATA` array in `lib/nutrition.ts`. The
+Google Sheets dependency, the service account, and the `GOOGLE_APPLICATION_CREDENTIALS` env var
+have all been removed.
 
-## Seed Script
+The MCP server in `opencode.json` (`mcp-google-sheets`) is also obsolete and can be deleted if
+desired — it is no longer required to run the app.
 
-```bash
-just db-seed
-```
+## What was the source of truth?
 
-Requirements:
-- Docker PostgreSQL running (`just db-start`)
-- `DATABASE_URL` env var set
-
-The seed script reads:
-1. Each entry in `NUTRITION_DATA` → assigned to a category by position → inserts into `foods`
-2. Note: Log entries are not seeded; they must be created through the app or migrated manually.
+Before the migration, the food catalog lived in a Google Sheets workbook with one tab per category
+plus a LOG tab. The original sheets were the only writable data source; everything else was a
+mirror. The migration to PostgreSQL + `NUTRITION_DATA` made the static array the source of truth so
+the app no longer needs a network call to start.
 
 ## Original Sheet Structure (for reference)
 
@@ -42,10 +39,15 @@ Columns: `Fecha | Alimento | Categoria | Cantidad | Unidad | Proteina | Grasa | 
 
 Numbers use comma as decimal separator (MX locale).
 
-## Auth
+## Original Auth (no longer used)
 
 - **Method**: Service account via `GOOGLE_APPLICATION_CREDENTIALS`
 - **Spreadsheet ID**: `1-gLdhqGva8eBhJb6xTzvUmUysj49mv4n_5hb2f7SSMo`
+
+## Adding new foods
+
+Today, the only way to add a food to the catalog is via the admin UI at `/[locale]/admin`. See
+`docs/admin.md` for details.
 
 Read `docs/nutrition.md` for how food data maps to nutrition values.
 Read `docs/architecture.md` for the current database architecture.
