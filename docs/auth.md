@@ -8,8 +8,8 @@ The app uses custom credentials authentication:
 
 - **Passwords**: hashed with `bcryptjs`.
 - **Sessions**: signed JWT stored in an HTTP-only cookie named `session`.
-- **Validation**: `jose` signs and verifies tokens (works in Edge middleware).
-- **Authorization**: `middleware.ts` redirects guests to `/login` and blocks non-admins from `/admin`.
+- **Validation**: `jose` signs and verifies tokens (works in Edge proxy).
+- **Authorization**: `proxy.ts` redirects guests to `/login` and blocks non-admins from `/admin`.
 
 ## Environment variables
 
@@ -31,7 +31,7 @@ INITIAL_ADMIN_PASSWORD=changeme
 3. **Register**: `POST /api/auth/register` creates a user, hashes the password, seeds their catalog, and sets the session cookie directly on the response.
 4. **Login**: `POST /api/auth/login` verifies the password, creates a JWT, and sets the cookie directly on the response.
 5. **Logout**: `POST /api/auth/logout` deletes the cookie from the response.
-6. **Session check**: server components call `getSession()` from `lib/auth.ts`; middleware calls `getSessionFromRequest()`.
+6. **Session check**: server components call `getSession()` from `lib/auth.ts`; proxy calls `getSessionFromRequest()`.
 
 ## Local network access
 
@@ -62,4 +62,4 @@ API routes use `requireSession()` and pass `session.userId` to the data layer. E
 - `admin`: can access `/admin` and manage the food catalog.
 - `user`: can log food and view their own data only.
 
-The middleware blocks `/admin` for non-admins; the admin page also checks the role server-side.
+The proxy blocks `/admin` for non-admins; the admin page also checks the role server-side.

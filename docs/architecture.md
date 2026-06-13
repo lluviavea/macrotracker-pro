@@ -39,7 +39,7 @@ i18n/
   routing.ts             - next-intl routing config (locales, defaultLocale, prefix)
   request.ts             - next-intl request config (message loader)
   navigation.ts          - createNavigation → locale-aware Link, usePathname, useRouter
-middleware.ts            - next-intl middleware (locale detection, redirect)
+proxy.ts                 - next-intl proxy (locale detection, redirect)
 messages/
   en.json                - English translations (ICU format)
   es.json                - Spanish translations
@@ -85,12 +85,12 @@ mise.toml                - Pinned tool versions (node 24, npm 11, just 1)
 
 ## Data Flow
 
-All data is scoped to a user. The middleware enforces authentication and the admin role.
+All data is scoped to a user. The proxy enforces authentication and the admin role.
 
 ### Authentication
 
 ```text
-Guest visits /            -> middleware checks cookie -> redirect to /login
+Guest visits /            -> proxy checks cookie -> redirect to /login
 User submits login        -> POST /api/auth/login    -> verify password -> set session cookie
 User submits register     -> POST /api/auth/register -> check invite code -> create user -> seed catalog -> set cookie
 User clicks logout        -> POST /api/auth/logout   -> delete session cookie
@@ -234,13 +234,13 @@ Uses **next-intl v4** with URL prefix routing (`/es/...` and `/en/...`).
 | `i18n/routing.ts` | Defines supported locales (`['en', 'es']`) and `defaultLocale: 'es'`, `localePrefix: 'always'` |
 | `i18n/request.ts` | Loads the correct JSON message file per locale |
 | `i18n/navigation.ts` | Creates locale-aware `Link`, `usePathname`, `useRouter` |
-| `middleware.ts` | Automatically detects/redirects locale on first visit |
+| `proxy.ts` | Automatically detects/redirects locale on first visit |
 | `messages/en.json` | All English UI strings (ICU message format) |
 | `messages/es.json` | All Spanish UI strings |
 
 ### How it works
 
-1. Middleware intercepts every non-API request and ensures a valid locale prefix.
+1. Proxy intercepts every non-API request and ensures a valid locale prefix.
 2. Pages live under `app/[locale]/` — locale is read from the URL segment.
 3. `[locale]/layout.tsx` wraps children with `NextIntlClientProvider`, passing locale messages.
 4. Every component calls `useTranslations('Namespace')` to get its translated strings.

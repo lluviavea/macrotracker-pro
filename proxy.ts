@@ -25,7 +25,7 @@ function isAdminPath(pathname: string): boolean {
   return bare === '/admin' || bare.startsWith('/admin/')
 }
 
-export default async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (isPublicPath(pathname)) {
