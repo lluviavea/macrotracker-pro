@@ -38,7 +38,11 @@ run:
     @echo "Waiting for PostgreSQL to be ready..."
     @until docker exec macrotracker-db pg_isready -U macrotracker >/dev/null 2>&1; do sleep 1; done
     npx dotenv -e .env.local -- npx drizzle-kit push
-    npx next dev
+    @echo ""
+    @echo "Local:    http://localhost:3000"
+    @echo "Network:  http://$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo '<your-local-ip>'):3000"
+    @echo ""
+    npx next dev --hostname 0.0.0.0
 
 build:
     npx next build
