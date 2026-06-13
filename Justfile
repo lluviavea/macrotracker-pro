@@ -35,15 +35,21 @@ db-update-admin:
 
 run:
     @if ! docker info >/dev/null 2>&1; then echo "Docker is not running. Please start Docker first."; exit 1; fi
-    @if [ -z "$(docker ps -q -f name=macrotracker-db)" ]; then docker compose up -d; fi
-    @echo "Waiting for PostgreSQL to be ready..."
-    @until docker exec macrotracker-db pg_isready -U macrotracker >/dev/null 2>&1; do sleep 1; done
-    npx dotenv -e .env.local -- npx drizzle-kit push
+    @if ! docker exec macrotracker-db pg_isready -U macrotracker >/dev/null 2>&1; then \
+      docker compose up -d; \
+      echo "Waiting for PostgreSQL to be ready..."; \
+      until docker exec macrotracker-db pg_isready -U macrotracker >/dev/null 2>&1; do sleep 1; done; \
+    fi
+    @output=$(npx dotenv -e .env.local -- npx drizzle-kit push --config drizzle.config.ts 2>&1); exit_code=$?; \
+    if [ $exit_code -ne 0 ]; then echo "$output"; exit $exit_code; fi; \
+    if ! echo "$output" | grep -q "No changes detected"; then \
+      echo "$output"; \
+    fi
     @echo ""
     @echo "Local:    http://localhost:3000"
     @echo "Network:  http://$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo '<your-local-ip>'):3000"
     @echo ""
-    npx next dev --hostname 0.0.0.0
+    @npx next dev --hostname 0.0.0.0 >/dev/null
 
 build:
     npx next build
@@ -72,13 +78,13 @@ hooks-install:
 # Recipes used by hk git hooks
 
 check-editorconfig *files:
-    ec {{files}}
+    ec {{ files }}
 
 check-markdown *files:
-    markdownlint-cli2 {{files}}
+    markdownlint-cli2 {{ files }}
 
 check-lint *files:
-    npx eslint {{files}}
+    npx eslint {{ files }}
 
 check-typecheck:
     npx tsc --noEmit
@@ -90,4 +96,4 @@ check-test-e2e:
     npx playwright test
 
 check-commit-msg msg_file:
-    committed --commit-file "{{msg_file}}"
+    committed --commit-file "{{ msg_file }}"
