@@ -56,5 +56,11 @@ lint:
 test:
     npx vitest run
 
+test-e2e:
+    npx playwright test
+
+test-e2e-ui:
+    npx playwright test --ui
+
 typecheck:
     npx tsc --noEmit
