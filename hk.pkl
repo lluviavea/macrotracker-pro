@@ -30,11 +30,11 @@ hooks {
       }
       ["typecheck"] {
         glob = List("**/*.{ts,tsx}")
-        check = "just check-typecheck {{files}}"
+        check = "just check-typecheck"
       }
       ["test"] {
         glob = List("**/*.{ts,tsx}")
-        check = "just check-test {{files}}"
+        check = "just check-test"
       }
     }
   }

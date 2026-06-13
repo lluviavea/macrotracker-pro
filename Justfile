@@ -80,10 +80,10 @@ check-markdown *files:
 check-lint *files:
     npx eslint {{files}}
 
-check-typecheck *files:
+check-typecheck:
     npx tsc --noEmit
 
-check-test *files:
+check-test:
     npx vitest run
 
 check-commit-msg msg_file:
