@@ -29,6 +29,9 @@ db-migrate:
 db-seed:
     npx dotenv -e .env.local -- npx tsx lib/db/seed.ts
 
+db-update-admin:
+    npx dotenv -e .env.local -- npx tsx scripts/update-admin.ts
+
 run:
     @if ! docker info >/dev/null 2>&1; then echo "Docker is not running. Please start Docker first."; exit 1; fi
     @if [ -z "$(docker ps -q -f name=macrotracker-db)" ]; then docker compose up -d; fi

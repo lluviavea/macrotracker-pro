@@ -29,6 +29,7 @@ just db-start     # Start PostgreSQL via Docker Compose
 just db-stop      # Stop PostgreSQL
 just db-migrate   # Push Drizzle schema changes to DB
 just db-seed      # Create admin user and seed their catalog (one-time, after fresh DB)
+just db-update-admin # Update admin email/password from .env.local
 just db-reset     # Destroy + recreate DB + seed
 just run          # Start dev server on :3000 (auto-starts DB + migrate)
 just build        # Production build
