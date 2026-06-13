@@ -35,7 +35,7 @@ INITIAL_ADMIN_PASSWORD=changeme
 
 ## Login page
 
-The login form at `/[locale]/login` includes the shared `ThemeToggle` and `LangSwitcher` components in the card header, so users can switch dark/light mode and language (ES/EN) before authenticating.
+The login page at `/[locale]/login` renders the shared `ThemeToggle` and `LangSwitcher` components in the top-right corner of the page, matching the main app header, so users can switch dark/light mode and language (ES/EN) before authenticating.
 
 ## Local network access
 

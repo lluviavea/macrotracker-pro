@@ -44,16 +44,17 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
-        <div className="mb-4 flex items-center justify-end gap-2">
-          <ThemeToggle />
-          <LangSwitcher />
-        </div>
-        <h1 className="mb-6 text-center text-2xl font-semibold text-[var(--foreground)]">
-          {t('loginTitle')}
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="flex min-h-screen flex-col">
+      <header className="mx-auto flex w-full max-w-4xl items-center justify-end gap-2 p-4">
+        <ThemeToggle />
+        <LangSwitcher />
+      </header>
+      <main className="flex flex-1 items-center justify-center px-4 pb-4">
+        <div className="w-full max-w-sm rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+          <h1 className="mb-6 text-center text-2xl font-semibold text-[var(--foreground)]">
+            {t('loginTitle')}
+          </h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="mb-1 block text-sm font-medium text-[var(--muted-foreground)]">
               {t('email')}
@@ -96,6 +97,7 @@ export default function LoginForm() {
           </Link>
         </p>
       </div>
-    </div>
+    </main>
+  </div>
   )
 }
