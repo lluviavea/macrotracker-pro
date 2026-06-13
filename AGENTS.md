@@ -26,7 +26,7 @@ just setup        # mise trust + install + npm install (first time only)
 just db-start     # Start PostgreSQL via Docker Compose
 just db-stop      # Stop PostgreSQL
 just db-migrate   # Push Drizzle schema changes to DB
-just db-seed      # Seed DB from Google Sheets (one-time)
+just db-seed      # Seed DB from NUTRITION_DATA (one-time, after fresh DB)
 just db-reset     # Destroy + recreate DB + seed
 just run          # Start dev server on :3000
 just build        # Production build
@@ -38,13 +38,31 @@ just typecheck    # Run tsc --noEmit
 
 ## Knowledge Map
 
+Start with `docs/architecture.md` for the big picture. Then jump to the per-concern doc.
+
 | When you need to... | Read this |
 |---|---|
-| Understand project structure, data flow, component tree | `docs/architecture.md` |
-| Work with sheets, auth, spreadsheet ID, MCP server | `docs/google-sheets.md` |
-| Handle nutrition types, macro formulas, measure types | `docs/nutrition.md` |
+| Understand project structure, data flow, component tree, schema | `docs/architecture.md` |
+| Work with the food catalog, NUTRITION_DATA, calculateMacros, FoodItem type | `docs/nutrition.md` |
+| Work on the admin page at `/admin` (CRUD, auto-fill, sort, search) | `docs/admin.md` |
+| Work on daily goals (localStorage, progress bars, GoalsModal) | `docs/goals.md` |
+| Work on dark/light mode, ThemeProvider, anti-flash script | `docs/theme.md` |
+| Understand the deprecated Google Sheets source (historical only) | `docs/google-sheets.md` |
 
 ## Docs
 
 Update all documentation (`.md`) files whenever the corresponding code or config changes. Keep them
-in sync — they are the source of truth for AI context.
+in sync — they are the source of truth for AI context. Prefer atomic commits per doc file.
+
+## Common pitfalls
+
+- The seed script reads from the static `NUTRITION_DATA` array (`lib/nutrition.ts`), NOT from
+  Google Sheets. Sheets are fully deprecated.
+- `log_entries` stores **denormalized** macros. When a food is updated via `PUT /api/foods`, the
+  API also recalculates dependent log entries (by `foodName + category`).
+- `useFoodLog` uses **snapshot-based rollback** for update/delete (not for create). See
+  `docs/architecture.md` for the data flow.
+- The home page is bilingual: display `food.nameEn` in EN locale when present, else fall back to
+  `food.name`.
+- Goals live in `localStorage`, not the DB. See `docs/goals.md`.
+- Theme uses Tailwind v4 `dark:` class + a pre-hydration inline script. See `docs/theme.md`.
