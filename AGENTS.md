@@ -17,7 +17,7 @@ Macros calculated locally with a static nutrition lookup table.
 - **Pre-commit hook runs lint-staged (ESLint).**
 - **Commit-msg hook enforces conventional commits.**
 - **DATABASE_URL must be set** in `.env.local` for DB operations.
-- **SESSION_SECRET, INVITE_CODE, INITIAL_ADMIN_EMAIL, INITIAL_ADMIN_PASSWORD** must be set in `.env.local`. See `docs/auth.md`.
+- **SESSION_SECRET, INITIAL_ADMIN_EMAIL, INITIAL_ADMIN_PASSWORD** must be set in `.env.local`. See `docs/auth.md`.
 - **`just setup` is the one-time onboarding command** — it installs tools/dependencies, creates `.env.local` if missing, starts the DB, migrates, and seeds the admin user and catalog.
 - **`just run` is the daily command** — it verifies Docker is running, starts the DB if it is not up, waits for PostgreSQL to be ready, pushes any pending schema changes, and starts the dev server.
 

@@ -126,14 +126,13 @@ describe('registerSchema', () => {
     const result = registerSchema.parse({
       email: 'test@example.com',
       password: 'password123',
-      inviteCode: 'invite-me',
     })
     expect(result.email).toBe('test@example.com')
   })
 
   it('rejects short password', () => {
     expect(() =>
-      registerSchema.parse({ email: 'test@example.com', password: 'short', inviteCode: 'invite-me' }),
+      registerSchema.parse({ email: 'test@example.com', password: 'short' }),
     ).toThrow()
   })
 })

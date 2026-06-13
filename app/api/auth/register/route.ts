@@ -10,10 +10,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const parsed = registerSchema.parse(body)
 
-    if (parsed.inviteCode !== process.env.INVITE_CODE) {
-      return NextResponse.json({ error: 'Invalid invite code' }, { status: 403 })
-    }
-
     const existing = await getUserByEmail(parsed.email)
     if (existing) {
       return NextResponse.json({ error: 'Email already registered' }, { status: 409 })
