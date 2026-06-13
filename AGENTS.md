@@ -48,7 +48,6 @@ Start with `docs/architecture.md` for the big picture. Then jump to the per-conc
 | Work on the admin page at `/admin` (CRUD, auto-fill, sort, search) | `docs/admin.md` |
 | Work on daily goals (localStorage, progress bars, GoalsModal) | `docs/goals.md` |
 | Work on dark/light mode, ThemeProvider, anti-flash script | `docs/theme.md` |
-| Understand the deprecated Google Sheets source (historical only) | `docs/google-sheets.md` |
 
 ## Docs
 
@@ -57,8 +56,6 @@ in sync — they are the source of truth for AI context. Prefer atomic commits p
 
 ## Common pitfalls
 
-- The seed script reads from the static `NUTRITION_DATA` array (`lib/nutrition.ts`), NOT from
-  Google Sheets. Sheets are fully deprecated.
 - `log_entries` stores **denormalized** macros. When a food is updated via `PUT /api/foods`, the
   API also recalculates dependent log entries (by `foodName + category`).
 - `useFoodLog` uses **snapshot-based rollback** for update/delete (not for create). See

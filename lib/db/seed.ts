@@ -48,7 +48,6 @@ async function seed() {
   }
 
   console.log(`Seeded ${NUTRITION_DATA.length} foods.`)
-  console.log('Note: Log entries must be migrated separately from the legacy Google Sheets LOG sheet.')
   process.exit(0)
 }
 

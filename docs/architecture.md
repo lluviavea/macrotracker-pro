@@ -7,7 +7,6 @@ feature. For cross-cutting concerns, see the dedicated docs:
 - Daily goals → `docs/goals.md`
 - Dark/light mode → `docs/theme.md`
 - Nutrition data & formulas → `docs/nutrition.md`
-- Legacy Google Sheets source → `docs/google-sheets.md`
 
 ## Tech Stack
 
@@ -72,7 +71,7 @@ lib/
     index.ts             - Drizzle client (postgres-js driver)
     foods.ts             - Food queries (getAllFoods, getFoodByNameAndCategory, insert, update, delete)
     logs.ts              - Log CRUD (getLogForDate, addLogEntry, updateLogEntry, deleteLogEntry)
-    seed.ts              - Seeds PostgreSQL from NUTRITION_DATA (Google Sheets deprecated)
+    seed.ts              - Seeds PostgreSQL from NUTRITION_DATA
   __tests__/
     macros.test.ts
     nutrition-utils.test.ts

@@ -11,9 +11,6 @@ Read this when working with nutrition calculations, food items, or the `NUTRITIO
 The admin form (`app/[locale]/admin/page.tsx`) also uses `lookupNutrition()` to auto-fill macro
 fields when an admin types a name that matches a known entry — `nameEn` is auto-filled too.
 
-Google Sheets was the **original** source. It is fully deprecated. See `docs/google-sheets.md` for
-historical context only.
-
 ## FoodItem Type (`lib/types.ts`)
 
 ```typescript
