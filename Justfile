@@ -49,7 +49,7 @@ run:
     @echo "Local:    http://localhost:3000"
     @echo "Network:  http://$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo '<your-local-ip>'):3000"
     @echo ""
-    @npx next dev --hostname 0.0.0.0 >/dev/null
+    @bash -o pipefail -c 'npx next dev --hostname 0.0.0.0 2>&1 | grep --line-buffered -vE "^- (Local|Network):"; code=$?; if [ $code -eq 1 ]; then exit 0; else exit $code; fi'
 
 build:
     npx next build
