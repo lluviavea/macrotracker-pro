@@ -13,7 +13,7 @@ The admin route is now protected. Only users with `role = 'admin'` can access it
 ## Files
 
 | File | Responsibility |
-|---|---|
+| --- | --- |
 | `app/[locale]/admin/page.tsx` | Page UI: table, modal, search, sort |
 | `app/api/foods/route.ts` | API: GET, POST, PUT, DELETE (Zod-validated) |
 | `lib/db/foods.ts` | DB queries: `getAllFoods`, `getFoodByNameAndCategory`, `insertFood`, `updateFood`, `deleteFood`, `seedUserCatalog` |
@@ -22,7 +22,7 @@ The admin route is now protected. Only users with `role = 'admin'` can access it
 
 ## Data flow
 
-```
+```text
 Page load      → GET    /api/foods            → list all foods (cached 1h)
 Save (create)  → POST   /api/foods            → validate with createFoodSchema → insertFood
 Save (edit)    → PUT    /api/foods            → validate with updateFoodSchema → updateFood (also recalculates dependent log entries)

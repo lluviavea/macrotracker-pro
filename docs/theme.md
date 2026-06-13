@@ -20,7 +20,7 @@ Components use `dark:` variants on a per-element basis (e.g. `bg-white dark:bg-g
 ## Files
 
 | File | Responsibility |
-|---|---|
+| --- | --- |
 | `app/layout.tsx` | Root layout: mounts `ThemeProvider` + injects anti-flash script |
 | `app/globals.css` | Tailwind v4 base styles |
 | `components/ThemeProvider.tsx` | React context: `theme`, `toggleTheme`, `setTheme` |

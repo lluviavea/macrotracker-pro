@@ -14,7 +14,7 @@ Goals are **per-browser, not per-user**. They are stored in `localStorage` under
 `macrotracker-goals`. Rationale: the app is single-user and local-first, and goals are
 personal preferences, not data the user wants to analyze historically.
 
-```
+```json
 localStorage['macrotracker-goals'] = JSON.stringify({
   calories: number,
   protein: number,
@@ -26,7 +26,7 @@ localStorage['macrotracker-goals'] = JSON.stringify({
 ## Files
 
 | File | Responsibility |
-|---|---|
+| --- | --- |
 | `lib/goals.ts` | `Goals` type, `getGoals()`, `saveGoals()`, default values |
 | `lib/useFoodLog.ts` | Owns the `goals` state, passes to `MacroSummary`, exposes `setGoals` |
 | `components/GoalsModal.tsx` | Edit modal with 4 numeric inputs |
@@ -62,7 +62,7 @@ saveGoals(goals: Goals): void
   per card with `pct = Math.min(100, round((value / goal) * 100))`.
 - Cards without a goal (e.g. `sugar`, `fiber`) do not show a bar even if `goals` is passed.
 - `GoalsModal` is a controlled modal: parent owns `showGoals` state and passes `goals` + `onSave`
-  + `onClose` props.
+  - `onClose` props.
 
 ## Editing flow
 

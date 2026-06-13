@@ -46,7 +46,7 @@ just hooks-install # Install hk git hooks
 Start with `docs/architecture.md` for the big picture. Then jump to the per-concern doc.
 
 | When you need to... | Read this |
-|---|---|
+| --- | --- |
 | Understand project structure, data flow, component tree, schema | `docs/architecture.md` |
 | Work with auth, users, sessions, invite codes, roles | `docs/auth.md` |
 | Work with the food catalog, NUTRITION_DATA, calculateMacros, FoodItem type | `docs/nutrition.md` |

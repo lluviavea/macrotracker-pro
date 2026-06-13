@@ -22,7 +22,7 @@ feature. For cross-cutting concerns, see the dedicated docs:
 
 ## Project Structure
 
-```
+```text
 app/
   [locale]/
     layout.tsx           - Locale layout (NextIntlClientProvider, lang setter)
@@ -88,7 +88,8 @@ mise.toml                - Pinned tool versions (node 24, npm 11, just 1)
 All data is scoped to a user. The middleware enforces authentication and the admin role.
 
 ### Authentication
-```
+
+```text
 Guest visits /            -> middleware checks cookie -> redirect to /login
 User submits login        -> POST /api/auth/login    -> verify password -> set session cookie
 User submits register     -> POST /api/auth/register -> check invite code -> create user -> seed catalog -> set cookie
@@ -96,7 +97,8 @@ User clicks logout        -> POST /api/auth/logout   -> delete session cookie
 ```
 
 ### Food catalog (admin)
-```
+
+```text
 Admin opens /admin       -> GET /api/foods        -> SELECT * FROM foods WHERE user_id = ?
 Admin saves new food     -> POST /api/foods       -> INSERT INTO foods (with user_id) + revalidatePath('/api/foods')
 Admin edits food         -> PUT  /api/foods       -> UPDATE foods WHERE user_id = ? + recalc dependent log_entries
@@ -104,7 +106,8 @@ Admin deletes food       -> DELETE /api/foods     -> DELETE FROM foods WHERE use
 ```
 
 ### Daily log
-```
+
+```text
 User clicks food         -> POST /api/log         -> getFoodByNameAndCategory(user_id) -> INSERT log_entries (with user_id)
 User changes amount      -> PUT  /api/log         -> getFoodByNameAndCategory(user_id) -> UPDATE log_entries WHERE user_id = ?
 User deletes entry       -> DELETE /api/log       -> DELETE FROM log_entries WHERE user_id = ?
@@ -128,7 +131,7 @@ Create-entry does NOT use optimistic updates — the new row is only added to st
 ### users
 
 | Column | Type | Notes |
-|---|---|---|
+| --- | --- | --- |
 | id | SERIAL | Primary key |
 | email | VARCHAR(255) | Unique |
 | password_hash | VARCHAR(255) | Bcrypt hash |
@@ -138,7 +141,7 @@ Create-entry does NOT use optimistic updates — the new row is only added to st
 ### foods
 
 | Column | Type | Notes |
-|---|---|---|
+| --- | --- | --- |
 | id | SERIAL | Primary key |
 | user_id | INTEGER | FK → users.id (cascade delete) |
 | name | VARCHAR(255) | Spanish food name |
@@ -162,7 +165,7 @@ Create-entry does NOT use optimistic updates — the new row is only added to st
 Stores daily food logs with **pre-calculated macros** (denormalized for fast reads + historical accuracy when a food is later updated).
 
 | Column | Type | Notes |
-|---|---|---|
+| --- | --- | --- |
 | id | SERIAL | Primary key |
 | user_id | INTEGER | FK → users.id (cascade delete) |
 | date | DATE | Log date |
@@ -184,7 +187,7 @@ When a food is updated via `PUT /api/foods`, the API **recalculates** the macros
 
 ## Component Tree
 
-```
+```text
 RootLayout (app/layout.tsx)
   ├── ThemeProvider             (dark/light context)
   └── [locale]/layout.tsx       (NextIntlClientProvider)
@@ -213,7 +216,7 @@ ToastContainer is mounted once at the root, siblings to children.
 ## Pure Logic Modules
 
 | Module | Responsibility |
-|---|---|
+| --- | --- |
 | `lib/macros.ts` | `calculateMacros`, `findFood`, `calculateTotals` |
 | `lib/nutrition-utils.ts` | `normalizeName`, `lookupNutrition` (from `NUTRITION_DATA`) |
 | `lib/validation.ts` | Zod schemas for `/api/foods` and `/api/log` request bodies |
@@ -227,7 +230,7 @@ Uses **next-intl v4** with URL prefix routing (`/es/...` and `/en/...`).
 ### Key Files
 
 | File | Purpose |
-|---|---|
+| --- | --- |
 | `i18n/routing.ts` | Defines supported locales (`['en', 'es']`) and `defaultLocale: 'es'`, `localePrefix: 'always'` |
 | `i18n/request.ts` | Loads the correct JSON message file per locale |
 | `i18n/navigation.ts` | Creates locale-aware `Link`, `usePathname`, `useRouter` |
