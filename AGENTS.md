@@ -5,12 +5,15 @@ Macros calculated locally with a static nutrition lookup table.
 
 ## Conventions (CRITICAL)
 
-- **HARD RULE: Commit and push after EVERY unit of work.** Before starting new work, check `git status` and `git log --oneline -3@\{push\}`. If there are uncommitted changes, STOP. Commit them first (atomic, 50/72 rule) and push. Never accumulate work across multiple sessions or features without pushing.
+- **HARD RULE: Commit after every unit of work.** Before starting new work, check `git status`. If there are uncommitted changes, STOP. Commit them first (atomic, 50/72 rule). Push at the end of a session, when a feature/bugfix is complete, or before switching context — never end a session with unpushed commits. Check `git log --oneline -3@\{push\}` to confirm local commits are pushed.
 - **All dev commands go in Justfile, NOT in package.json scripts.** package.json has no scripts.
 - **Git hooks are managed by [hk](https://hk.jdx.dev/)** and configured in `hk.pkl`.
 - **`just setup` installs hk hooks** with `hk install --mise`.
-- **Pre-commit hook** runs editorconfig-checker, markdownlint-cli2, ESLint, typecheck, and tests via just recipes.
+- **Pre-commit hook** runs editorconfig-checker, markdownlint-cli2, ESLint, typecheck, and unit tests via just recipes.
+- **Pre-push hook** runs e2e tests via `just test-e2e`.
 - **Commit-msg hook** validates conventional commits with `committed`.
+- **Add tests for new features and bug fixes.** Use unit tests for logic, e2e tests for critical user paths. See `docs/testing.md`.
+- **Update docs with every code/config change.** If a change affects project setup, conventions, dev commands, architecture, auth, nutrition, admin, goals, theme, or testing, update the corresponding `.md` file in the same commit. Never leave `AGENTS.md` or `README.md` stale.
 - **DATABASE_URL must be set** in `.env.local` for DB operations.
 - **SESSION_SECRET, INITIAL_ADMIN_EMAIL, INITIAL_ADMIN_PASSWORD** must be set in `.env.local`. See `docs/auth.md`.
 - **`just setup` is the one-time onboarding command** — it installs tools/dependencies, creates `.env.local` if missing, starts the DB, migrates, and seeds the admin user and catalog.
@@ -31,6 +34,8 @@ just build        # Production build
 just start        # Start production server
 just lint         # Run ESLint
 just test         # Run vitest
+just test-e2e     # Run Playwright e2e tests
+just test-e2e-ui  # Run Playwright in UI mode
 just typecheck    # Run tsc --noEmit
 just hooks-install # Install hk git hooks
 ```
@@ -47,6 +52,7 @@ Start with `docs/architecture.md` for the big picture. Then jump to the per-conc
 | Work on the admin page at `/admin` (CRUD, auto-fill, sort, search) | `docs/admin.md` |
 | Work on daily goals (localStorage, progress bars, GoalsModal) | `docs/goals.md` |
 | Work on dark/light mode, ThemeProvider, anti-flash script | `docs/theme.md` |
+| Add or change tests (unit, e2e, test conventions) | `docs/testing.md` |
 
 ## Docs
 
