@@ -1,48 +1,92 @@
 # Nutrition Data
 
-Read this when working with nutrition calculations, food items, or the NUTRITION_DATA lookup.
+Read this when working with nutrition calculations, food items, or the `NUTRITION_DATA` lookup.
 
 ## Data Source
 
-Primary source is Google Sheets (food category sheets). Secondary source is the `NUTRITION_DATA` array in `lib/nutrition.ts` (used as fallback / static reference).
+**Primary source is the static `NUTRITION_DATA` array** in `lib/nutrition.ts` (~80 entries spanning all
+7 categories). It is the single source of truth for the food catalog. The seed script
+(`lib/db/seed.ts`) reads from this array and inserts into PostgreSQL.
 
-## FoodItem Type (lib/types.ts)
+The admin form (`app/[locale]/admin/page.tsx`) also uses `lookupNutrition()` to auto-fill macro
+fields when an admin types a name that matches a known entry — `nameEn` is auto-filled too.
+
+Google Sheets was the **original** source. It is fully deprecated. See `docs/google-sheets.md` for
+historical context only.
+
+## FoodItem Type (`lib/types.ts`)
 
 ```typescript
 interface FoodItem {
-  name: string
-  category: FoodCategory
-  protein: number     // per 100g
-  fat: number         // per 100g
-  carbs: number       // per 100g (total carbohydrates)
-  sugar: number       // per 100g (sub-category of carbs)
-  fiber: number       // per 100g (sub-category of carbs)
-  calories: number    // per 100g
+  id: number
+  name: string                  // Spanish name (displayed in ES locale, fallback in EN)
+  nameEn: string | null         // English name (displayed in EN locale when present)
+  category: FoodCategory        // 7 values, see below
+  protein: number               // per 100g (or per unit_grams)
+  fat: number                   // per 100g
+  carbs: number                 // per 100g (total carbohydrates)
+  sugar: number                 // per 100g (sub-category of carbs, default 0)
+  fiber: number                 // per 100g (sub-category of carbs, default 0)
+  calories: number              // per 100g (integer)
   measureType: 'gram' | 'unit'
-  unitName: string | null   // e.g. "huevo", "pieza"
-  unitGrams: number | null  // e.g. 60 for an egg
+  unitName: string | null       // e.g. "huevo", "pieza" (only when measureType = 'unit')
+  unitGrams: number | null      // e.g. 60 for an egg (only when measureType = 'unit')
   preparation: 'crudo' | 'cocido' | null
 }
 ```
 
-## Macro Calculation
+## FoodCategory
 
 ```typescript
-if (measureType === 'unit' && unitGrams) {
-  factor = (amount * unitGrams) / 100
-} else {
-  factor = amount / 100
-}
-
-protein = food.protein * factor
-fat = food.fat * factor
-carbs = food.carbs * factor
-sugar = food.sugar * factor
-fiber = food.fiber * factor
-calories = food.calories * factor
+type FoodCategory =
+  | 'proteina'
+  | 'carbohidratos'
+  | 'grasas'
+  | 'frutas'
+  | 'verduras'
+  | 'condimentos'
+  | 'suplementos'
 ```
 
-- `preparation`: `'crudo'` for protein, `'cocido'` for carbs, `null` for others
-- Display rounding: protein/fat/carbs/sugar/fiber to 1 decimal, calories to integer
+`preparation` is set per category by convention: `'crudo'` for protein, `'cocido'` for carbs,
+`null` for the rest.
+
+## Macro Calculation (`lib/macros.ts`)
+
+```typescript
+const factor =
+  food.measureType === 'unit' && food.unitGrams
+    ? (amount * food.unitGrams) / 100
+    : amount / 100
+
+return {
+  protein:  Math.round(food.protein * factor * 10) / 10,
+  fat:      Math.round(food.fat * factor * 10) / 10,
+  carbs:    Math.round(food.carbs * factor * 10) / 10,
+  sugar:    Math.round(food.sugar * factor * 10) / 10,
+  fiber:    Math.round(food.fiber * factor * 10) / 10,
+  calories: Math.round(food.calories * factor),
+}
+```
+
+- All macros except calories are stored rounded to 1 decimal.
+- Calories are stored as integers.
+- The result is **denormalized** into `log_entries` so reads are fast and historical logs are
+  accurate even if a food is later updated.
+
+## Lookup Helpers (`lib/nutrition-utils.ts`)
+
+```typescript
+normalizeName(name)
+  // lowercase, strip diacritics, remove non-alphanumerics, trim
+  // used for fuzzy matching of free-text input
+
+lookupNutrition(name)
+  // iterates NUTRITION_DATA, checks if any `matches` substring is contained in `name`
+  // returns macro hints (or zeros) and auto-fills nameEn, measureType, unitName, unitGrams, preparation
+```
+
+`lookupNutrition` is **only** used by the admin form for auto-fill convenience — it does not
+auto-create foods. The admin still has to click save.
 
 Read `docs/architecture.md` for the overall architecture.
