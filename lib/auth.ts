@@ -12,6 +12,14 @@ export interface SessionUser {
 const COOKIE_NAME = 'session'
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 
+export const SESSION_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  maxAge: COOKIE_MAX_AGE,
+  path: '/',
+}
+
 function getSecret(): Uint8Array {
   const secret = process.env.SESSION_SECRET
   if (!secret) {
@@ -67,20 +75,12 @@ export async function requireSession(): Promise<SessionUser> {
   return session
 }
 
-export async function setSessionCookie(token: string): Promise<void> {
-  const cookieStore = await cookies()
-  cookieStore.set(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: COOKIE_MAX_AGE,
-    path: '/',
-  })
+export async function setSessionCookie(response: NextResponse, token: string): Promise<void> {
+  response.cookies.set(COOKIE_NAME, token, SESSION_COOKIE_OPTIONS)
 }
 
-export async function deleteSessionCookie(): Promise<void> {
-  const cookieStore = await cookies()
-  cookieStore.delete(COOKIE_NAME)
+export async function deleteSessionCookie(response: NextResponse): Promise<void> {
+  response.cookies.delete(COOKIE_NAME)
 }
 
 export function getSessionTokenFromRequest(request: NextRequest): string | undefined {

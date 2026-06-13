@@ -20,9 +20,10 @@ export async function POST(req: NextRequest) {
     await seedUserCatalog(user.id)
 
     const token = await createSessionToken({ userId: user.id, email: user.email, role: user.role })
-    await setSessionCookie(token)
+    const response = NextResponse.json({ user: { id: user.id, email: user.email, role: user.role } })
+    await setSessionCookie(response, token)
 
-    return NextResponse.json({ user: { id: user.id, email: user.email, role: user.role } })
+    return response
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Validation failed', details: error.issues }, { status: 400 })
