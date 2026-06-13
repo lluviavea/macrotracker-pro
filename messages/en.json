@@ -130,5 +130,22 @@
   "LangSwitcher": {
     "en": "EN",
     "es": "ES"
+  },
+  "Auth": {
+    "loginTitle": "Log in",
+    "registerTitle": "Register",
+    "email": "Email",
+    "password": "Password",
+    "inviteCode": "Invite code",
+    "loginButton": "Log in",
+    "registerButton": "Create account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "registerLink": "Register",
+    "loginLink": "Log in",
+    "invalidCredentials": "Invalid email or password",
+    "invalidInvite": "Invalid invite code",
+    "emailTaken": "Email already registered",
+    "logout": "Log out"
   }
 }

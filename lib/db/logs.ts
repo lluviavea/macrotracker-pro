@@ -1,6 +1,6 @@
 import { db } from './index'
 import { logEntries } from './schema'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { calculateMacros } from '../macros'
 import type { FoodItem } from '../types'
 
@@ -21,11 +21,11 @@ export interface LogEntry {
   meal: string
 }
 
-export async function getLogForDate(targetDate: string): Promise<LogEntry[]> {
+export async function getLogForDate(userId: number, targetDate: string): Promise<LogEntry[]> {
   const rows = await db
     .select()
     .from(logEntries)
-    .where(eq(logEntries.date, targetDate))
+    .where(and(eq(logEntries.userId, userId), eq(logEntries.date, targetDate)))
     .orderBy(logEntries.createdAt)
 
   return rows.map(r => ({
@@ -46,13 +46,20 @@ export async function getLogForDate(targetDate: string): Promise<LogEntry[]> {
   }))
 }
 
-export async function addLogEntry(food: FoodItem, amount: number, targetDate: string, meal?: string): Promise<number> {
+export async function addLogEntry(
+  userId: number,
+  food: FoodItem,
+  amount: number,
+  targetDate: string,
+  meal?: string,
+): Promise<number> {
   const isUnit = food.measureType === 'unit' && food.unitName
   const macros = calculateMacros(food, amount)
 
   const [row] = await db
     .insert(logEntries)
     .values({
+      userId,
       date: targetDate,
       foodName: food.name,
       category: food.category,
@@ -72,11 +79,11 @@ export async function addLogEntry(food: FoodItem, amount: number, targetDate: st
   return row.id
 }
 
-export async function updateLogEntry(id: number, food: FoodItem, amount: number): Promise<void> {
+export async function updateLogEntry(userId: number, id: number, food: FoodItem, amount: number): Promise<void> {
   const isUnit = food.measureType === 'unit' && food.unitName
   const macros = calculateMacros(food, amount)
 
-  await db
+  const result = await db
     .update(logEntries)
     .set({
       amount: String(amount),
@@ -88,9 +95,20 @@ export async function updateLogEntry(id: number, food: FoodItem, amount: number)
       fiber: String(macros.fiber),
       calories: macros.calories,
     })
-    .where(eq(logEntries.id, id))
+    .where(and(eq(logEntries.id, id), eq(logEntries.userId, userId)))
+    .returning({ id: logEntries.id })
+
+  if (result.length === 0) {
+    throw new Error('Log entry not found or access denied')
+  }
 }
 
-export async function deleteLogEntry(id: number): Promise<void> {
-  await db.delete(logEntries).where(eq(logEntries.id, id))
+export async function deleteLogEntry(userId: number, id: number): Promise<void> {
+  const result = await db
+    .delete(logEntries)
+    .where(and(eq(logEntries.id, id), eq(logEntries.userId, userId)))
+    .returning({ id: logEntries.id })
+  if (result.length === 0) {
+    throw new Error('Log entry not found or access denied')
+  }
 }

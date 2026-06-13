@@ -17,6 +17,7 @@ Macros calculated locally with a static nutrition lookup table.
 - **Pre-commit hook runs lint-staged (ESLint).**
 - **Commit-msg hook enforces conventional commits.**
 - **DATABASE_URL must be set** in `.env.local` for DB operations.
+- **SESSION_SECRET, INVITE_CODE, INITIAL_ADMIN_EMAIL, INITIAL_ADMIN_PASSWORD** must be set in `.env.local`. See `docs/auth.md`.
 - **`just setup` is the one-time onboarding command** — it installs tools/dependencies, creates `.env.local` if missing, starts the DB, migrates, and seeds.
 - **`just run` is the daily command** — it verifies Docker is running, starts the DB if it is not up, waits for PostgreSQL to be ready, pushes any pending schema changes, and starts the dev server.
 
@@ -44,6 +45,7 @@ Start with `docs/architecture.md` for the big picture. Then jump to the per-conc
 | When you need to... | Read this |
 |---|---|
 | Understand project structure, data flow, component tree, schema | `docs/architecture.md` |
+| Work with auth, users, sessions, invite codes, roles | `docs/auth.md` |
 | Work with the food catalog, NUTRITION_DATA, calculateMacros, FoodItem type | `docs/nutrition.md` |
 | Work on the admin page at `/admin` (CRUD, auto-fill, sort, search) | `docs/admin.md` |
 | Work on daily goals (localStorage, progress bars, GoalsModal) | `docs/goals.md` |

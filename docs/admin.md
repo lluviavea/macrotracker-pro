@@ -8,7 +8,7 @@ The admin page lets you **add, edit, and delete** foods from the catalog that ap
 app. It is a single-page client component with a sortable, searchable table and a modal form for
 create/edit.
 
-There is **no auth gate** — the admin is a plain route. Treat it as a single-user local app.
+The admin route is now protected. Only users with `role = 'admin'` can access it. See `docs/auth.md` for details.
 
 ## Files
 
@@ -16,7 +16,7 @@ There is **no auth gate** — the admin is a plain route. Treat it as a single-u
 |---|---|
 | `app/[locale]/admin/page.tsx` | Page UI: table, modal, search, sort |
 | `app/api/foods/route.ts` | API: GET, POST, PUT, DELETE (Zod-validated) |
-| `lib/db/foods.ts` | DB queries: `getAllFoods`, `getFoodByNameAndCategory`, `insertFood`, `updateFood`, `deleteFood` |
+| `lib/db/foods.ts` | DB queries: `getAllFoods`, `getFoodByNameAndCategory`, `insertFood`, `updateFood`, `deleteFood`, `seedUserCatalog` |
 | `lib/validation.ts` | `createFoodSchema`, `updateFoodSchema`, `deleteFoodSchema` |
 | `lib/nutrition-utils.ts` | `lookupNutrition` for auto-fill |
 

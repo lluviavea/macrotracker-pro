@@ -4,6 +4,7 @@ Read this when understanding how the project is structured, how data flows, or w
 feature. For cross-cutting concerns, see the dedicated docs:
 
 - Admin catalog → `docs/admin.md`
+- Authentication & users → `docs/auth.md`
 - Daily goals → `docs/goals.md`
 - Dark/light mode → `docs/theme.md`
 - Nutrition data & formulas → `docs/nutrition.md`
@@ -84,21 +85,31 @@ mise.toml                - Pinned tool versions (node 24, npm 11, just 1)
 
 ## Data Flow
 
+All data is scoped to a user. The middleware enforces authentication and the admin role.
+
+### Authentication
+```
+Guest visits /            -> middleware checks cookie -> redirect to /login
+User submits login        -> POST /api/auth/login    -> verify password -> set session cookie
+User submits register     -> POST /api/auth/register -> check invite code -> create user -> seed catalog -> set cookie
+User clicks logout        -> POST /api/auth/logout   -> delete session cookie
+```
+
 ### Food catalog (admin)
 ```
-Admin opens /admin       -> GET /api/foods        -> SELECT * FROM foods
-Admin saves new food     -> POST /api/foods       -> INSERT INTO foods + revalidatePath('/api/foods')
-Admin edits food         -> PUT  /api/foods       -> UPDATE foods + recalc dependent log_entries
-Admin deletes food       -> DELETE /api/foods     -> DELETE FROM foods
+Admin opens /admin       -> GET /api/foods        -> SELECT * FROM foods WHERE user_id = ?
+Admin saves new food     -> POST /api/foods       -> INSERT INTO foods (with user_id) + revalidatePath('/api/foods')
+Admin edits food         -> PUT  /api/foods       -> UPDATE foods WHERE user_id = ? + recalc dependent log_entries
+Admin deletes food       -> DELETE /api/foods     -> DELETE FROM foods WHERE user_id = ?
 ```
 
 ### Daily log
 ```
-User clicks food         -> POST /api/log         -> getFoodByNameAndCategory() -> INSERT log_entries
-User changes amount      -> PUT  /api/log         -> getFoodByNameAndCategory() -> UPDATE log_entries
-User deletes entry       -> DELETE /api/log       -> DELETE FROM log_entries
-Page load                -> GET /api/log?date=... -> SELECT log_entries WHERE date = ?
-Food list                -> GET /api/foods        -> SELECT * FROM foods (cached, 1h revalidation)
+User clicks food         -> POST /api/log         -> getFoodByNameAndCategory(user_id) -> INSERT log_entries (with user_id)
+User changes amount      -> PUT  /api/log         -> getFoodByNameAndCategory(user_id) -> UPDATE log_entries WHERE user_id = ?
+User deletes entry       -> DELETE /api/log       -> DELETE FROM log_entries WHERE user_id = ?
+Page load                -> GET /api/log?date=... -> SELECT log_entries WHERE user_id = ? AND date = ?
+Food list                -> GET /api/foods        -> SELECT * FROM foods WHERE user_id = ? (cached, 1h revalidation)
 ```
 
 ### Optimistic updates (client side)
@@ -114,11 +125,22 @@ Create-entry does NOT use optimistic updates — the new row is only added to st
 
 ## Database Schema
 
+### users
+
+| Column | Type | Notes |
+|---|---|---|
+| id | SERIAL | Primary key |
+| email | VARCHAR(255) | Unique |
+| password_hash | VARCHAR(255) | Bcrypt hash |
+| role | VARCHAR(20) | `admin` or `user` |
+| created_at | TIMESTAMP | Auto-set |
+
 ### foods
 
 | Column | Type | Notes |
 |---|---|---|
 | id | SERIAL | Primary key |
+| user_id | INTEGER | FK → users.id (cascade delete) |
 | name | VARCHAR(255) | Spanish food name |
 | name_en | VARCHAR(255) | English name (nullable) |
 | category | VARCHAR(50) | proteina, carbohidratos, grasas, frutas, verduras, condimentos, suplementos |
@@ -142,6 +164,7 @@ Stores daily food logs with **pre-calculated macros** (denormalized for fast rea
 | Column | Type | Notes |
 |---|---|---|
 | id | SERIAL | Primary key |
+| user_id | INTEGER | FK → users.id (cascade delete) |
 | date | DATE | Log date |
 | food_name | VARCHAR(255) | Denormalized food name |
 | category | VARCHAR(50) | Denormalized category |

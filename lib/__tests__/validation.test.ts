@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createFoodSchema, updateFoodSchema, createLogEntrySchema, deleteLogEntrySchema, deleteFoodSchema } from '../validation'
+import { createFoodSchema, updateFoodSchema, createLogEntrySchema, deleteLogEntrySchema, deleteFoodSchema, loginSchema, registerSchema } from '../validation'
 
 describe('createFoodSchema', () => {
   it('accepts valid food with minimum fields', () => {
@@ -107,5 +107,33 @@ describe('deleteFoodSchema', () => {
   it('accepts valid id', () => {
     const result = deleteFoodSchema.parse({ id: 5 })
     expect(result.id).toBe(5)
+  })
+})
+
+describe('loginSchema', () => {
+  it('accepts valid credentials', () => {
+    const result = loginSchema.parse({ email: 'test@example.com', password: 'password123' })
+    expect(result.email).toBe('test@example.com')
+  })
+
+  it('rejects invalid email', () => {
+    expect(() => loginSchema.parse({ email: 'not-an-email', password: 'password123' })).toThrow()
+  })
+})
+
+describe('registerSchema', () => {
+  it('accepts valid registration', () => {
+    const result = registerSchema.parse({
+      email: 'test@example.com',
+      password: 'password123',
+      inviteCode: 'invite-me',
+    })
+    expect(result.email).toBe('test@example.com')
+  })
+
+  it('rejects short password', () => {
+    expect(() =>
+      registerSchema.parse({ email: 'test@example.com', password: 'short', inviteCode: 'invite-me' }),
+    ).toThrow()
   })
 })

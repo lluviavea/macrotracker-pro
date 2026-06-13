@@ -1,7 +1,16 @@
 import { pgTable, serial, varchar, decimal, integer, date, timestamp } from 'drizzle-orm/pg-core'
 
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+  role: varchar('role', { length: 20 }).notNull().default('user'),
+  createdAt: timestamp('created_at').defaultNow(),
+})
+
 export const foods = pgTable('foods', {
   id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 255 }).notNull(),
   nameEn: varchar('name_en', { length: 255 }),
   category: varchar('category', { length: 50 }).notNull(),
@@ -21,6 +30,7 @@ export const foods = pgTable('foods', {
 
 export const logEntries = pgTable('log_entries', {
   id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   date: date('date').notNull(),
   foodName: varchar('food_name', { length: 255 }).notNull(),
   category: varchar('category', { length: 50 }).notNull(),

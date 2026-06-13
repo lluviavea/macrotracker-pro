@@ -6,6 +6,12 @@ import { calculateTotals } from '@/lib/macros'
 import { getGoals } from '@/lib/goals'
 import type { Goals } from '@/lib/goals'
 
+function redirectToLogin() {
+  if (typeof window !== 'undefined') {
+    window.location.assign('/login')
+  }
+}
+
 function getDate() {
   return new Date().toISOString().slice(0, 10)
 }
@@ -20,7 +26,11 @@ export function useFoodLog() {
 
   useEffect(() => {
     fetch('/api/foods')
-      .then(r => { if (!r.ok) throw new Error('Failed to fetch foods'); return r.json() })
+      .then(r => {
+        if (r.status === 401) { redirectToLogin(); throw new Error('Unauthorized') }
+        if (!r.ok) throw new Error('Failed to fetch foods')
+        return r.json()
+      })
       .then(d => {
         setFoods(d.foods)
         setLoading(false)
@@ -34,6 +44,7 @@ export function useFoodLog() {
 
   const loadEntries = useCallback(async (date: string): Promise<Entry[]> => {
     const r = await fetch(`/api/log?date=${date}`)
+    if (r.status === 401) { redirectToLogin(); throw new Error('Unauthorized') }
     if (!r.ok) throw new Error('Failed to load entries')
     const d = await r.json()
     return d.entries.map(
@@ -67,6 +78,7 @@ export function useFoodLog() {
           meal,
         }),
       })
+      if (r.status === 401) { redirectToLogin(); return false }
       const d = await r.json()
       if (d.success && d.id) {
         setEntries(prev => [...prev, { id: d.id, foodName: food.name, category: food.category, amount, amountInput: String(amount), meal }])
@@ -100,6 +112,7 @@ export function useFoodLog() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: entry.id, foodName: entry.foodName, category: entry.category, amount: num }),
       })
+      if (r.status === 401) { redirectToLogin(); return false }
       if (!r.ok) { setEntries(snapshot); return false }
       return true
     } catch {
@@ -118,6 +131,7 @@ export function useFoodLog() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: entry.id }),
       })
+      if (r.status === 401) { redirectToLogin(); return false }
       if (!r.ok) { setEntries(snapshot); return false }
       return true
     } catch {

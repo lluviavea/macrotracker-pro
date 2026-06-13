@@ -62,3 +62,14 @@ export const updateLogEntrySchema = z.object({
 export const deleteLogEntrySchema = z.object({
   id: z.number().int().positive(),
 })
+
+export const loginSchema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(1, 'Password is required'),
+})
+
+export const registerSchema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  inviteCode: z.string().min(1, 'Invite code is required'),
+})

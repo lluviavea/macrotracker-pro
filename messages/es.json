@@ -130,5 +130,22 @@
   "LangSwitcher": {
     "en": "EN",
     "es": "ES"
+  },
+  "Auth": {
+    "loginTitle": "Iniciar sesión",
+    "registerTitle": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "inviteCode": "Código de invitación",
+    "loginButton": "Iniciar sesión",
+    "registerButton": "Crear cuenta",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "registerLink": "Regístrate",
+    "loginLink": "Inicia sesión",
+    "invalidCredentials": "Correo o contraseña incorrectos",
+    "invalidInvite": "Código de invitación inválido",
+    "emailTaken": "El correo ya está registrado",
+    "logout": "Cerrar sesión"
   }
 }

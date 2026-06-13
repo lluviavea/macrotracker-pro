@@ -1,57 +1,46 @@
 import { db } from './index'
-import { foods } from './schema'
-import { NUTRITION_DATA } from '../nutrition'
+import { foods, logEntries } from './schema'
+import { createUser, getUserByEmail } from './users'
+import { seedUserCatalog } from './foods'
+import bcrypt from 'bcryptjs'
 
-const CATEGORY_RANGES: [number, number, string][] = [
-  [0, 8, 'proteina'],
-  [9, 19, 'carbohidratos'],
-  [20, 27, 'grasas'],
-  [28, 34, 'frutas'],
-  [35, 53, 'verduras'],
-  [54, 72, 'condimentos'],
-  [73, 79, 'suplementos'],
-]
+async function setupAdmin() {
+  const email = process.env.INITIAL_ADMIN_EMAIL
+  const password = process.env.INITIAL_ADMIN_PASSWORD
 
-function assignCategory(index: number): string {
-  for (const [start, end, cat] of CATEGORY_RANGES) {
-    if (index >= start && index <= end) return cat
+  if (!email || !password) {
+    console.error('INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD must be set in .env.local')
+    process.exit(1)
   }
-  return 'suplementos'
-}
 
-async function seed() {
-  console.log('Clearing existing foods...')
+  if (!process.env.SESSION_SECRET) {
+    console.error('SESSION_SECRET must be set in .env.local')
+    process.exit(1)
+  }
+
+  let user = await getUserByEmail(email)
+  if (!user) {
+    const passwordHash = await bcrypt.hash(password, 12)
+    user = await createUser(email, passwordHash, 'admin')
+    console.log(`Created admin user: ${user.email}`)
+  } else {
+    console.log(`Admin user already exists: ${user.email}`)
+  }
+
+  console.log('Removing unowned log entries...')
+  await db.delete(logEntries)
+
+  console.log('Removing unowned foods...')
   await db.delete(foods)
 
-  console.log('Seeding foods from NUTRITION_DATA...')
+  console.log('Seeding admin catalog...')
+  await seedUserCatalog(user.id)
 
-  for (let i = 0; i < NUTRITION_DATA.length; i++) {
-    const entry = NUTRITION_DATA[i]
-    const primaryName = entry.matches[0]
-    const category = assignCategory(i)
-
-    await db.insert(foods).values({
-      name: primaryName,
-      nameEn: entry.nameEn,
-      category,
-      protein: String(entry.protein),
-      fat: String(entry.fat),
-      carbs: String(entry.carbs),
-      sugar: String(entry.sugar ?? 0),
-      fiber: String(entry.fiber ?? 0),
-      calories: entry.calories,
-      measureType: entry.measureType,
-      unitName: entry.unitName ?? null,
-      unitGrams: entry.unitGrams !== undefined ? String(entry.unitGrams) : null,
-      preparation: entry.preparation ?? null,
-    })
-  }
-
-  console.log(`Seeded ${NUTRITION_DATA.length} foods.`)
+  console.log('Admin setup complete.')
   process.exit(0)
 }
 
-seed().catch(err => {
-  console.error('Seed failed:', err)
+setupAdmin().catch(err => {
+  console.error('Admin setup failed:', err)
   process.exit(1)
 })
