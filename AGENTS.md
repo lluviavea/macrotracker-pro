@@ -17,18 +17,19 @@ Macros calculated locally with a static nutrition lookup table.
 - **Pre-commit hook runs lint-staged (ESLint).**
 - **Commit-msg hook enforces conventional commits.**
 - **DATABASE_URL must be set** in `.env.local` for DB operations.
-- **Docker must be running** before `just run` if DB is needed.
+- **`just setup` is the one-time onboarding command** — it installs tools/dependencies, creates `.env.local` if missing, starts the DB, migrates, and seeds.
+- **`just run` is the daily command** — it verifies Docker is running, starts the DB if it is not up, waits for PostgreSQL to be ready, pushes any pending schema changes, and starts the dev server.
 
 ## Dev Commands
 
 ```bash
-just setup        # mise trust + install + npm install (first time only)
+just setup        # One-time: install deps, env, DB, migrate, seed
 just db-start     # Start PostgreSQL via Docker Compose
 just db-stop      # Stop PostgreSQL
 just db-migrate   # Push Drizzle schema changes to DB
 just db-seed      # Seed DB from NUTRITION_DATA (one-time, after fresh DB)
 just db-reset     # Destroy + recreate DB + seed
-just run          # Start dev server on :3000
+just run          # Start dev server on :3000 (auto-starts DB + migrate)
 just build        # Production build
 just start        # Start production server
 just lint         # Run ESLint

@@ -2,6 +2,12 @@ setup:
     mise trust
     mise install
     npm install
+    @if [ ! -f .env.local ]; then cp .env.example .env.local && echo "Created .env.local from .env.example"; fi
+    docker compose up -d
+    @echo "Waiting for PostgreSQL to be ready..."
+    @until docker exec macrotracker-db pg_isready -U macrotracker >/dev/null 2>&1; do sleep 1; done
+    npx dotenv -e .env.local -- npx drizzle-kit push
+    npx dotenv -e .env.local -- npx tsx lib/db/seed.ts
 
 db-start:
     docker compose up -d
@@ -12,17 +18,23 @@ db-stop:
 db-reset:
     docker compose down -v
     docker compose up -d
-    sleep 2
+    @echo "Waiting for PostgreSQL to be ready..."
+    @until docker exec macrotracker-db pg_isready -U macrotracker >/dev/null 2>&1; do sleep 1; done
     npx dotenv -e .env.local -- npx drizzle-kit push
-    npx tsx lib/db/seed.ts
+    npx dotenv -e .env.local -- npx tsx lib/db/seed.ts
 
 db-migrate:
     npx dotenv -e .env.local -- npx drizzle-kit push
 
 db-seed:
-    npx tsx lib/db/seed.ts
+    npx dotenv -e .env.local -- npx tsx lib/db/seed.ts
 
 run:
+    @if ! docker info >/dev/null 2>&1; then echo "Docker is not running. Please start Docker first."; exit 1; fi
+    @if [ -z "$(docker ps -q -f name=macrotracker-db)" ]; then docker compose up -d; fi
+    @echo "Waiting for PostgreSQL to be ready..."
+    @until docker exec macrotracker-db pg_isready -U macrotracker >/dev/null 2>&1; do sleep 1; done
+    npx dotenv -e .env.local -- npx drizzle-kit push
     npx next dev
 
 build:

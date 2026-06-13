@@ -24,11 +24,8 @@ Porque las apps de conteo de calorías suelen ser lentas, llenas de anuncios, o 
 ## 🚀 Comenzar
 
 ```bash
-just setup     # Instalar dependencias (mise + npm)
-just db-start  # Levantar PostgreSQL con Docker
-just db-migrate # Aplicar esquema a la base de datos
-just db-seed   # Sembrar el catálogo inicial de alimentos
-just run       # Iniciar servidor en http://localhost:3000
+just setup     # Una sola vez: dependencias, base de datos, esquema y datos iniciales
+just run       # Cada día: levanta la base de datos si no está corriendo, migra y abre http://localhost:3000
 ```
 
 > **Nota técnica**: Necesitas [mise](https://mise.jdx.dev), [just](https://github.com/casey/just), y [Docker](https://www.docker.com/) corriendo. Consulta [`docs/architecture.md`](docs/architecture.md) para entender la estructura del proyecto y [`docs/admin.md`](docs/admin.md) si quieres gestionar el catálogo.
