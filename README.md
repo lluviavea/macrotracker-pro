@@ -37,3 +37,4 @@ just run       # Cada día: levanta la base de datos si no está corriendo, migr
 - [`docs/admin.md`](docs/admin.md) — Pantalla de admin para gestionar el catálogo
 - [`docs/goals.md`](docs/goals.md) — Sistema de metas diarias (localStorage)
 - [`docs/theme.md`](docs/theme.md) — Modo oscuro/claro
+- [`docs/testing.md`](docs/testing.md) — Tests unitarios y e2e
