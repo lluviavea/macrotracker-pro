@@ -2,33 +2,42 @@
 
 Una app para registrar tu comida diaria y llevar el control de tus macronutrientes (proteína, grasa, carbohidratos y calorías).
 
-Tu información se guarda directamente en Google Sheets, así que siempre tienes acceso a tus datos sin depender de una base de datos externa o suscripciones.
+Tu información se guarda en una base de datos PostgreSQL local (vía Docker), así que tienes control total de tus datos sin depender de servicios externos ni suscripciones.
 
 ## 🤔 ¿Por qué MacroTracker?
 
-Porque las apps de conteo de calorías suelen ser lentas, llenas de anuncios, o te obligan a pagar una suscripción para funciones básicas. MacroTracker es minimalista, rápida, y tus datos son tuyos — literalmente están en un Google Sheet que puedes descargar, compartir o analizar cuando quieras.
+Porque las apps de conteo de calorías suelen ser lentas, llenas de anuncios, o te obligan a pagar una suscripción para funciones básicas. MacroTracker es minimalista, rápida, y tus datos son tuyos — viven en tu propia base de datos local.
 
 ## ✨ Funcionalidades
 
 - **Registro diario** — Agrega alimentos con un solo clic, ajusta las cantidades en gramos o por pieza
 - **Seguimiento automático** — Al registrar un alimento, los macros se calculan automáticamente
 - **7 categorías** — Proteína, carbohidratos, grasas, frutas, verduras, condimentos y suplementos
-- **Búsqueda** — Encuentra cualquier alimento por nombre
+- **Búsqueda bilingüe** — Encuentra cualquier alimento por nombre (ES o EN)
 - **Navegación por fechas** — Revisa días anteriores, modifica o elimina entradas
+- **Metas diarias** — Define objetivos personalizados de calorías y macros con barras de progreso
+- **Modo oscuro/claro** — Tema adaptable con detección automática de preferencia del sistema
+- **Catálogo editable** — Pantalla de admin para agregar, editar y eliminar alimentos
+- **Bilingüe** — Interfaz en español e inglés
 - **Totales en tiempo real** — Ve el resumen del día al instante
-- **Datos en Google Sheets** — Toda tu información está en una hoja de cálculo, sin bloqueos de proveedor
 
 ## 🚀 Comenzar
 
 ```bash
-just setup     # Instalar dependencias
+just setup     # Instalar dependencias (mise + npm)
+just db-start  # Levantar PostgreSQL con Docker
+just db-migrate # Aplicar esquema a la base de datos
+just db-seed   # Sembrar el catálogo inicial de alimentos
 just run       # Iniciar servidor en http://localhost:3000
 ```
 
-> **Nota técnica**: Necesitas [mise](https://mise.jdx.dev), [just](https://github.com/casey/just), y una clave de servicio de Google. Consulta [`docs/google-sheets.md`](docs/google-sheets.md) para la configuración de la hoja de cálculo y autenticación.
+> **Nota técnica**: Necesitas [mise](https://mise.jdx.dev), [just](https://github.com/casey/just), y [Docker](https://www.docker.com/) corriendo. Consulta [`docs/architecture.md`](docs/architecture.md) para entender la estructura del proyecto y [`docs/admin.md`](docs/admin.md) si quieres gestionar el catálogo.
 
 ## 📖 Documentación técnica
 
-- [`docs/architecture.md`](docs/architecture.md) — Estructura del proyecto, flujo de datos
-- [`docs/google-sheets.md`](docs/google-sheets.md) — Configuración de Google Sheets, columnas, MCP server
-- [`docs/nutrition.md`](docs/nutrition.md) — Tipos de alimentos, cálculo de macros
+- [`docs/architecture.md`](docs/architecture.md) — Estructura del proyecto, flujo de datos, API
+- [`docs/nutrition.md`](docs/nutrition.md) — Cálculo de macros, tipos de medida
+- [`docs/admin.md`](docs/admin.md) — Pantalla de admin para gestionar el catálogo
+- [`docs/goals.md`](docs/goals.md) — Sistema de metas diarias (localStorage)
+- [`docs/theme.md`](docs/theme.md) — Modo oscuro/claro
+- [`docs/google-sheets.md`](docs/google-sheets.md) — **DEPRECADO**: fuente original antes de PostgreSQL
