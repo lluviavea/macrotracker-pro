@@ -33,6 +33,10 @@ INITIAL_ADMIN_PASSWORD=changeme
 5. **Logout**: `POST /api/auth/logout` deletes the cookie from the response.
 6. **Session check**: server components call `getSession()` from `lib/auth.ts`; proxy calls `getSessionFromRequest()`.
 
+## Login page
+
+The login form at `/[locale]/login` includes the shared `ThemeToggle` and `LangSwitcher` components in the card header, so users can switch dark/light mode and language (ES/EN) before authenticating.
+
 ## Local network access
 
 When another device on the same WiFi accesses the dev server via the local IP (`http://192.168.x.x:3000`), Next.js may treat the request as cross-origin. `next.config.ts` sets `allowedDevOrigins` to the machine's local IPv4 addresses so login/register work from other laptops or phones. The session cookie is set with `path: '/'`, `sameSite: 'lax'`, and `secure: false` in development, so it is sent on same-origin requests over HTTP.

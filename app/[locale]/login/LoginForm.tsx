@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
+import { ThemeToggle } from '@/components/ThemeToggle'
+import { LangSwitcher } from '@/components/LangSwitcher'
 
 export default function LoginForm() {
   const t = useTranslations('Auth')
@@ -44,6 +46,10 @@ export default function LoginForm() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+        <div className="mb-4 flex items-center justify-end gap-2">
+          <ThemeToggle />
+          <LangSwitcher />
+        </div>
         <h1 className="mb-6 text-center text-2xl font-semibold text-[var(--foreground)]">
           {t('loginTitle')}
         </h1>
