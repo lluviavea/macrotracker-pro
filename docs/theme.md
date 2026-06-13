@@ -78,6 +78,10 @@ useEffect (state change)
 
 `applyTheme(theme)` is `document.documentElement.classList.toggle('dark', theme === 'dark')`.
 
+The `ThemeContext` is always present, including during SSR and the initial hydration
+pass, so `useTheme()` never throws. Before mount the context defaults to `light` with
+no-op handlers; the real preference is read and applied in the mount effect.
+
 ## Manual override
 
 When the user clicks `ThemeToggle`:
