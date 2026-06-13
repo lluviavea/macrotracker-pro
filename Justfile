@@ -86,5 +86,8 @@ check-typecheck:
 check-test:
     npx vitest run
 
+check-test-e2e:
+    npx playwright test
+
 check-commit-msg msg_file:
     committed --commit-file "{{msg_file}}"

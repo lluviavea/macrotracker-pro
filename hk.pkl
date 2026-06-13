@@ -38,6 +38,13 @@ hooks {
       }
     }
   }
+  ["pre-push"] {
+    steps {
+      ["e2e-test"] {
+        check = "just check-test-e2e"
+      }
+    }
+  }
   ["commit-msg"] {
     steps {
       ["committed"] {
