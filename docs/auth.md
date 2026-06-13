@@ -37,6 +37,8 @@ INITIAL_ADMIN_PASSWORD=changeme
 
 The login page at `/[locale]/login` renders the shared `ThemeToggle` and `LangSwitcher` components in the top-right corner of the page, matching the main app header, so users can switch dark/light mode and language (ES/EN) before authenticating.
 
+The login form submits on both button click and `Enter` in the password field. The password input explicitly requests form submission via `requestSubmit()` so the behavior is consistent across browsers, password managers, and local-network devices.
+
 ## Local network access
 
 When another device on the same WiFi accesses the dev server via the local IP (`http://192.168.x.x:3000`), Next.js may treat the request as cross-origin. `next.config.ts` sets `allowedDevOrigins` to the machine's local IPv4 addresses so login/register work from other laptops or phones. The session cookie is set with `path: '/'`, `sameSite: 'lax'`, and `secure: false` in development, so it is sent on same-origin requests over HTTP.

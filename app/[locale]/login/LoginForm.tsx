@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
@@ -11,6 +11,7 @@ export default function LoginForm() {
   const t = useTranslations('Auth')
   const router = useRouter()
   const locale = useLocale()
+  const formRef = useRef<HTMLFormElement>(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -54,7 +55,7 @@ export default function LoginForm() {
           <h1 className="mb-6 text-center text-2xl font-semibold text-[var(--foreground)]">
             {t('loginTitle')}
           </h1>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="mb-1 block text-sm font-medium text-[var(--muted-foreground)]">
               {t('email')}
@@ -77,6 +78,12 @@ export default function LoginForm() {
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  formRef.current?.requestSubmit()
+                }
+              }}
               required
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
             />

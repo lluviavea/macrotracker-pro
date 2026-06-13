@@ -20,6 +20,7 @@ export function LangSwitcher() {
 
   return (
     <button
+      type="button"
       onClick={handleSwitch}
       disabled={isPending}
       className="text-sm px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-medium transition-colors disabled:opacity-50"
