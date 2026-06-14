@@ -8,6 +8,7 @@
     "updateError": "Error updating amount",
     "removed": "Removed: {name}",
     "deleteError": "Error deleting",
+    "undo": "Undo",
     "addModalTitle": "Add {name}",
     "noMeal": "No meal",
     "breakfast": "Breakfast",

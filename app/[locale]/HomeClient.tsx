@@ -68,7 +68,10 @@ export default function HomeClient({ user }: HomeClientProps) {
     const name = displayName(entry.foodName, food?.nameEn)
     const ok = await deleteEntry(index)
     if (ok) {
-      showToast(t('removed', { name }), 'warning')
+      showToast(t('removed', { name }), 'warning', food ? {
+        label: t('undo'),
+        onClick: () => { createEntry(food, Number(entry.amount), entry.meal) },
+      } : undefined)
     } else {
       showToast(t('deleteError'), 'error')
     }

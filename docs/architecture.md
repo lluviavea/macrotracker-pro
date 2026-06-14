@@ -124,7 +124,7 @@ The `useFoodLog` hook in `lib/useFoodLog.ts` uses **snapshot-based rollback** fo
 3. Send request
 4. If request fails: restore from `snapshot` + set `hasError = true` (shows dismissable banner)
 
-Create-entry does NOT use optimistic updates — the new row is only added to state on success.
+Create-entry does NOT use optimistic updates — the new row is only added to state on success. Deleted log entries show an undo toast that re-creates the entry via `createEntry`.
 
 ## Database Schema
 

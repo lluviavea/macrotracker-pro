@@ -6,14 +6,19 @@ export interface ToastMessage {
   id: number
   text: string
   type: 'success' | 'error' | 'info' | 'warning'
+  action?: { label: string; onClick: () => void }
 }
 
 let nextId = 0
 
 const listeners: Set<(msg: ToastMessage) => void> = new Set()
 
-export function showToast(text: string, type: ToastMessage['type'] = 'success') {
-  const msg: ToastMessage = { id: nextId++, text, type }
+export function showToast(
+  text: string,
+  type: ToastMessage['type'] = 'success',
+  action?: { label: string; onClick: () => void },
+) {
+  const msg: ToastMessage = { id: nextId++, text, type, action }
   listeners.forEach(fn => fn(msg))
 }
 
@@ -45,9 +50,17 @@ export function ToastContainer() {
       {toasts.map(t => (
         <div
           key={t.id}
-          className={`${colors[t.type]} text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow-lg animate-slide-up`}
+          className={`${colors[t.type]} text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow-lg animate-slide-up flex items-center gap-3`}
         >
-          {t.text}
+          <span>{t.text}</span>
+          {t.action && (
+            <button
+              onClick={() => { t.action?.onClick(); setToasts(prev => prev.filter(x => x.id !== t.id)) }}
+              className="underline underline-offset-2 font-semibold hover:opacity-80"
+            >
+              {t.action.label}
+            </button>
+          )}
         </div>
       ))}
     </div>
