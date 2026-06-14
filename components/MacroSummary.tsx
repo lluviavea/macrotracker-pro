@@ -23,12 +23,12 @@ export function MacroSummary({ calories, protein, fat, carbs, sugar, fiber, goal
   const t = useTranslations('MacroSummary')
 
   const items = [
-    { label: t('calories'), value: Math.round(calories), unit: t('kcal'), goal: goals?.calories, color: 'text-violet-600 dark:text-[var(--color-macro-calories)]', barColor: 'bg-gray-800 dark:bg-[var(--color-macro-calories)]' },
-    { label: t('protein'), value: Math.round(protein * 10) / 10, unit: t('g'), goal: goals?.protein, color: 'text-red-600 dark:text-[var(--color-macro-protein)]', barColor: 'bg-red-500 dark:bg-[var(--color-macro-protein)]' },
-    { label: t('fat'), value: Math.round(fat * 10) / 10, unit: t('g'), goal: goals?.fat, color: 'text-orange-600 dark:text-[var(--color-macro-fat)]', barColor: 'bg-orange-500 dark:bg-[var(--color-macro-fat)]' },
-    { label: t('carbs'), value: Math.round(carbs * 10) / 10, unit: t('g'), goal: goals?.carbs, color: 'text-yellow-600 dark:text-[var(--color-macro-carbs)]', barColor: 'bg-yellow-500 dark:bg-[var(--color-macro-carbs)]' },
-    { label: t('sugar'), value: sugar !== undefined ? Math.round(sugar * 10) / 10 : 0, unit: t('g'), color: 'text-pink-600 dark:text-[var(--color-macro-sugar)]', barColor: 'bg-pink-400 dark:bg-[var(--color-macro-sugar)]' },
-    { label: t('fiber'), value: fiber !== undefined ? Math.round(fiber * 10) / 10 : 0, unit: t('g'), color: 'text-green-600 dark:text-[var(--color-macro-fiber)]', barColor: 'bg-green-500 dark:bg-[var(--color-macro-fiber)]' },
+    { label: t('calories'), value: Math.round(calories), unit: t('kcal'), goal: goals?.calories, color: 'macro-calories', barColor: 'bg-macro-calories' },
+    { label: t('protein'), value: Math.round(protein * 10) / 10, unit: t('g'), goal: goals?.protein, color: 'macro-protein', barColor: 'bg-macro-protein' },
+    { label: t('fat'), value: Math.round(fat * 10) / 10, unit: t('g'), goal: goals?.fat, color: 'macro-fat', barColor: 'bg-macro-fat' },
+    { label: t('carbs'), value: Math.round(carbs * 10) / 10, unit: t('g'), goal: goals?.carbs, color: 'macro-carbs', barColor: 'bg-macro-carbs' },
+    { label: t('sugar'), value: sugar !== undefined ? Math.round(sugar * 10) / 10 : 0, unit: t('g'), color: 'macro-sugar', barColor: 'bg-macro-sugar' },
+    { label: t('fiber'), value: fiber !== undefined ? Math.round(fiber * 10) / 10 : 0, unit: t('g'), color: 'macro-fiber', barColor: 'bg-macro-fiber' },
   ]
 
   return (

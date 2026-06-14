@@ -95,19 +95,19 @@ listener checks `localStorage.getItem('theme')` before applying).
 
 ## Macro color palette (dark mode)
 
-The macro summary cards use a custom palette only in dark mode. Colors are stored as CSS
-variables in `app/globals.css` and referenced in `components/MacroSummary.tsx`.
+The macro summary cards use a custom palette in dark mode. CSS custom properties in
+`app/globals.css` define the dark mode colors, and fallback colors preserve the original
+Tailwind palette in light mode. `components/MacroSummary.tsx` uses custom classes like
+`macro-calories` and `bg-macro-calories`.
 
-| Macro | Dark mode color | Variable |
+| Macro | Dark mode color | Light mode fallback |
 | --- | --- | --- |
-| Calories | `#81638b` | `--color-macro-calories` |
-| Protein | `#b695c0` | `--color-macro-protein` |
-| Fat | `#dac9df` | `--color-macro-fat` |
-| Carbs | `#5dc1b9` | `--color-macro-carbs` |
-| Sugar | `#9ce0db` | `--color-macro-sugar` |
-| Fiber | `#92de8b` | `--color-macro-fiber` |
-
-Light mode keeps the original Tailwind colors (violet, red, orange, yellow, pink, green).
+| Calories | `#81638b` | violet-600 |
+| Protein | `#b695c0` | red-600 |
+| Fat | `#dac9df` | orange-600 |
+| Carbs | `#5dc1b9` | yellow-600 |
+| Sugar | `#9ce0db` | pink-600 |
+| Fiber | `#92de8b` | green-600 |
 
 ## Adding a new themed component
 

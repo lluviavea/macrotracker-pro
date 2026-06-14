@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @source "./**/*.{tsx,ts}";
+@source "../components/**/*.{tsx,ts}";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -27,15 +28,30 @@ body {
   color: var(--color-foreground);
 }
 
+/* macro colors: dark mode via CSS vars, light mode via fallbacks */
+.macro-calories { color: var(--macro-calories, #7c3aed); }
+.macro-protein { color: var(--macro-protein, #dc2626); }
+.macro-fat { color: var(--macro-fat, #ea580c); }
+.macro-carbs { color: var(--macro-carbs, #ca8a04); }
+.macro-sugar { color: var(--macro-sugar, #db2777); }
+.macro-fiber { color: var(--macro-fiber, #16a34a); }
+
+.bg-macro-calories { background-color: var(--macro-calories, #1f2937); }
+.bg-macro-protein { background-color: var(--macro-protein, #ef4444); }
+.bg-macro-fat { background-color: var(--macro-fat, #f97316); }
+.bg-macro-carbs { background-color: var(--macro-carbs, #eab308); }
+.bg-macro-sugar { background-color: var(--macro-sugar, #f472b6); }
+.bg-macro-fiber { background-color: var(--macro-fiber, #22c55e); }
+
 .dark {
   --color-background: #0a0a0a;
   --color-foreground: #ededed;
 
   /* macro palette */
-  --color-macro-calories: #81638b;
-  --color-macro-protein: #b695c0;
-  --color-macro-fat: #dac9df;
-  --color-macro-carbs: #5dc1b9;
-  --color-macro-sugar: #9ce0db;
-  --color-macro-fiber: #92de8b;
+  --macro-calories: #81638b;
+  --macro-protein: #b695c0;
+  --macro-fat: #dac9df;
+  --macro-carbs: #5dc1b9;
+  --macro-sugar: #9ce0db;
+  --macro-fiber: #92de8b;
 }
