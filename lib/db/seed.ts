@@ -1,5 +1,6 @@
+import { eq } from 'drizzle-orm'
 import { db } from './index'
-import { foods, logEntries } from './schema'
+import { foods } from './schema'
 import { createUser, getUserByEmail } from './users'
 import { seedUserCatalog } from './foods'
 import bcrypt from 'bcryptjs'
@@ -27,11 +28,8 @@ async function setupAdmin() {
     console.log(`Admin user already exists: ${user.email}`)
   }
 
-  console.log('Removing unowned log entries...')
-  await db.delete(logEntries)
-
-  console.log('Removing unowned foods...')
-  await db.delete(foods)
+  console.log('Removing existing admin catalog...')
+  await db.delete(foods).where(eq(foods.userId, user.id))
 
   console.log('Seeding admin catalog...')
   await seedUserCatalog(user.id)
