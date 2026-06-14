@@ -106,7 +106,8 @@
   "FoodCard": {
     "sugar": "Azúcar",
     "fiber": "Fibra",
-    "per": "/100{unit}",
+    "per100g": "/100g",
+    "perUnit": "/1{unit}",
     "crudo": "Crudo",
     "cocido": "Cocido"
   },
