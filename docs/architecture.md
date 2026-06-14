@@ -200,7 +200,7 @@ RootLayout (app/layout.tsx)
               ├── FoodSearch           (bilingual search)
               ├── FoodGrid
               │   └── FoodCard         (add button)
-              ├── AddFoodModal         (amount + meal picker)
+              ├── AddFoodModal         (amount + meal picker; live macro preview)
               ├── GoalsModal           (edit daily goals)
               ├── ThemeToggle          (sun/moon)
               └── LangSwitcher         (ES/EN)

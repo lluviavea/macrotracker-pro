@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import type { FoodItem } from '@/lib/types'
+import { calculateMacros } from '@/lib/macros'
 
 interface AddFoodModalProps {
   food: FoodItem
@@ -17,6 +18,12 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
 
   const [amount, setAmount] = useState(String(food.measureType === 'unit' ? 1 : 100))
   const [meal, setMeal] = useState('')
+
+  const preview = useMemo(() => {
+    const num = parseFloat(amount) || 0
+    if (num <= 0) return null
+    return calculateMacros(food, num)
+  }, [amount, food])
 
   const mealOptions = [
     { value: '', label: t('noMeal') },
@@ -52,7 +59,15 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
             {food.measureType === 'unit' && food.unitName ? food.unitName : t('gram')}
           </span>
         </div>
-        <div className="mt-2">
+        {preview && (
+          <div className="mt-3 p-2.5 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-xs text-gray-600 dark:text-gray-400">
+            <p className="font-medium mb-1 dark:text-gray-300">{t('previewLabel')}</p>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">
+              {preview.protein}P · {preview.fat}F · {preview.carbs}C · {preview.calories}kcal
+            </p>
+          </div>
+        )}
+        <div className="mt-3">
           <select
             value={meal}
             onChange={e => setMeal(e.target.value)}
