@@ -93,6 +93,22 @@ When the user clicks `ThemeToggle`:
 Once the user has set a manual preference, `prefers-color-scheme` changes are **ignored** (the
 listener checks `localStorage.getItem('theme')` before applying).
 
+## Macro color palette (dark mode)
+
+The macro summary cards use a custom palette only in dark mode. Colors are stored as CSS
+variables in `app/globals.css` and referenced in `components/MacroSummary.tsx`.
+
+| Macro | Dark mode color | Variable |
+| --- | --- | --- |
+| Calories | `#81638b` | `--color-macro-calories` |
+| Protein | `#b695c0` | `--color-macro-protein` |
+| Fat | `#dac9df` | `--color-macro-fat` |
+| Carbs | `#5dc1b9` | `--color-macro-carbs` |
+| Sugar | `#9ce0db` | `--color-macro-sugar` |
+| Fiber | `#92de8b` | `--color-macro-fiber` |
+
+Light mode keeps the original Tailwind colors (violet, red, orange, yellow, pink, green).
+
 ## Adding a new themed component
 
 Use the existing `dark:` variants. Convention: `bg-{color} dark:bg-{darkColor}`,

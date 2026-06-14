@@ -30,4 +30,12 @@ body {
 .dark {
   --color-background: #0a0a0a;
   --color-foreground: #ededed;
+
+  /* macro palette */
+  --color-macro-calories: #81638b;
+  --color-macro-protein: #b695c0;
+  --color-macro-fat: #dac9df;
+  --color-macro-carbs: #5dc1b9;
+  --color-macro-sugar: #9ce0db;
+  --color-macro-fiber: #92de8b;
 }
