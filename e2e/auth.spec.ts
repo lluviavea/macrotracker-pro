@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 
 const ADMIN_EMAIL = process.env.INITIAL_ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.INITIAL_ADMIN_PASSWORD;
+const INVITE_CODE = process.env.INVITE_CODE;
 
 test.describe("authentication", () => {
   test("admin can log in and log out", async ({ page }) => {
@@ -42,6 +43,8 @@ test.describe("authentication", () => {
   });
 
   test("new user can register", async ({ page }) => {
+    test.skip(!INVITE_CODE, "Invite code not configured");
+
     const email = `e2e-${Date.now()}@example.com`;
     const password = "Password123!";
 
@@ -50,6 +53,7 @@ test.describe("authentication", () => {
 
     await page.fill('input[id="email"]', email);
     await page.fill('input[id="password"]', password);
+    await page.fill('input[id="inviteCode"]', INVITE_CODE!);
 
     const submitButton = page.getByRole("button", { name: /crear/i });
     await expect(submitButton).toBeEnabled();

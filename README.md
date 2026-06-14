@@ -29,6 +29,8 @@ just run       # Cada día: levanta la base de datos si no está corriendo, migr
 ```
 
 > **Nota técnica**: Necesitas [mise](https://mise.jdx.dev), [just](https://github.com/casey/just), y [Docker](https://www.docker.com/) corriendo. Consulta [`docs/architecture.md`](docs/architecture.md) para entender la estructura del proyecto y [`docs/admin.md`](docs/admin.md) si quieres gestionar el catálogo.
+>
+> **Registro**: `just setup` crea `.env.local`. Para que otras personas puedan registrarse, comparte con ellas el valor de `INVITE_CODE` que configures en ese archivo.
 
 ## 📖 Documentación técnica
 

@@ -144,6 +144,8 @@
     "loginLink": "Log in",
     "invalidCredentials": "Invalid email or password",
     "emailTaken": "Email already registered",
+    "invalidInvite": "Invalid invite code",
+    "inviteCode": "Invite code",
     "logout": "Log out"
   }
 }
