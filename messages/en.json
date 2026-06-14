@@ -144,8 +144,7 @@
     "loginLink": "Log in",
     "invalidCredentials": "Invalid email or password",
     "emailTaken": "Email already registered",
-    "invalidInvite": "Invalid invite code",
-    "inviteCode": "Invite code",
+    "registerError": "Registration failed. Please try again.",
     "logout": "Log out"
   }
 }

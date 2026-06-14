@@ -144,8 +144,7 @@
     "loginLink": "Inicia sesión",
     "invalidCredentials": "Correo o contraseña incorrectos",
     "emailTaken": "El correo ya está registrado",
-    "invalidInvite": "Código de invitación inválido",
-    "inviteCode": "Código de invitación",
+    "registerError": "Error al registrarse. Intenta de nuevo.",
     "logout": "Cerrar sesión"
   }
 }

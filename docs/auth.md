@@ -19,18 +19,16 @@ Add these to `.env.local` (never commit `.env.local`):
 SESSION_SECRET=change-this-to-a-random-string-at-least-32-characters
 INITIAL_ADMIN_EMAIL=lluvia@example.com
 INITIAL_ADMIN_PASSWORD=changeme
-INVITE_CODE=change-this-to-a-random-invite-code
 ```
 
 - `SESSION_SECRET`: used to sign JWTs. Must be long and random.
 - `INITIAL_ADMIN_EMAIL` / `INITIAL_ADMIN_PASSWORD`: creates the first admin on `just db-seed`.
-- `INVITE_CODE`: required for new users to register. Share it privately with people you want to allow in.
 
 ## Flow
 
 1. **Setup**: `just setup` runs `lib/db/seed.ts`, which creates the admin user and seeds their food catalog.
 2. **Update admin**: `just db-update-admin` updates the admin email and password from `.env.local`.
-3. **Register**: `POST /api/auth/register` validates the invite code from `INVITE_CODE`, then creates a user, hashes the password, seeds their catalog, and sets the session cookie directly on the response.
+3. **Register**: `POST /api/auth/register` creates a user, hashes the password, seeds their catalog, and sets the session cookie directly on the response. Registration is open to anyone who knows the registration URL.
 4. **Login**: `POST /api/auth/login` verifies the password, creates a JWT, and sets the cookie directly on the response.
 5. **Logout**: `POST /api/auth/logout` deletes the cookie from the response.
 6. **Session check**: server components call `getSession()` from `lib/auth.ts`; proxy calls `getSessionFromRequest()`.
@@ -54,7 +52,7 @@ just test-e2e     # headless run
 just test-e2e-ui  # interactive UI mode
 ```
 
-The tests start the dev server automatically (`webServer` in `playwright.config.ts`), log in as the seeded admin, register a new user with a unique email and the `INVITE_CODE`, and log out. They require `.env.local` with valid `INITIAL_ADMIN_EMAIL`, `INITIAL_ADMIN_PASSWORD`, and `INVITE_CODE`.
+The tests start the dev server automatically (`webServer` in `playwright.config.ts`), log in as the seeded admin, register a new user with a unique email, and log out. They require `.env.local` with valid `INITIAL_ADMIN_EMAIL` and `INITIAL_ADMIN_PASSWORD`.
 
 ## Multi-tenancy
 
