@@ -197,7 +197,7 @@ RootLayout (app/layout.tsx)
               ├── LogEntryList
               │   └── LogEntryRow      (food, amount input, delete, macro breakdown)
               ├── CategoryTabs         (filter buttons)
-              ├── FoodSearch           (bilingual search)
+              ├── FoodSearch           (bilingual search; global across categories)
               ├── FoodGrid
               │   └── FoodCard         (add button)
               ├── AddFoodModal         (amount + meal picker; live macro preview)

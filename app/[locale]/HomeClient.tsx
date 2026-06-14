@@ -92,9 +92,10 @@ export default function HomeClient({ user }: HomeClientProps) {
     router.refresh()
   }
 
+  const isSearching = search.trim().length > 0
   const filteredFoods = foods.filter(
     f =>
-      f.category === selectedCategory &&
+      (isSearching || f.category === selectedCategory) &&
       (f.name.toLowerCase().includes(search.toLowerCase()) ||
         (f.nameEn && f.nameEn.toLowerCase().includes(search.toLowerCase()))),
   )
@@ -181,7 +182,7 @@ export default function HomeClient({ user }: HomeClientProps) {
 
       <FoodSearch value={search} onChange={setSearch} />
 
-      <FoodGrid foods={filteredFoods} onAdd={setPendingFood} />
+      <FoodGrid foods={filteredFoods} onAdd={setPendingFood} showCategory={isSearching} />
 
       {pendingFood && (
         <AddFoodModal
