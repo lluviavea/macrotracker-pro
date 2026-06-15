@@ -138,8 +138,15 @@
   "DateNavigator": {
     "prevDay": "Día anterior",
     "nextDay": "Día siguiente",
-    "today": "Hoy",
-    "openCalendar": "Abrir calendario"
+    "today": "Hoy"
+  },
+  "Calendar": {
+    "calendarDialog": "Calendario",
+    "prevMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
+    "selectMonth": "Seleccionar mes",
+    "selectYear": "Seleccionar año",
+    "today": "Hoy"
   },
   "LangSwitcher": {
     "en": "EN",

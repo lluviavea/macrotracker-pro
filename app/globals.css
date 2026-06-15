@@ -28,16 +28,6 @@ body {
   color: var(--color-foreground);
 }
 
-/* Hide the native browser calendar icon so we can render a custom one. */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-}
-
 /* macro colors: dark mode via CSS vars, light mode via fallbacks */
 .macro-calories { color: var(--macro-calories, #7c3aed); }
 .macro-protein { color: var(--macro-protein, #dc2626); }

@@ -49,7 +49,8 @@ components/
   ThemeProvider.tsx      - Dark/light mode context (system preference + localStorage)
   ThemeToggle.tsx        - Sun/moon toggle button
   Toast.tsx              - Imperative toast API + ToastContainer
-  DateNavigator.tsx      - Date picker + prev/next/today
+  DateNavigator.tsx      - Date display + prev/next/today; opens Calendar popover
+  Calendar.tsx           - Custom month grid date picker (i18n, keyboard accessible)
   MacroSummary.tsx       - 6 macro cards (calories, P/F/C, sugar, fiber) + goal progress bars
   LogEntryList.tsx       - List of today's entries
   LogEntryRow.tsx        - Single entry (food, amount input, delete, macro breakdown)
@@ -194,7 +195,8 @@ RootLayout (app/layout.tsx)
   ├── ThemeProvider             (dark/light context)
   └── [locale]/layout.tsx       (NextIntlClientProvider)
         └── page.tsx  (Home)
-              ├── DateNavigator       (date picker + prev/next/today; Today badge)
+              ├── DateNavigator       (date display + prev/next/today; opens Calendar)
+              │     └── Calendar       (custom month grid date picker)
               ├── MacroSummary         (6 cards with goal progress bars)
               ├── LogEntryList         (loading skeleton + empty state)
               │   └── LogEntryRow      (food, amount input, delete, macro breakdown)
