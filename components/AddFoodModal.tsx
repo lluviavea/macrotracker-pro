@@ -46,6 +46,7 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
         <div className="flex items-center gap-2">
           <input
             type="number"
+            inputMode={food.measureType === 'unit' ? 'numeric' : 'decimal'}
             value={amount}
             onChange={e => setAmount(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') handleConfirm() }}
