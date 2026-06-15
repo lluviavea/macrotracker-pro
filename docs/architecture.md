@@ -122,9 +122,11 @@ The `useFoodLog` hook in `lib/useFoodLog.ts` uses **snapshot-based rollback** fo
 1. Save current entries state to `snapshot`
 2. Apply optimistic change to state
 3. Send request
-4. If request fails: restore from `snapshot` + set `hasError = true` (shows dismissable banner)
+4. If request fails: restore from `snapshot` + set typed `error` (`load-foods` or `load-entries`)
 
 Create-entry does NOT use optimistic updates — the new row is only added to state on success. Deleted log entries show an undo toast that re-creates the entry via `createEntry`.
+
+The error banner distinguishes food-catalog errors from daily-log errors and offers a **Retry** button that calls `reloadFoods()` or `reloadEntries()`.
 
 ## Database Schema
 
@@ -192,15 +194,15 @@ RootLayout (app/layout.tsx)
   ├── ThemeProvider             (dark/light context)
   └── [locale]/layout.tsx       (NextIntlClientProvider)
         └── page.tsx  (Home)
-              ├── DateNavigator       (date picker + prev/next/today)
+              ├── DateNavigator       (date picker + prev/next/today; Today badge)
               ├── MacroSummary         (6 cards with goal progress bars)
-              ├── LogEntryList
+              ├── LogEntryList         (loading skeleton + empty state)
               │   └── LogEntryRow      (food, amount input, delete, macro breakdown)
-              ├── CategoryTabs         (filter buttons)
+              ├── CategoryTabs         (filter buttons; sticky while scrolling)
               ├── FoodSearch           (bilingual search; global across categories)
-              ├── FoodGrid
-              │   └── FoodCard         (add button)
-              ├── AddFoodModal         (amount + meal picker; live macro preview)
+              ├── FoodGrid             (empty states for category/search)
+              │   └── FoodCard         (add button; unit label; category badge)
+              ├── AddFoodModal         (amount + meal picker; presets; live preview)
               ├── GoalsModal           (edit daily goals)
               ├── ThemeToggle          (sun/moon)
               └── LangSwitcher         (ES/EN)
@@ -221,7 +223,8 @@ ToastContainer is mounted once at the root, siblings to children.
 | `lib/nutrition-utils.ts` | `normalizeName`, `lookupNutrition` (from `NUTRITION_DATA`) |
 | `lib/validation.ts` | Zod schemas for `/api/foods` and `/api/log` request bodies |
 | `lib/goals.ts` | `Goals` type + `getGoals` / `saveGoals` (localStorage) |
-| `lib/useFoodLog.ts` | Main client hook — foods, entries, CRUD, optimistic updates, totals |
+| `lib/useFoodLog.ts` | Main client hook — foods, entries, CRUD, optimistic updates, totals, typed errors |
+| `lib/useFocusTrap.ts` | Traps Tab focus inside a modal for accessibility |
 
 ## Internationalization (i18n)
 
