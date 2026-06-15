@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import type { Goals } from '@/lib/goals'
 import { saveGoals } from '@/lib/goals'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 interface GoalsModalProps {
   goals: Goals
@@ -14,6 +15,15 @@ interface GoalsModalProps {
 export function GoalsModal({ goals, onSave, onClose }: GoalsModalProps) {
   const t = useTranslations('Home')
   const [editGoals, setEditGoals] = useState<Goals>({ ...goals })
+  const trapRef = useFocusTrap(true)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
 
   const fields = ['calories', 'protein', 'fat', 'carbs'] as const
   const labels: Record<string, string> = {
@@ -30,9 +40,16 @@ export function GoalsModal({ goals, onSave, onClose }: GoalsModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/60" onClick={onClose}>
+    <div
+      ref={trapRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="goals-title"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/60"
+      onClick={onClose}
+    >
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-5 w-80 mx-4" onClick={e => e.stopPropagation()}>
-        <p className="font-medium text-sm mb-4 dark:text-gray-100">{t('goalsTitle')}</p>
+        <p id="goals-title" className="font-medium text-sm mb-4 dark:text-gray-100">{t('goalsTitle')}</p>
         <div className="space-y-3">
           {fields.map(key => (
             <div key={key}>

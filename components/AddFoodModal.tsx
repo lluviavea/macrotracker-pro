@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import type { FoodItem } from '@/lib/types'
 import { calculateMacros } from '@/lib/macros'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 interface AddFoodModalProps {
   food: FoodItem
@@ -18,6 +19,15 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
 
   const [amount, setAmount] = useState(String(food.measureType === 'unit' ? 1 : 100))
   const [meal, setMeal] = useState('')
+  const trapRef = useFocusTrap(true)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
 
   const preview = useMemo(() => {
     const num = parseFloat(amount) || 0
@@ -44,9 +54,16 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/60" onClick={onClose}>
+    <div
+      ref={trapRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-food-title"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/60"
+      onClick={onClose}
+    >
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-5 w-72 mx-4" onClick={e => e.stopPropagation()}>
-        <p className="font-medium text-sm mb-3 dark:text-gray-100">{t('addModalTitle', { name: displayName })}</p>
+        <p id="add-food-title" className="font-medium text-sm mb-3 dark:text-gray-100">{t('addModalTitle', { name: displayName })}</p>
         <div className="flex items-center gap-2">
           <input
             type="number"
