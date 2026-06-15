@@ -28,30 +28,66 @@ body {
   color: var(--color-foreground);
 }
 
-/* macro colors: dark mode via CSS vars, light mode via fallbacks */
-.macro-calories { color: var(--macro-calories, #7c3aed); }
-.macro-protein { color: var(--macro-protein, #dc2626); }
-.macro-fat { color: var(--macro-fat, #ea580c); }
-.macro-carbs { color: var(--macro-carbs, #ca8a04); }
-.macro-sugar { color: var(--macro-sugar, #db2777); }
-.macro-fiber { color: var(--macro-fiber, #16a34a); }
+/* Fruit-salad macro palette: darker in light mode, pastel in dark mode */
+:root {
+  /* Light mode: high-contrast variants of the fruit palettes */
+  --macro-calories: #6b6fcc;   /* periwinkle dark */
+  --macro-protein: #b52e56;    /* fresa dark */
+  --macro-fat: #c98a2e;        /* cranberry dark */
+  --macro-carbs: #4caf50;      /* kiwi dark */
+  --macro-sugar: #d8437a;      /* fresa pink dark */
+  --macro-fiber: #028174;      /* kiwi teal dark */
 
-.bg-macro-calories { background-color: var(--macro-calories, #1f2937); }
-.bg-macro-protein { background-color: var(--macro-protein, #ef4444); }
-.bg-macro-fat { background-color: var(--macro-fat, #f97316); }
-.bg-macro-carbs { background-color: var(--macro-carbs, #eab308); }
-.bg-macro-sugar { background-color: var(--macro-sugar, #f472b6); }
-.bg-macro-fiber { background-color: var(--macro-fiber, #22c55e); }
+  /* Meal group backgrounds/borders (light tints) */
+  --meal-desayuno-bg: #fff8e7;
+  --meal-desayuno-border: #ffe3b3;
+  --meal-comida-bg: #fdf5e8;
+  --meal-comida-border: #fce4bf;
+  --meal-cena-bg: #fdf0f0;
+  --meal-cena-border: #f4bbbb;
+  --meal-snack-bg: #e8faf8;
+  --meal-snack-border: #adeee2;
+}
+
+.macro-calories { color: var(--macro-calories); }
+.macro-protein { color: var(--macro-protein); }
+.macro-fat { color: var(--macro-fat); }
+.macro-carbs { color: var(--macro-carbs); }
+.macro-sugar { color: var(--macro-sugar); }
+.macro-fiber { color: var(--macro-fiber); }
+
+.bg-macro-calories { background-color: var(--macro-calories); }
+.bg-macro-protein { background-color: var(--macro-protein); }
+.bg-macro-fat { background-color: var(--macro-fat); }
+.bg-macro-carbs { background-color: var(--macro-carbs); }
+.bg-macro-sugar { background-color: var(--macro-sugar); }
+.bg-macro-fiber { background-color: var(--macro-fiber); }
+
+/* Meal group tints inside the log entry list */
+.meal-desayuno { background-color: var(--meal-desayuno-bg); border-color: var(--meal-desayuno-border); }
+.meal-comida { background-color: var(--meal-comida-bg); border-color: var(--meal-comida-border); }
+.meal-cena { background-color: var(--meal-cena-bg); border-color: var(--meal-cena-border); }
+.meal-snack { background-color: var(--meal-snack-bg); border-color: var(--meal-snack-border); }
 
 .dark {
   --color-background: #0a0a0a;
   --color-foreground: #ededed;
 
-  /* macro palette */
-  --macro-calories: #81638b;
-  --macro-protein: #b695c0;
-  --macro-fat: #dac9df;
-  --macro-carbs: #5dc1b9;
-  --macro-sugar: #9ce0db;
-  --macro-fiber: #92de8b;
+  /* Dark mode: bright pastels on black cards */
+  --macro-calories: #9a9cea;
+  --macro-protein: #dd4470;
+  --macro-fat: #ffc872;
+  --macro-carbs: #92de8b;
+  --macro-sugar: #fe72a9;
+  --macro-fiber: #0ab68b;
+
+  /* Meal group backgrounds/borders (pastel with low opacity) */
+  --meal-desayuno-bg: rgba(255, 227, 179, 0.12);
+  --meal-desayuno-border: rgba(255, 227, 179, 0.35);
+  --meal-comida-bg: rgba(252, 228, 191, 0.12);
+  --meal-comida-border: rgba(252, 228, 191, 0.35);
+  --meal-cena-bg: rgba(244, 187, 187, 0.12);
+  --meal-cena-border: rgba(244, 187, 187, 0.35);
+  --meal-snack-bg: rgba(173, 238, 226, 0.12);
+  --meal-snack-border: rgba(173, 238, 226, 0.35);
 }

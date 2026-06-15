@@ -93,21 +93,39 @@ When the user clicks `ThemeToggle`:
 Once the user has set a manual preference, `prefers-color-scheme` changes are **ignored** (the
 listener checks `localStorage.getItem('theme')` before applying).
 
-## Macro color palette (dark mode)
+## Fruit salad color palette
 
-The macro summary cards use a custom palette in dark mode. CSS custom properties in
-`app/globals.css` define the dark mode colors, and fallback colors preserve the original
-Tailwind palette in light mode. `components/MacroSummary.tsx` uses custom classes like
-`macro-calories` and `bg-macro-calories`.
+The app uses a unified palette built from Lluvia's fruit color sets (kiwi, fresa,
+cranberry, melon, periwinkle). The same macro color is used for text and progress bars
+in `MacroSummary`, for macro labels in `LogEntryRow` and `FoodCard`, and as the hover
+accent on food cards.
 
-| Macro | Dark mode color | Light mode fallback |
-| --- | --- | --- |
-| Calories | `#81638b` | violet-600 |
-| Protein | `#b695c0` | red-600 |
-| Fat | `#dac9df` | orange-600 |
-| Carbs | `#5dc1b9` | yellow-600 |
-| Sugar | `#9ce0db` | pink-600 |
-| Fiber | `#92de8b` | green-600 |
+CSS custom properties in `app/globals.css` define the colors in both modes. Light mode
+uses darker, higher-contrast variants so text stays readable on white cards; dark mode
+uses the bright pastels on black cards.
+
+| Macro | Source | Light mode | Dark mode |
+| --- | --- | --- | --- |
+| Calories | periwinkle | `#6b6fcc` | `#9a9cea` |
+| Protein | fresa | `#b52e56` | `#dd4470` |
+| Fat | cranberry | `#c98a2e` | `#ffc872` |
+| Carbs | kiwi | `#4caf50` | `#92de8b` |
+| Sugar | fresa | `#d8437a` | `#fe72a9` |
+| Fiber | kiwi | `#028174` | `#0ab68b` |
+
+## Meal group tints
+
+`LogEntryList` groups log entries by meal and applies a subtle background/border tint
+from the fruit palette. The colors are defined as CSS variables in `app/globals.css` and
+consumed via the `.meal-desayuno`, `.meal-comida`, `.meal-cena`, and `.meal-snack` utility
+classes.
+
+| Meal | Source | Light tint | Dark tint |
+| --- | --- | --- | --- |
+| Desayuno | kiwi cream | `#fff8e7` / `#ffe3b3` | `rgba(255, 227, 179, 0.12)` / `rgba(255, 227, 179, 0.35)` |
+| Comida | cranberry cream | `#fdf5e8` / `#fce4bf` | `rgba(252, 228, 191, 0.12)` / `rgba(252, 228, 191, 0.35)` |
+| Cena | melon pink | `#fdf0f0` / `#f4bbbb` | `rgba(244, 187, 187, 0.12)` / `rgba(244, 187, 187, 0.35)` |
+| Snack | periwinkle mint | `#e8faf8` / `#adeee2` | `rgba(173, 238, 226, 0.12)` / `rgba(173, 238, 226, 0.35)` |
 
 ## Adding a new themed component
 

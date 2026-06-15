@@ -14,10 +14,10 @@ interface LogEntryListProps {
 }
 
 const MEAL_COLORS: Record<string, string> = {
-  desayuno: 'bg-blue-50 border-blue-200 dark:bg-blue-950/30 dark:border-blue-900',
-  comida: 'bg-orange-50 border-orange-200 dark:bg-orange-950/30 dark:border-orange-900',
-  cena: 'bg-purple-50 border-purple-200 dark:bg-purple-950/30 dark:border-purple-900',
-  snack: 'bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-900',
+  desayuno: 'meal-desayuno border',
+  comida: 'meal-comida border',
+  cena: 'meal-cena border',
+  snack: 'meal-snack border',
 }
 
 export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputChange, onAmountBlur }: LogEntryListProps) {

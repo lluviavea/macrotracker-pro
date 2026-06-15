@@ -48,11 +48,11 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
         />
         <span className="text-xs text-gray-500 dark:text-gray-400 w-8">{isUnit ? food?.unitName : 'g'}</span>
       </div>
-      <div className="text-right text-xs text-gray-500 dark:text-gray-400 w-28 leading-tight">
-        <p>{macros.protein}P</p>
-        <p>{macros.fat}F</p>
-        <p>{macros.carbs}C <span className="text-gray-400 dark:text-gray-500">({macros.sugar}S / {macros.fiber}Fb)</span></p>
-        <p className="font-medium dark:text-gray-100">{macros.calories}kcal</p>
+      <div className="text-right text-xs w-28 leading-tight">
+        <p className="text-gray-500 dark:text-gray-400">{macros.protein}<span className="macro-protein">P</span></p>
+        <p className="text-gray-500 dark:text-gray-400">{macros.fat}<span className="macro-fat">F</span></p>
+        <p className="text-gray-500 dark:text-gray-400">{macros.carbs}<span className="macro-carbs">C</span> <span className="text-gray-400 dark:text-gray-500">(<span className="macro-sugar">S</span> / <span className="macro-fiber">Fb</span>)</span></p>
+        <p className="font-medium"><span className="macro-calories">{macros.calories}</span> <span className="macro-calories">kcal</span></p>
       </div>
     </div>
   )

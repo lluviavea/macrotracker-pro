@@ -18,10 +18,10 @@ export function FoodCard({ food, onAdd, showCategory }: FoodCardProps) {
   return (
     <button
       onClick={() => onAdd(food)}
-      className="bg-white dark:bg-gray-900 rounded-xl p-3 border border-gray-200 dark:border-gray-700 text-left hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-sm transition-all text-sm"
+      className="bg-white dark:bg-gray-900 rounded-xl p-3 border border-gray-200 dark:border-gray-700 text-left hover:[border-color:var(--macro-calories)] hover:shadow-sm transition-all text-sm"
     >
       <p className="font-medium truncate dark:text-gray-100">{displayName}</p>
-      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{food.protein}P &middot; {food.fat}F &middot; {food.carbs}C &middot; {food.calories}kcal</p>
+      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{food.protein}<span className="macro-protein">P</span> &middot; {food.fat}<span className="macro-fat">F</span> &middot; {food.carbs}<span className="macro-carbs">C</span> &middot; <span className="macro-calories">{food.calories}</span><span className="macro-calories">kcal</span></p>
       <p className="text-xs text-gray-400/70 dark:text-gray-500/70">
         {food.sugar > 0 && <span>{food.sugar}{t('sugar')} </span>}
         {food.fiber > 0 && <span>{food.fiber}{t('fiber')}</span>}
