@@ -127,6 +127,22 @@ classes.
 | Cena | melon pink | `#fdf0f0` / `#f4bbbb` | `rgba(244, 187, 187, 0.12)` / `rgba(244, 187, 187, 0.35)` |
 | Snack | periwinkle mint | `#e8faf8` / `#adeee2` | `rgba(173, 238, 226, 0.12)` / `rgba(173, 238, 226, 0.35)` |
 
+## Category tabs
+
+`CategoryTabs` uses the fruit palette for the selected tab. Each category has a dedicated
+utility class in `app/globals.css` (`.cat-proteina`, `.cat-carbohidratos`, etc.) that sets
+background, text, and border colors for both light and dark modes.
+
+| Category | Source | Light mode | Dark mode |
+| --- | --- | --- | --- |
+| Proteína | fresa | `#b52e56` | `#dd4470` |
+| Carbohidratos | kiwi | `#4caf50` | `#92de8b` |
+| Grasas | cranberry | `#c98a2e` | `#ffc872` |
+| Frutas | fresa | `#d8437a` | `#fe72a9` |
+| Verduras | kiwi | `#028174` | `#0ab68b` |
+| Condimentos | periwinkle | `#6b6fcc` | `#9a9cea` |
+| Suplementos | periwinkle | `#5a7abf` | `#a2b9ee` |
+
 ## Adding a new themed component
 
 Use the existing `dark:` variants. Convention: `bg-{color} dark:bg-{darkColor}`,

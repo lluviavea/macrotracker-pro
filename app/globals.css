@@ -69,6 +69,15 @@ body {
 .meal-cena { background-color: var(--meal-cena-bg); border-color: var(--meal-cena-border); }
 .meal-snack { background-color: var(--meal-snack-bg); border-color: var(--meal-snack-border); }
 
+/* Category tab selected state (fruit palette) */
+.cat-proteina { background-color: rgba(181, 46, 86, 0.1); color: #b52e56; border-color: rgba(181, 46, 86, 0.25); }
+.cat-carbohidratos { background-color: rgba(76, 175, 80, 0.1); color: #4caf50; border-color: rgba(76, 175, 80, 0.25); }
+.cat-grasas { background-color: rgba(201, 138, 46, 0.1); color: #c98a2e; border-color: rgba(201, 138, 46, 0.25); }
+.cat-frutas { background-color: rgba(216, 67, 122, 0.1); color: #d8437a; border-color: rgba(216, 67, 122, 0.25); }
+.cat-verduras { background-color: rgba(2, 129, 116, 0.1); color: #028174; border-color: rgba(2, 129, 116, 0.25); }
+.cat-condimentos { background-color: rgba(107, 111, 204, 0.1); color: #6b6fcc; border-color: rgba(107, 111, 204, 0.25); }
+.cat-suplementos { background-color: rgba(90, 122, 191, 0.1); color: #5a7abf; border-color: rgba(90, 122, 191, 0.25); }
+
 .dark {
   --color-background: #0a0a0a;
   --color-foreground: #ededed;
@@ -90,4 +99,13 @@ body {
   --meal-cena-border: rgba(244, 187, 187, 0.35);
   --meal-snack-bg: rgba(173, 238, 226, 0.12);
   --meal-snack-border: rgba(173, 238, 226, 0.35);
+
+  /* Category tab selected state (dark mode pastels) */
+  .cat-proteina { background-color: rgba(221, 68, 112, 0.15); color: #dd4470; border-color: rgba(221, 68, 112, 0.35); }
+  .cat-carbohidratos { background-color: rgba(146, 222, 139, 0.15); color: #92de8b; border-color: rgba(146, 222, 139, 0.35); }
+  .cat-grasas { background-color: rgba(255, 200, 114, 0.15); color: #ffc872; border-color: rgba(255, 200, 114, 0.35); }
+  .cat-frutas { background-color: rgba(254, 114, 169, 0.15); color: #fe72a9; border-color: rgba(254, 114, 169, 0.35); }
+  .cat-verduras { background-color: rgba(10, 182, 139, 0.15); color: #0ab68b; border-color: rgba(10, 182, 139, 0.35); }
+  .cat-condimentos { background-color: rgba(154, 156, 234, 0.15); color: #9a9cea; border-color: rgba(154, 156, 234, 0.35); }
+  .cat-suplementos { background-color: rgba(162, 185, 238, 0.15); color: #a2b9ee; border-color: rgba(162, 185, 238, 0.35); }
 }
