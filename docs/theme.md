@@ -143,6 +143,17 @@ background, text, and border colors for both light and dark modes.
 | Condimentos | periwinkle | `#6b6fcc` | `#9a9cea` |
 | Suplementos | periwinkle | `#5a7abf` | `#a2b9ee` |
 
+## Preparation badges
+
+`FoodCard` and `LogEntryRow` show `crudo` / `cocido` badges using the fruit palette.
+Utility classes `.prep-crudo` and `.prep-cocido` in `app/globals.css` set the background
+and text colors for both modes.
+
+| Preparation | Color | Light mode | Dark mode |
+| --- | --- | --- | --- |
+| Crudo | cranberry yellow | `#c98a2e` | `#ffc872` |
+| Cocido | fresa red | `#b52e56` | `#dd4470` |
+
 ## Adding a new themed component
 
 Use the existing `dark:` variants. Convention: `bg-{color} dark:bg-{darkColor}`,

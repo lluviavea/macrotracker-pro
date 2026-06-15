@@ -109,3 +109,10 @@ body {
   .cat-condimentos { background-color: rgba(154, 156, 234, 0.15); color: #9a9cea; border-color: rgba(154, 156, 234, 0.35); }
   .cat-suplementos { background-color: rgba(162, 185, 238, 0.15); color: #a2b9ee; border-color: rgba(162, 185, 238, 0.35); }
 }
+
+/* Preparation badges */
+.prep-crudo { background-color: rgba(201, 138, 46, 0.1); color: #c98a2e; }
+.prep-cocido { background-color: rgba(181, 46, 86, 0.1); color: #b52e56; }
+
+.dark .prep-crudo { background-color: rgba(255, 200, 114, 0.15); color: #ffc872; }
+.dark .prep-cocido { background-color: rgba(221, 68, 112, 0.15); color: #dd4470; }
