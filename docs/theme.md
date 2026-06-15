@@ -24,7 +24,7 @@ Components use `dark:` variants on a per-element basis (e.g. `bg-white dark:bg-g
 | `app/layout.tsx` | Root layout: mounts `ThemeProvider` + injects anti-flash script |
 | `app/globals.css` | Tailwind v4 base styles |
 | `components/ThemeProvider.tsx` | React context: `theme`, `toggleTheme`, `setTheme` |
-| `components/ThemeToggle.tsx` | Sun/moon icon button (uses `useTheme()`) |
+| `components/ThemeToggle.tsx` | Icon button showing the **current** theme (moon for dark, sun for light) |
 
 ## Storage
 
@@ -89,6 +89,8 @@ When the user clicks `ThemeToggle`:
 1. `setTheme` writes `localStorage['theme'] = 'light' | 'dark'`
 2. State updates
 3. `applyTheme` toggles the class
+
+The visible icon reflects the **current** theme (moon in dark mode, sun in light mode), while the `aria-label` still describes the action (switch to the opposite mode).
 
 Once the user has set a manual preference, `prefers-color-scheme` changes are **ignored** (the
 listener checks `localStorage.getItem('theme')` before applying).

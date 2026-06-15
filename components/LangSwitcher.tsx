@@ -25,7 +25,7 @@ export function LangSwitcher() {
       disabled={isPending}
       className="text-sm px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-medium transition-colors disabled:opacity-50"
     >
-      {nextLocale === 'en' ? 'EN' : 'ES'}
+      {locale.toUpperCase()}
     </button>
   )
 }
