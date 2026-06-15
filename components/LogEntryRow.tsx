@@ -48,7 +48,7 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
         />
         <span className="text-xs text-gray-500 dark:text-gray-400 w-8">{isUnit ? food?.unitName : 'g'}</span>
       </div>
-      <div className="text-right text-xs w-28 leading-tight">
+      <div className="text-right text-sm w-28 leading-tight">
         <p className="text-gray-500 dark:text-gray-400">{macros.protein}<span className="macro-protein">P</span></p>
         <p className="text-gray-500 dark:text-gray-400">{macros.fat}<span className="macro-fat">F</span></p>
         <p className="text-gray-500 dark:text-gray-400">{macros.carbs}<span className="macro-carbs">C</span> <span className="text-gray-400 dark:text-gray-500">(<span className="macro-sugar">S</span> / <span className="macro-fiber">Fb</span>)</span></p>
