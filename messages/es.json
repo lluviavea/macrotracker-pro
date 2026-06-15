@@ -25,7 +25,10 @@
     "carbs": "Carbs (g)",
     "save": "Guardar",
     "gram": "g",
-    "loadError": "Error al cargar datos. Verifica tu conexión e intenta de nuevo."
+    "loadError": "Error al cargar datos. Verifica tu conexión e intenta de nuevo.",
+    "loadFoodsError": "Error al cargar el catálogo de alimentos.",
+    "loadEntriesError": "Error al cargar el registro del día.",
+    "retry": "Reintentar"
   },
   "Admin": {
     "loading": "Cargando...",

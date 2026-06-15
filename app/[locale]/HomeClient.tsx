@@ -36,9 +36,9 @@ export default function HomeClient({ user }: HomeClientProps) {
   const ta = useTranslations('Auth')
 
   const {
-    foods, loading, entriesLoading, entries, logDate, goals, hasError, totals,
-    setLogDate, setGoals, setHasError,
-    createEntry, updateEntry, deleteEntry, reloadEntries,
+    foods, loading, entriesLoading, entries, logDate, goals, error, totals,
+    setLogDate, setGoals, setError,
+    createEntry, updateEntry, deleteEntry, reloadEntries, reloadFoods,
     changeDate, handleAmountInputChange,
   } = useFoodLog()
 
@@ -163,10 +163,20 @@ export default function HomeClient({ user }: HomeClientProps) {
         </div>
       </header>
 
-      {hasError && (
+      {error && (
         <div className="flex items-center justify-between bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-xl px-4 py-3">
-          <p className="text-sm text-red-700 dark:text-red-400">{t('loadError')}</p>
-          <button onClick={() => setHasError(false)} className="text-red-400 hover:text-red-600 dark:text-red-500 dark:hover:text-red-300 text-lg leading-none shrink-0 ml-3">&times;</button>
+          <p className="text-sm text-red-700 dark:text-red-400">
+            {error === 'load-foods' ? t('loadFoodsError') : error === 'load-entries' ? t('loadEntriesError') : t('loadError')}
+          </p>
+          <div className="flex items-center gap-2 shrink-0 ml-3">
+            <button
+              onClick={() => { if (error === 'load-foods') { reloadFoods() } else { reloadEntries() } }}
+              className="text-xs px-2 py-1 rounded-md bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 font-medium hover:bg-red-200 dark:hover:bg-red-900 transition-colors"
+            >
+              {t('retry')}
+            </button>
+            <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600 dark:text-red-500 dark:hover:text-red-300 text-lg leading-none">&times;</button>
+          </div>
         </div>
       )}
 

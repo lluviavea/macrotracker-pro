@@ -16,6 +16,8 @@ function getDate() {
   return new Date().toISOString().slice(0, 10)
 }
 
+export type LoadError = 'auth' | 'load-foods' | 'load-entries' | null
+
 export function useFoodLog() {
   const [foods, setFoods] = useState<FoodItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -23,7 +25,7 @@ export function useFoodLog() {
   const [entries, setEntries] = useState<Entry[]>([])
   const [logDate, setLogDate] = useState(getDate())
   const [goals, setGoals] = useState<Goals>(getGoals)
-  const [hasError, setHasError] = useState(false)
+  const [error, setError] = useState<LoadError>(null)
 
   useEffect(() => {
     fetch('/api/foods')
@@ -35,10 +37,10 @@ export function useFoodLog() {
       .then(d => {
         setFoods(d.foods)
         setLoading(false)
-        setHasError(false)
+        setError(null)
       })
       .catch(() => {
-        setHasError(true)
+        setError('load-foods')
         setLoading(false)
       })
   }, [])
@@ -68,10 +70,10 @@ export function useFoodLog() {
         const entries = await loadEntries(logDate)
         if (!cancelled) {
           setEntries(entries)
-          setHasError(false)
+          setError(null)
         }
       } catch {
-        if (!cancelled) setHasError(true)
+        if (!cancelled) setError('load-entries')
       } finally {
         if (!cancelled) setEntriesLoading(false)
       }
@@ -109,11 +111,27 @@ export function useFoodLog() {
     try {
       const fresh = await loadEntries(logDate)
       setEntries(fresh)
-      setHasError(false)
+      setError(null)
     } catch {
-      setHasError(true)
+      setError('load-entries')
     }
   }, [logDate, loadEntries])
+
+  const reloadFoods = useCallback(async () => {
+    setLoading(true)
+    try {
+      const r = await fetch('/api/foods')
+      if (r.status === 401) { redirectToLogin(); return }
+      if (!r.ok) throw new Error('Failed to fetch foods')
+      const d = await r.json()
+      setFoods(d.foods)
+      setError(null)
+    } catch {
+      setError('load-foods')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   const updateEntry = useCallback(async (index: number): Promise<boolean> => {
     const entry = entries[index]
@@ -168,9 +186,9 @@ export function useFoodLog() {
   const totals = calculateTotals(foods, entries)
 
   return {
-    foods, loading, entriesLoading, entries, logDate, goals, hasError, totals,
-    setLogDate, setGoals, setHasError,
-    createEntry, updateEntry, deleteEntry, reloadEntries,
+    foods, loading, entriesLoading, entries, logDate, goals, error, totals,
+    setLogDate, setGoals, setError,
+    createEntry, updateEntry, deleteEntry, reloadEntries, reloadFoods,
     changeDate, handleAmountInputChange,
   }
 }

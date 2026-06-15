@@ -25,7 +25,10 @@
     "carbs": "Carbs (g)",
     "save": "Save",
     "gram": "g",
-    "loadError": "Error loading data. Check your connection and try again."
+    "loadError": "Error loading data. Check your connection and try again.",
+    "loadFoodsError": "Failed to load the food catalog.",
+    "loadEntriesError": "Failed to load the log for this day.",
+    "retry": "Retry"
   },
   "Admin": {
     "loading": "Loading...",
