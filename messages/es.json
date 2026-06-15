@@ -116,8 +116,15 @@
     "crudo": "Crudo",
     "cocido": "Cocido"
   },
+  "FoodGrid": {
+    "empty": "No hay alimentos en esta categoría",
+    "emptyHint": "Selecciona otra categoría o usa el buscador.",
+    "noSearchResults": "No se encontró \"{query}\"",
+    "tryAnotherSearch": "Prueba con otro nombre o agrega el alimento en Admin."
+  },
   "LogEntryList": {
     "empty": "Sin alimentos registrados",
+    "emptyHint": "Agrega alimentos desde el catálogo de abajo.",
     "title": "Registro",
     "count": "{count} alimento{count, plural, one {} other {s}}",
     "breakfast": "Desayuno",

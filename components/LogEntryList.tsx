@@ -23,7 +23,12 @@ export function LogEntryList({ entries, foods, onRemove, onAmountInputChange, on
   const t = useTranslations('LogEntryList')
 
   if (entries.length === 0) {
-    return <div className="text-center py-8 text-sm text-gray-400 dark:text-gray-500">{t('empty')}</div>
+    return (
+      <div className="text-center py-10 px-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('empty')}</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('emptyHint')}</p>
+      </div>
+    )
   }
 
   const grouped: { meal: string; entries: Entry[]; startIndex: number }[] = []

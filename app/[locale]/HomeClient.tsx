@@ -200,7 +200,7 @@ export default function HomeClient({ user }: HomeClientProps) {
 
       <FoodSearch value={search} onChange={setSearch} />
 
-      <FoodGrid foods={filteredFoods} onAdd={setPendingFood} showCategory={isSearching} />
+      <FoodGrid foods={filteredFoods} onAdd={setPendingFood} showCategory={isSearching} searchQuery={search} />
 
       {pendingFood && (
         <AddFoodModal

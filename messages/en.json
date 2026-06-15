@@ -116,8 +116,15 @@
     "crudo": "Raw",
     "cocido": "Cooked"
   },
+  "FoodGrid": {
+    "empty": "No foods in this category",
+    "emptyHint": "Select another category or use the search box.",
+    "noSearchResults": "No results for \"{query}\"",
+    "tryAnotherSearch": "Try another name or add the food in Admin."
+  },
   "LogEntryList": {
     "empty": "No foods logged",
+    "emptyHint": "Add foods from the catalog below.",
     "title": "Log",
     "count": "{count} food{count, plural, one {} other {s}}",
     "breakfast": "Breakfast",
