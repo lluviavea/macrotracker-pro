@@ -36,7 +36,7 @@ export default function HomeClient({ user }: HomeClientProps) {
   const ta = useTranslations('Auth')
 
   const {
-    foods, loading, entries, logDate, goals, hasError, totals,
+    foods, loading, entriesLoading, entries, logDate, goals, hasError, totals,
     setLogDate, setGoals, setHasError,
     createEntry, updateEntry, deleteEntry, reloadEntries,
     changeDate, handleAmountInputChange,
@@ -191,6 +191,7 @@ export default function HomeClient({ user }: HomeClientProps) {
       <LogEntryList
         entries={entries}
         foods={foods}
+        loading={entriesLoading}
         onRemove={handleRemove}
         onAmountInputChange={handleAmountInputChange}
         onAmountBlur={handleUpdateAmount}

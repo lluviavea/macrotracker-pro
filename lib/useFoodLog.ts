@@ -19,6 +19,7 @@ function getDate() {
 export function useFoodLog() {
   const [foods, setFoods] = useState<FoodItem[]>([])
   const [loading, setLoading] = useState(true)
+  const [entriesLoading, setEntriesLoading] = useState(false)
   const [entries, setEntries] = useState<Entry[]>([])
   const [logDate, setLogDate] = useState(getDate())
   const [goals, setGoals] = useState<Goals>(getGoals)
@@ -61,7 +62,21 @@ export function useFoodLog() {
 
   useEffect(() => {
     let cancelled = false
-    loadEntries(logDate).then(entries => { if (!cancelled) setEntries(entries) }).catch(() => { if (!cancelled) setHasError(true) })
+    const run = async () => {
+      setEntriesLoading(true)
+      try {
+        const entries = await loadEntries(logDate)
+        if (!cancelled) {
+          setEntries(entries)
+          setHasError(false)
+        }
+      } catch {
+        if (!cancelled) setHasError(true)
+      } finally {
+        if (!cancelled) setEntriesLoading(false)
+      }
+    }
+    run()
     return () => { cancelled = true }
   }, [logDate, loadEntries])
 
@@ -153,7 +168,7 @@ export function useFoodLog() {
   const totals = calculateTotals(foods, entries)
 
   return {
-    foods, loading, entries, logDate, goals, hasError, totals,
+    foods, loading, entriesLoading, entries, logDate, goals, hasError, totals,
     setLogDate, setGoals, setHasError,
     createEntry, updateEntry, deleteEntry, reloadEntries,
     changeDate, handleAmountInputChange,

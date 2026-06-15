@@ -7,6 +7,7 @@ import { LogEntryRow } from './LogEntryRow'
 interface LogEntryListProps {
   entries: Entry[]
   foods: FoodItem[]
+  loading?: boolean
   onRemove: (index: number) => void
   onAmountInputChange: (index: number, value: string) => void
   onAmountBlur: (index: number) => void
@@ -19,8 +20,24 @@ const MEAL_COLORS: Record<string, string> = {
   snack: 'bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-900',
 }
 
-export function LogEntryList({ entries, foods, onRemove, onAmountInputChange, onAmountBlur }: LogEntryListProps) {
+export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputChange, onAmountBlur }: LogEntryListProps) {
   const t = useTranslations('LogEntryList')
+
+  if (loading) {
+    return (
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 space-y-3 animate-pulse">
+        <div className="h-4 w-32 bg-gray-200 dark:bg-gray-800 rounded" />
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className="h-5 w-5 bg-gray-200 dark:bg-gray-800 rounded" />
+            <div className="flex-1 h-8 bg-gray-200 dark:bg-gray-800 rounded-lg" />
+            <div className="h-8 w-20 bg-gray-200 dark:bg-gray-800 rounded-lg" />
+            <div className="h-8 w-24 bg-gray-200 dark:bg-gray-800 rounded-lg" />
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   if (entries.length === 0) {
     return (
