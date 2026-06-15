@@ -134,17 +134,32 @@ export default function HomeClient({ user }: HomeClientProps) {
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
-      <header className="flex items-center justify-between">
+      <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">{t('title')}</h1>
-        <div className="flex items-center gap-3">
-          <span className="hidden text-sm text-[var(--muted-foreground)] sm:inline">{user.email}</span>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <span className="hidden text-sm text-[var(--muted-foreground)] sm:inline self-center">{user.email}</span>
           <ThemeToggle />
           <LangSwitcher />
-          <button onClick={() => setShowGoals(true)} className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">{t('goals')}</button>
+          <button
+            onClick={() => setShowGoals(true)}
+            className="text-sm px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            {t('goals')}
+          </button>
           {user.role === 'admin' && (
-            <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">{t('admin')}</Link>
+            <Link
+              href="/admin"
+              className="text-sm px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              {t('admin')}
+            </Link>
           )}
-          <button onClick={handleLogout} className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">{ta('logout')}</button>
+          <button
+            onClick={handleLogout}
+            className="text-sm px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            {ta('logout')}
+          </button>
         </div>
       </header>
 
