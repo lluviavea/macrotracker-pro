@@ -34,7 +34,9 @@ export function MacroSummary({ calories, protein, fat, carbs, sugar, fiber, goal
   return (
     <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
       {items.map(s => {
-        const pct = s.goal && s.goal > 0 ? Math.min(100, Math.round((s.value / s.goal) * 100)) : 0
+        const rawPct = s.goal && s.goal > 0 ? Math.round((s.value / s.goal) * 100) : 0
+        const pct = Math.min(100, rawPct)
+        const barColor = rawPct > 100 ? 'bg-red-500' : rawPct === 100 ? 'bg-green-500' : s.barColor
         return (
           <div key={s.label} className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700 text-center shadow-sm">
             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">{s.label}</p>
@@ -42,10 +44,10 @@ export function MacroSummary({ calories, protein, fat, carbs, sugar, fiber, goal
             <p className="text-xs text-gray-400 dark:text-gray-500">{s.unit}</p>
             {s.goal && s.goal > 0 && (
               <div className="mt-2">
-                <div className="h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full transition-all duration-300 ${pct >= 100 ? 'bg-green-500' : s.barColor}`} style={{ width: `${pct}%` }} />
+                <div className="h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full transition-all duration-300 ${barColor}`} style={{ width: `${pct}%` }} />
                 </div>
-                <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{pct}% &middot; {s.goal}{s.unit}</p>
+                <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{rawPct}% &middot; {s.goal}{s.unit}</p>
               </div>
             )}
           </div>
