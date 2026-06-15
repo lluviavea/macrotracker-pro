@@ -25,6 +25,10 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
     return calculateMacros(food, num)
   }, [amount, food])
 
+  const presets = food.measureType === 'unit' && food.unitName
+    ? [1, 2, 3, 4]
+    : [50, 100, 150, 200]
+
   const mealOptions = [
     { value: '', label: t('noMeal') },
     { value: 'desayuno', label: t('breakfast') },
@@ -59,6 +63,18 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
           <span className="text-sm text-gray-500 dark:text-gray-400 w-10">
             {food.measureType === 'unit' && food.unitName ? food.unitName : t('gram')}
           </span>
+        </div>
+        <div className="flex flex-wrap gap-2 mt-3">
+          {presets.map(p => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setAmount(String(p))}
+              className="text-xs px-2.5 py-1 rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              {p}{food.measureType === 'unit' && food.unitName ? ` ${food.unitName}` : 'g'}
+            </button>
+          ))}
         </div>
         {preview && (
           <div className="mt-3 p-2.5 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-xs text-gray-600 dark:text-gray-400">
