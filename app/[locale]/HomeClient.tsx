@@ -15,6 +15,7 @@ import { FoodGrid } from '@/components/FoodGrid'
 import { LangSwitcher } from '@/components/LangSwitcher'
 import { AddFoodModal } from '@/components/AddFoodModal'
 import { GoalsModal } from '@/components/GoalsModal'
+import { WeeklySummaryModal } from '@/components/WeeklySummaryModal'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { showToast } from '@/components/Toast'
 
@@ -46,6 +47,7 @@ export default function HomeClient({ user }: HomeClientProps) {
   const [search, setSearch] = useState('')
   const [pendingFood, setPendingFood] = useState<FoodItem | null>(null)
   const [showGoals, setShowGoals] = useState(false)
+  const [showWeekly, setShowWeekly] = useState(false)
 
   const displayName = (name: string, nameEn?: string | null) =>
     locale === 'en' && nameEn ? nameEn : name
@@ -146,6 +148,12 @@ export default function HomeClient({ user }: HomeClientProps) {
           >
             {t('goals')}
           </button>
+          <button
+            onClick={() => setShowWeekly(true)}
+            className="text-sm px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            {t('weekly')}
+          </button>
           {user.role === 'admin' && (
             <Link
               href="/admin"
@@ -226,6 +234,14 @@ export default function HomeClient({ user }: HomeClientProps) {
           goals={goals}
           onSave={handleSaveGoals}
           onClose={() => setShowGoals(false)}
+        />
+      )}
+
+      {showWeekly && (
+        <WeeklySummaryModal
+          currentDate={logDate}
+          goals={goals}
+          onClose={() => setShowWeekly(false)}
         />
       )}
     </div>

@@ -1,6 +1,6 @@
 import { db } from './index'
 import { logEntries } from './schema'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, gte, lte } from 'drizzle-orm'
 import { calculateMacros } from '../macros'
 import type { FoodItem } from '../types'
 
@@ -27,6 +27,37 @@ export async function getLogForDate(userId: number, targetDate: string): Promise
     .from(logEntries)
     .where(and(eq(logEntries.userId, userId), eq(logEntries.date, targetDate)))
     .orderBy(logEntries.createdAt)
+
+  return rows.map(r => ({
+    id: r.id,
+    date: r.date,
+    food: r.foodName,
+    category: r.category,
+    amount: Number(r.amount),
+    unit: r.unit,
+    protein: Number(r.protein),
+    fat: Number(r.fat),
+    carbs: Number(r.carbs),
+    sugar: Number(r.sugar),
+    fiber: Number(r.fiber),
+    calories: r.calories,
+    preparation: r.preparation ?? '',
+    meal: r.meal ?? '',
+  }))
+}
+
+export async function getLogForRange(userId: number, startDate: string, endDate: string): Promise<LogEntry[]> {
+  const rows = await db
+    .select()
+    .from(logEntries)
+    .where(
+      and(
+        eq(logEntries.userId, userId),
+        gte(logEntries.date, startDate),
+        lte(logEntries.date, endDate),
+      ),
+    )
+    .orderBy(logEntries.date, logEntries.createdAt)
 
   return rows.map(r => ({
     id: r.id,

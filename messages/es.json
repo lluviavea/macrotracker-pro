@@ -2,6 +2,7 @@
   "Home": {
     "title": "MacroTracker",
     "goals": "Metas",
+    "weekly": "Semanal",
     "admin": "Admin",
     "added": "Agregado: {name}",
     "addError": "Error al agregar {name}",
@@ -94,6 +95,20 @@
     "fiber": "Fibra",
     "kcal": "kcal",
     "g": "g"
+  },
+  "WeeklySummary": {
+    "title": "Resumen semanal",
+    "prevWeek": "Semana anterior",
+    "nextWeek": "Semana siguiente",
+    "thisWeek": "Esta semana",
+    "close": "Cerrar",
+    "calorieGoal": "Meta diaria: {goal} kcal",
+    "caloriesByDay": "Calorías por día",
+    "empty": "No hay registros esta semana",
+    "avgProtein": "Promedio proteína",
+    "avgFat": "Promedio grasa",
+    "avgCarbs": "Promedio carbohidratos",
+    "avgCalories": "Promedio calorías"
   },
   "CategoryTabs": {
     "proteina": "Proteína",

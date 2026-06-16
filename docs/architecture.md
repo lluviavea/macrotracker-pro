@@ -35,6 +35,7 @@ app/
   api/
     foods/route.ts       - GET/POST/PUT/DELETE: food catalog (admin)
     log/route.ts         - GET/POST/PUT/DELETE: daily log entries
+    log/range/route.ts   - GET: log entries across a date range (weekly summary)
     nutrition/search/    - (placeholder) nutrition lookup endpoint
 i18n/
   routing.ts             - next-intl routing config (locales, defaultLocale, prefix)
@@ -61,7 +62,8 @@ components/
   FoodCard.tsx           - Single food item with add button
   AddFoodModal.tsx       - Amount + meal picker before adding to log
   GoalsModal.tsx         - Edit daily goals (calories, P/F/C)
-lib/
+  WeeklySummaryModal.tsx - Weekly macro averages + daily calorie bar chart
+  lib/
   types.ts               - TypeScript types (FoodItem, FoodCategory, Entry)
   nutrition.ts           - Static NUTRITION_DATA lookup array (~180 entries)
   nutrition-utils.ts     - normalizeName, lookupNutrition helpers
