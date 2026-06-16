@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import type { FoodItem, Entry } from '@/lib/types'
 import { findFood, calculateMacros } from '@/lib/macros'
@@ -16,15 +17,21 @@ interface LogEntryRowProps {
 export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange, onAmountBlur }: LogEntryRowProps) {
   const locale = useLocale()
   const t = useTranslations('LogEntryRow')
+  const [isRemoving, setIsRemoving] = useState(false)
   const food = findFood(foods, entry.foodName, entry.category)
   const displayName = locale === 'en' && food?.nameEn ? food.nameEn : entry.foodName
   const liveAmount = parseFloat(entry.amountInput) || 0
   const macros = food ? calculateMacros(food, liveAmount) : { protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0 }
   const isUnit = food?.measureType === 'unit' && food?.unitName
 
+  function handleRemove() {
+    setIsRemoving(true)
+    setTimeout(() => onRemove(index), 250)
+  }
+
   return (
-    <div className="p-3 flex items-center gap-3">
-      <button onClick={() => onRemove(index)} className="text-red-400 hover:text-red-600 dark:hover:text-red-300 text-lg leading-none">&times;</button>
+    <div className={`p-3 flex items-center gap-3 animate-slide-up transition-all duration-250 ${isRemoving ? 'opacity-0 -translate-x-4' : 'opacity-100 translate-x-0'}`}>
+      <button onClick={handleRemove} className="text-red-400 hover:text-red-600 dark:hover:text-red-300 text-lg leading-none">&times;</button>
       <div className="flex-1 min-w-0">
         <p className="font-medium text-sm truncate dark:text-gray-100">{displayName}</p>
         <div className="flex gap-1 mt-0.5">

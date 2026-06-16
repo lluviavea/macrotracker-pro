@@ -22,7 +22,7 @@ export function CategoryTabs({ selected, onSelect }: CategoryTabsProps) {
   const t = useTranslations('CategoryTabs')
 
   return (
-    <div className="sticky top-0 z-20 -mx-4 px-4 py-2 flex gap-2 overflow-x-auto bg-gray-50/95 dark:bg-gray-950/95 backdrop-blur-sm">
+    <div className="sticky top-0 z-20 -mx-4 px-4 py-2 flex gap-2 overflow-x-auto bg-gray-50/95 dark:bg-gray-950/95 backdrop-blur-sm animate-slide-up">
       {CATEGORIES.map(c => (
         <button
           key={c.key}

@@ -32,7 +32,7 @@ export function MacroSummary({ calories, protein, fat, carbs, sugar, fiber, goal
   ]
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+    <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 animate-slide-up">
       {items.map(s => {
         const rawPct = s.goal && s.goal > 0 ? Math.round((s.value / s.goal) * 100) : 0
         const pct = Math.min(100, rawPct)

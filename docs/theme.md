@@ -68,6 +68,7 @@ getInitialTheme()
 
 useEffect (mount)
   // Set state to getInitialTheme() + apply theme
+  // Add .theme-transition to <html> for smooth color transitions
   // Listen to prefers-color-scheme changes
   //   → if user has NOT set a manual preference (no localStorage key),
   //     follow the system change
@@ -75,6 +76,13 @@ useEffect (mount)
 useEffect (state change)
   // If user calls setTheme, persist to localStorage and apply
 ```
+
+## Smooth theme transitions
+
+After hydration, `ThemeProvider` adds the `.theme-transition` class to `<html>`. This applies a
+300 ms `transition-property` for `background-color`, `border-color`, `color`, `fill`, and `stroke`
+to `<html>` and all descendants. The transition is added after mount so it does not interfere with
+the anti-flash inline script.
 
 `applyTheme(theme)` is `document.documentElement.classList.toggle('dark', theme === 'dark')`.
 

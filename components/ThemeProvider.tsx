@@ -36,6 +36,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setThemeState(initial) // eslint-disable-line react-hooks/set-state-in-effect
     applyTheme(initial)
     setMounted(true)
+    document.documentElement.classList.add('theme-transition')
   }, [])
 
   useEffect(() => {

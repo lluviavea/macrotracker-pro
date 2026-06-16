@@ -28,6 +28,14 @@ body {
   color: var(--color-foreground);
 }
 
+/* Smooth theme transitions after hydration. Applied by ThemeProvider. */
+.theme-transition,
+.theme-transition * {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
 /* Fruit-salad macro palette: darker in light mode, pastel in dark mode */
 :root {
   /* Light mode: high-contrast variants of the fruit palettes */

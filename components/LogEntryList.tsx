@@ -25,7 +25,7 @@ export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputC
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 space-y-3 animate-pulse">
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 space-y-3 animate-pulse animate-slide-up">
         <div className="h-4 w-32 bg-gray-200 dark:bg-gray-800 rounded" />
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="flex items-center gap-3">
@@ -41,7 +41,7 @@ export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputC
 
   if (entries.length === 0) {
     return (
-      <div className="text-center py-10 px-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+      <div className="text-center py-10 px-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm animate-slide-up">
         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('empty')}</p>
         <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('emptyHint')}</p>
       </div>
@@ -70,7 +70,7 @@ export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputC
   }
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm animate-slide-up">
       <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
         <h2 className="font-semibold dark:text-gray-100">{t('title')}</h2>
         <span className="text-xs text-gray-400 dark:text-gray-500">{t('count', { count: entries.length })}</span>

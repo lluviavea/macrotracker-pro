@@ -18,7 +18,7 @@ export function FoodCard({ food, onAdd, showCategory }: FoodCardProps) {
   return (
     <button
       onClick={() => onAdd(food)}
-      className="bg-white dark:bg-gray-900 rounded-xl p-3 border border-gray-200 dark:border-gray-700 text-left hover:[border-color:var(--macro-calories)] hover:shadow-sm transition-all text-sm"
+      className="bg-white dark:bg-gray-900 rounded-xl p-3 border border-gray-200 dark:border-gray-700 text-left hover:[border-color:var(--macro-calories)] hover:shadow-sm transition-all text-sm animate-slide-up"
     >
       <p className="font-medium truncate dark:text-gray-100">{displayName}</p>
       <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{food.protein}<span className="macro-protein">P</span> &middot; {food.fat}<span className="macro-fat">F</span> &middot; {food.carbs}<span className="macro-carbs">C</span> &middot; <span className="macro-calories">{food.calories}</span><span className="macro-calories">kcal</span></p>
