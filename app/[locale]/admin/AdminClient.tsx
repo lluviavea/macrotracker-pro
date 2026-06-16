@@ -6,7 +6,8 @@ import { Link } from '@/i18n/navigation'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { LangSwitcher } from '@/components/LangSwitcher'
 import type { FoodCategory } from '@/lib/types'
-import { lookupNutrition } from '@/lib/nutrition-utils'
+import { lookupNutrition, type NutritionHint } from '@/lib/nutrition-utils'
+import { FoodAutocomplete, type FoodSuggestion } from '@/components/FoodAutocomplete'
 
 function redirectToLogin() {
   if (typeof window !== 'undefined') {
@@ -162,6 +163,28 @@ export default function AdminPage() {
     setShowModal(true)
   }
 
+  function applySuggestion(suggestion: NutritionHint & { name?: string }) {
+    setForm(f => ({
+      ...f,
+      name: suggestion.name ?? f.name,
+      nameEn: suggestion.nameEn ?? f.nameEn,
+      protein: String(suggestion.protein),
+      fat: String(suggestion.fat),
+      carbs: String(suggestion.carbs),
+      sugar: String(suggestion.sugar),
+      fiber: String(suggestion.fiber),
+      calories: String(suggestion.calories),
+      measureType: suggestion.measureType,
+      unitName: suggestion.unitName ?? '',
+      unitGrams: suggestion.unitGrams !== null ? String(suggestion.unitGrams) : '',
+      preparation: suggestion.preparation ?? '',
+    }))
+  }
+
+  function handleSuggestionSelect(suggestion: FoodSuggestion) {
+    applySuggestion(suggestion)
+  }
+
   function handleNameBlur() {
     if (!form.name.trim()) return
 
@@ -169,20 +192,7 @@ export default function AdminPage() {
     const found = suggestion.protein !== 0 || suggestion.fat !== 0 || suggestion.carbs !== 0 || suggestion.calories !== 0
 
     if (found) {
-      setForm(f => ({
-        ...f,
-        nameEn: suggestion.nameEn ?? f.nameEn,
-        protein: String(suggestion.protein),
-        fat: String(suggestion.fat),
-        carbs: String(suggestion.carbs),
-        sugar: String(suggestion.sugar),
-        fiber: String(suggestion.fiber),
-        calories: String(suggestion.calories),
-        measureType: suggestion.measureType,
-        unitName: suggestion.unitName ?? '',
-        unitGrams: suggestion.unitGrams !== null ? String(suggestion.unitGrams) : '',
-        preparation: suggestion.preparation ?? '',
-      }))
+      applySuggestion({ ...suggestion, name: form.name })
     }
   }
 
@@ -370,12 +380,11 @@ export default function AdminPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('nameLabel')} (ES)</label>
-                  <input
-                    type="text"
+                  <FoodAutocomplete
                     value={form.name}
-                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                    onChange={value => setForm(f => ({ ...f, name: value }))}
+                    onSelect={handleSuggestionSelect}
                     onBlur={handleNameBlur}
-                    className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20 dark:bg-gray-800 dark:text-gray-100"
                     placeholder={t('namePlaceholder')}
                   />
                 </div>

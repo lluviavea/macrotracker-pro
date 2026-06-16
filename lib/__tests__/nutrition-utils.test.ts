@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeName, lookupNutrition } from '../nutrition-utils'
+import { normalizeName, lookupNutrition, lookupNutritionMatches } from '../nutrition-utils'
 
 describe('normalizeName', () => {
   it('lowercases the input', () => {
@@ -69,5 +69,33 @@ describe('lookupNutrition', () => {
   it('finds a food with preparation', () => {
     const result = lookupNutrition('frijoles')
     expect(result.preparation).toBe('cocido')
+  })
+})
+
+describe('lookupNutritionMatches', () => {
+  it('returns empty array for empty input', () => {
+    expect(lookupNutritionMatches('')).toEqual([])
+  })
+
+  it('returns matching foods ordered by NUTRITION_DATA', () => {
+    const results = lookupNutritionMatches('pollo')
+    expect(results.length).toBeGreaterThan(0)
+    expect(results.some(r => r.matches.includes('pollo'))).toBe(true)
+  })
+
+  it('limits results to 5 by default', () => {
+    const results = lookupNutritionMatches('a')
+    expect(results.length).toBeLessThanOrEqual(5)
+  })
+
+  it('matches partial input', () => {
+    const results = lookupNutritionMatches('pechuga')
+    expect(results.some(r => r.matches.includes('pechuga'))).toBe(true)
+  })
+
+  it('ignores accents', () => {
+    const withAccent = lookupNutritionMatches('atún')
+    const withoutAccent = lookupNutritionMatches('atun')
+    expect(withAccent).toEqual(withoutAccent)
   })
 })

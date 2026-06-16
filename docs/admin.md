@@ -18,7 +18,8 @@ The admin route is now protected. Only users with `role = 'admin'` can access it
 | `app/api/foods/route.ts` | API: GET, POST, PUT, DELETE (Zod-validated) |
 | `lib/db/foods.ts` | DB queries: `getAllFoods`, `getFoodByNameAndCategory`, `insertFood`, `updateFood`, `deleteFood`, `seedUserCatalog` |
 | `lib/validation.ts` | `createFoodSchema`, `updateFoodSchema`, `deleteFoodSchema` |
-| `lib/nutrition-utils.ts` | `lookupNutrition` for auto-fill |
+| `lib/nutrition-utils.ts` | `lookupNutrition` and `lookupNutritionMatches` for auto-fill |
+| `components/FoodAutocomplete.tsx` | Search-as-you-type dropdown for the admin name field |
 
 ## Data flow
 
@@ -33,14 +34,18 @@ All three mutating handlers call `revalidatePath('/api/foods')` so the GET cache
 
 ## Auto-fill from `NUTRITION_DATA`
 
-When the admin types a name in the **Spanish** field and blurs it, the form calls
-`lookupNutrition(form.name)` and pre-fills:
+When the admin types in the **Spanish name** field, a dropdown shows matching foods from
+`NUTRITION_DATA` (`components/FoodAutocomplete.tsx`). The admin can:
 
-- `nameEn`, `protein`, `fat`, `carbs`, `sugar`, `fiber`, `calories`
-- `measureType`, `unitName`, `unitGrams`, `preparation`
+- Click a suggestion to pre-fill every field.
+- Press `ArrowDown` / `ArrowUp` + `Enter` to select with the keyboard.
+- Press `Escape` or click outside to close the dropdown.
 
-This is convenience only — the admin can override any field. The admin still has to click save to
-persist; auto-fill does not create a row.
+If the admin types a known name and leaves the field (`onBlur`), `lookupNutrition(form.name)` still
+pre-fills the macros as a fallback.
+
+Either way, the admin can override any field. The admin still has to click save to persist;
+auto-fill does not create a row.
 
 ## Sorting & searching
 

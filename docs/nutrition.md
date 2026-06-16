@@ -81,9 +81,13 @@ normalizeName(name)
 lookupNutrition(name)
   // iterates NUTRITION_DATA, checks if any `matches` substring is contained in `name`
   // returns macro hints (or zeros) and auto-fills nameEn, measureType, unitName, unitGrams, preparation
+
+lookupNutritionMatches(name, limit = 5)
+  // returns up to `limit` NUTRITION_DATA entries whose `matches` overlap with `name`
+  // used by the admin autocomplete dropdown
 ```
 
-`lookupNutrition` is **only** used by the admin form for auto-fill convenience — it does not
-auto-create foods. The admin still has to click save.
+`lookupNutrition` and `lookupNutritionMatches` are used by the admin form for auto-fill
+convenience — they do not auto-create foods. The admin still has to click save.
 
 Read `docs/architecture.md` for the overall architecture.
