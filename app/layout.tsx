@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ToastContainer } from "@/components/Toast";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { PWARegister } from "@/components/PWARegister";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,11 +18,18 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "MacroTracker",
   description: "Track your daily macros",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "MacroTracker",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#171717",
 };
 
 const themeScript = `
@@ -50,6 +58,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <ToastContainer />
+        <PWARegister />
       </body>
     </html>
   );

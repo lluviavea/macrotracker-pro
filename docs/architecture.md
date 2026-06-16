@@ -8,6 +8,7 @@ feature. For cross-cutting concerns, see the dedicated docs:
 - Daily goals → `docs/goals.md`
 - Dark/light mode → `docs/theme.md`
 - Nutrition data & formulas → `docs/nutrition.md`
+- PWA / installability → `docs/pwa.md`
 
 ## Tech Stack
 
@@ -62,7 +63,7 @@ components/
   GoalsModal.tsx         - Edit daily goals (calories, P/F/C)
 lib/
   types.ts               - TypeScript types (FoodItem, FoodCategory, Entry)
-  nutrition.ts           - Static NUTRITION_DATA lookup array (~80 entries)
+  nutrition.ts           - Static NUTRITION_DATA lookup array (~180 entries)
   nutrition-utils.ts     - normalizeName, lookupNutrition helpers
   macros.ts              - calculateMacros, findFood, calculateTotals
   goals.ts               - Goals type + localStorage get/save
