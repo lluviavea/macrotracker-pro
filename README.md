@@ -25,7 +25,7 @@ Porque las apps de conteo de calorías suelen ser lentas, llenas de anuncios, o 
 
 ```bash
 just setup     # Una sola vez: dependencias, base de datos, esquema y datos iniciales
-just run       # Cada día: levanta la base de datos si no está corriendo, migra y abre http://localhost:3000
+just run       # Cada día: levanta la base de datos si no está corriendo, migra y abre http://127.0.0.1:3000
 ```
 
 > **Nota técnica**: Necesitas [mise](https://mise.jdx.dev), [just](https://github.com/casey/just), y [Docker](https://www.docker.com/) corriendo. Consulta [`docs/architecture.md`](docs/architecture.md) para entender la estructura del proyecto y [`docs/admin.md`](docs/admin.md) si quieres gestionar el catálogo.
