@@ -4,7 +4,7 @@ Read this when working with nutrition calculations, food items, or the `NUTRITIO
 
 ## Data Source
 
-**Primary source is the static `NUTRITION_DATA` array** in `lib/nutrition.ts` (~130 entries spanning all
+**Primary source is the static `NUTRITION_DATA` array** in `lib/nutrition.ts` (~155 entries spanning all
 7 categories). It is the single source of truth for the food catalog. The seed script
 (`lib/db/seed.ts`) reads from this array and inserts into PostgreSQL.
 
