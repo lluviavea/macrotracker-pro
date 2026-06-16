@@ -253,15 +253,17 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-4 space-y-6">
-      <header className="flex items-center justify-between">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">{t('back')}</Link>
           <h1 className="text-2xl font-bold mt-1">{t('title')}</h1>
         </div>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <LangSwitcher />
-          <div className="relative flex-1 max-w-xs">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <LangSwitcher />
+          </div>
+          <div className="relative w-full sm:flex-1 sm:max-w-xs">
             <input
               type="text"
               value={search}
