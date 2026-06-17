@@ -20,9 +20,10 @@ import { GoalsModal } from '@/components/GoalsModal'
 import { WeeklySummaryModal } from '@/components/WeeklySummaryModal'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { showToast } from '@/components/Toast'
+import { getLocalISODate } from '@/lib/calendar'
 
 function getDate() {
-  return new Date().toISOString().slice(0, 10)
+  return getLocalISODate()
 }
 
 interface HomeClientProps {

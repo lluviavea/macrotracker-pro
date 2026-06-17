@@ -24,6 +24,10 @@ export function addDays(date: string, days: number): string {
   return formatISODate(d.getFullYear(), d.getMonth(), d.getDate())
 }
 
+export function getLocalISODate(d = new Date()): string {
+  return formatISODate(d.getFullYear(), d.getMonth(), d.getDate())
+}
+
 export function isSameDay(a: Date, b: Date): boolean {
   return (
     a.getFullYear() === b.getFullYear() &&

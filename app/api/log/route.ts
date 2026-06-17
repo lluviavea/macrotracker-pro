@@ -4,13 +4,14 @@ import { getLogForDate, addLogEntry, updateLogEntry, deleteLogEntry } from '@/li
 import { getFoodByNameAndCategory } from '@/lib/db/foods'
 import { createLogEntrySchema, updateLogEntrySchema, deleteLogEntrySchema } from '@/lib/validation'
 import { requireSession } from '@/lib/auth'
+import { getLocalISODate } from '@/lib/calendar'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   try {
     const session = await requireSession()
-    const date = req.nextUrl.searchParams.get('date') || new Date().toISOString().slice(0, 10)
+    const date = req.nextUrl.searchParams.get('date') || getLocalISODate()
     const entries = await getLogForDate(session.userId, date)
     return NextResponse.json({ entries })
   } catch (error) {
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     const food = await getFoodByNameAndCategory(parsed.foodName, parsed.category, session.userId)
     if (!food) return NextResponse.json({ error: 'Food not found' }, { status: 404 })
 
-    const id = await addLogEntry(session.userId, food, parsed.amount, parsed.date || new Date().toISOString().slice(0, 10), parsed.meal)
+    const id = await addLogEntry(session.userId, food, parsed.amount, parsed.date || getLocalISODate(), parsed.meal)
     return NextResponse.json({ success: true, id })
   } catch (error) {
     if (error instanceof z.ZodError) {

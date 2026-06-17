@@ -4,6 +4,7 @@ import {
   formatISODate,
   isSameDay,
   addDays,
+  getLocalISODate,
   getCalendarDays,
   getMonthName,
   getWeekdayNames,
@@ -45,6 +46,13 @@ describe('addDays', () => {
   it('handles leap years', () => {
     expect(addDays('2024-02-28', 1)).toBe('2024-02-29')
     expect(addDays('2024-02-29', 1)).toBe('2024-03-01')
+  })
+})
+
+describe('getLocalISODate', () => {
+  it('returns YYYY-MM-DD from local date components', () => {
+    expect(getLocalISODate(new Date(2026, 5, 16))).toBe('2026-06-16')
+    expect(getLocalISODate(new Date(2026, 0, 5))).toBe('2026-01-05')
   })
 })
 

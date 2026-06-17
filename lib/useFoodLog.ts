@@ -6,6 +6,7 @@ import { calculateTotals } from '@/lib/macros'
 import { getGoals } from '@/lib/goals'
 import type { Goals } from '@/lib/goals'
 import type { RecentFoodRef } from '@/lib/recents'
+import { getLocalISODate, addDays } from '@/lib/calendar'
 
 function redirectToLogin() {
   if (typeof window !== 'undefined') {
@@ -14,7 +15,7 @@ function redirectToLogin() {
 }
 
 function getDate() {
-  return new Date().toISOString().slice(0, 10)
+  return getLocalISODate()
 }
 
 export type LoadError = 'auth' | 'load-foods' | 'load-entries' | null
@@ -235,9 +236,7 @@ export function useFoodLog() {
   }, [logDate, loadEntries, foods])
 
   const changeDate = useCallback((days: number) => {
-    const d = new Date(logDate + 'T12:00:00')
-    d.setDate(d.getDate() + days)
-    setLogDate(d.toISOString().slice(0, 10))
+    setLogDate(addDays(logDate, days))
   }, [logDate])
 
   const handleAmountInputChange = useCallback((index: number, value: string) => {

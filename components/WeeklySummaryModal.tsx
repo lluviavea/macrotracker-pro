@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import type { Goals } from '@/lib/goals'
 import { useFocusTrap } from '@/lib/useFocusTrap'
+import { getLocalISODate } from '@/lib/calendar'
 
 interface Entry {
   id: number
@@ -20,10 +21,6 @@ interface WeeklySummaryModalProps {
   currentDate: string
   goals: Goals
   onClose: () => void
-}
-
-function formatISODate(d: Date): string {
-  return d.toISOString().slice(0, 10)
 }
 
 function getWeekBounds(anchor: string, offsetWeeks: number) {
@@ -55,8 +52,8 @@ export function WeeklySummaryModal({ currentDate, goals, onClose }: WeeklySummar
   const trapRef = useFocusTrap(true)
 
   const { monday, sunday } = useMemo(() => getWeekBounds(currentDate, weekOffset), [currentDate, weekOffset])
-  const startStr = formatISODate(monday)
-  const endStr = formatISODate(sunday)
+  const startStr = getLocalISODate(monday)
+  const endStr = getLocalISODate(sunday)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -89,7 +86,7 @@ export function WeeklySummaryModal({ currentDate, goals, onClose }: WeeklySummar
     const totals: Record<string, { calories: number; protein: number; fat: number; carbs: number }> = {}
     const current = new Date(monday)
     for (let i = 0; i < 7; i++) {
-      totals[formatISODate(current)] = { calories: 0, protein: 0, fat: 0, carbs: 0 }
+      totals[getLocalISODate(current)] = { calories: 0, protein: 0, fat: 0, carbs: 0 }
       current.setDate(current.getDate() + 1)
     }
     for (const entry of entries) {
@@ -211,7 +208,7 @@ export function WeeklySummaryModal({ currentDate, goals, onClose }: WeeklySummar
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">{t('caloriesByDay')}</h3>
                 <div className="flex items-end justify-between gap-2 h-48">
                   {days.map((day, i) => {
-                    const key = formatISODate(day)
+                    const key = getLocalISODate(day)
                     const total = dailyTotals[key]?.calories || 0
                     const height = Math.round((total / maxCalories) * 100)
                     const isToday = key === currentDate
