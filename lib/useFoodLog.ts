@@ -209,6 +209,31 @@ export function useFoodLog() {
     }
   }, [entries])
 
+  const copyPreviousDay = useCallback(async (): Promise<number> => {
+    try {
+      const r = await fetch('/api/log/copy-day', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetDate: logDate }),
+      })
+      if (r.status === 401) { redirectToLogin(); return 0 }
+      const d = await r.json()
+      if (d.success && d.count > 0) {
+        const fresh = await loadEntries(logDate)
+        setEntries(fresh)
+        setRecents(prev => {
+          const copiedNames = new Set(fresh.map(e => `${e.category}|${e.foodName}`))
+          const merged = foods.filter(f => copiedNames.has(`${f.category}|${f.name}`))
+          const next = [...merged, ...prev.filter(f => !copiedNames.has(`${f.category}|${f.name}`))]
+          return next.slice(0, 8)
+        })
+      }
+      return d.count ?? 0
+    } catch {
+      return 0
+    }
+  }, [logDate, loadEntries, foods])
+
   const changeDate = useCallback((days: number) => {
     const d = new Date(logDate + 'T12:00:00')
     d.setDate(d.getDate() + days)
@@ -225,7 +250,7 @@ export function useFoodLog() {
     foods, loading, entriesLoading, entries, logDate, goals, error, totals,
     recents, recentsLoading,
     setLogDate, setGoals, setError,
-    createEntry, updateEntry, deleteEntry, reloadEntries, reloadFoods,
+    createEntry, updateEntry, deleteEntry, copyPreviousDay, reloadEntries, reloadFoods,
     changeDate, handleAmountInputChange,
   }
 }

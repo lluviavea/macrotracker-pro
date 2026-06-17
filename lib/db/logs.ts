@@ -96,6 +96,40 @@ export async function getRecentFoods(userId: number, limit: number): Promise<Rec
   )
 }
 
+export async function copyLogEntries(
+  userId: number,
+  fromDate: string,
+  toDate: string,
+): Promise<number> {
+  const rows = await db
+    .select()
+    .from(logEntries)
+    .where(and(eq(logEntries.userId, userId), eq(logEntries.date, fromDate)))
+    .orderBy(logEntries.createdAt)
+
+  if (rows.length === 0) return 0
+
+  const values = rows.map(r => ({
+    userId,
+    date: toDate,
+    foodName: r.foodName,
+    category: r.category,
+    amount: r.amount,
+    unit: r.unit,
+    protein: r.protein,
+    fat: r.fat,
+    carbs: r.carbs,
+    sugar: r.sugar,
+    fiber: r.fiber,
+    calories: r.calories,
+    preparation: r.preparation,
+    meal: r.meal,
+  }))
+
+  await db.insert(logEntries).values(values)
+  return rows.length
+}
+
 export async function addLogEntry(
   userId: number,
   food: FoodItem,

@@ -13,6 +13,7 @@ import { CategoryTabs } from '@/components/CategoryTabs'
 import { FoodSearch } from '@/components/FoodSearch'
 import { FoodGrid } from '@/components/FoodGrid'
 import { RecentFoods } from '@/components/RecentFoods'
+import { CopyPreviousDay } from '@/components/CopyPreviousDay'
 import { LangSwitcher } from '@/components/LangSwitcher'
 import { AddFoodModal } from '@/components/AddFoodModal'
 import { GoalsModal } from '@/components/GoalsModal'
@@ -41,7 +42,7 @@ export default function HomeClient({ user }: HomeClientProps) {
     foods, loading, entriesLoading, entries, logDate, goals, error, totals,
     recents, recentsLoading,
     setLogDate, setGoals, setError,
-    createEntry, updateEntry, deleteEntry, reloadEntries, reloadFoods,
+    createEntry, updateEntry, deleteEntry, copyPreviousDay, reloadEntries, reloadFoods,
     changeDate, handleAmountInputChange,
   } = useFoodLog()
 
@@ -50,6 +51,7 @@ export default function HomeClient({ user }: HomeClientProps) {
   const [pendingFood, setPendingFood] = useState<FoodItem | null>(null)
   const [showGoals, setShowGoals] = useState(false)
   const [showWeekly, setShowWeekly] = useState(false)
+  const [copying, setCopying] = useState(false)
 
   const displayName = (name: string, nameEn?: string | null) =>
     locale === 'en' && nameEn ? nameEn : name
@@ -91,6 +93,17 @@ export default function HomeClient({ user }: HomeClientProps) {
   const handleSaveGoals = (newGoals: typeof goals) => {
     setGoals(newGoals)
     setShowGoals(false)
+  }
+
+  const handleCopyPreviousDay = async () => {
+    setCopying(true)
+    const count = await copyPreviousDay()
+    setCopying(false)
+    if (count > 0) {
+      showToast(t('copied', { count }))
+    } else {
+      showToast(t('nothingToCopy'), 'warning')
+    }
   }
 
   const handleLogout = async () => {
@@ -197,6 +210,10 @@ export default function HomeClient({ user }: HomeClientProps) {
         onNextDay={() => changeDate(1)}
         onToday={() => setLogDate(getDate())}
       />
+
+      <div className="flex justify-center -mt-2">
+        <CopyPreviousDay onCopy={handleCopyPreviousDay} disabled={copying || entriesLoading} />
+      </div>
 
       <MacroSummary
         calories={totals.calories}

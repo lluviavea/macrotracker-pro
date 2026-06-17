@@ -29,7 +29,12 @@
     "loadError": "Error loading data. Check your connection and try again.",
     "loadFoodsError": "Failed to load the food catalog.",
     "loadEntriesError": "Failed to load the log for this day.",
-    "retry": "Retry"
+    "retry": "Retry",
+    "copied": "Copied {count, plural, one {1 food} other {{count} foods}} from previous day",
+    "nothingToCopy": "No foods logged on the previous day"
+  },
+  "CopyPreviousDay": {
+    "copy": "Copy previous day"
   },
   "Admin": {
     "loading": "Loading...",

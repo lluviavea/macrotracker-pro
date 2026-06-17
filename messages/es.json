@@ -29,7 +29,12 @@
     "loadError": "Error al cargar datos. Verifica tu conexión e intenta de nuevo.",
     "loadFoodsError": "Error al cargar el catálogo de alimentos.",
     "loadEntriesError": "Error al cargar el registro del día.",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "copied": "Copiado {count, plural, one {1 alimento} other {{count} alimentos}} del día anterior",
+    "nothingToCopy": "No hay alimentos en el día anterior"
+  },
+  "CopyPreviousDay": {
+    "copy": "Copiar día anterior"
   },
   "Admin": {
     "loading": "Cargando...",
