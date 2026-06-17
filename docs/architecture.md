@@ -225,10 +225,11 @@ RootLayout (app/layout.tsx)
               ├── LogEntryList         (loading skeleton + empty state)
               │   └── LogEntryRow      (food, amount input, delete, macro breakdown)
               ├── RecentFoods          (horizontal scroll of recently logged foods)
+              ├── FavoriteFoods        (pinned foods; horizontal scroll)
+              ├── FoodSearch           (bilingual search; sticky, '/' shortcut)
               ├── CategoryTabs         (filter buttons; sticky while scrolling)
-              ├── FoodSearch           (bilingual search; global across categories)
               ├── FoodGrid             (empty states for category/search)
-              │   └── FoodCard         (add button; unit label; category badge)
+              │   └── FoodCard         (add button; unit label; category badge; favorite toggle)
               ├── AddFoodModal         (amount + meal picker; presets; live preview)
               ├── GoalsModal           (edit daily goals)
               ├── ThemeToggle          (current theme icon: moon/sun)
@@ -250,10 +251,23 @@ ToastContainer is mounted once at the root, siblings to children.
 | `lib/nutrition-utils.ts` | `normalizeName`, `lookupNutrition` (from `NUTRITION_DATA`) |
 | `lib/validation.ts` | Zod schemas for `/api/foods` and `/api/log` request bodies |
 | `lib/goals.ts` | `Goals` type + `getGoals` / `saveGoals` (localStorage) |
+| `lib/last-meal.ts` | `getLastMeal` / `saveLastMeal` — remembers last meal per food |
+| `lib/favorites.ts` | `getFavorites` / `isFavorite` / `toggleFavorite` — pinned foods |
 | `lib/recents.ts` | `selectRecents` — deduplicate and limit recent foods from log history |
 | `lib/calendar.ts` | Date helpers: `parseISODate`, `formatISODate`, `addDays`, calendar grid |
 | `lib/useFoodLog.ts` | Main client hook — foods, entries, recents, CRUD, optimistic updates, totals, typed errors |
 | `lib/useFocusTrap.ts` | Traps Tab focus inside a modal for accessibility |
+
+## Client-side preferences (localStorage)
+
+Several UX preferences are stored per-browser in `localStorage`. They are not
+synced across devices and have SSR-safe fallbacks.
+
+| Key | Purpose | Module |
+| --- | --- | --- |
+| `macrotracker-goals` | Daily calorie/protein/fat/carbs targets | `lib/goals.ts` |
+| `macrotracker-last-meals` | Last selected meal per food | `lib/last-meal.ts` |
+| `macrotracker-favorites` | Pinned foods for quick access | `lib/favorites.ts` |
 
 ## Internationalization (i18n)
 

@@ -13,9 +13,11 @@ Porque las apps de conteo de calorías suelen ser lentas, llenas de anuncios, o 
 - **Registro diario** — Agrega alimentos con un solo clic, ajusta las cantidades en gramos o por pieza
 - **Seguimiento automático** — Al registrar un alimento, los macros se calculan automáticamente
 - **7 categorías** — Proteína, carbohidratos, grasas, frutas, verduras, condimentos y suplementos
-- **Búsqueda bilingüe** — Encuentra cualquier alimento por nombre (ES o EN)
+- **Búsqueda bilingüe** — Encuentra cualquier alimento por nombre (ES o EN); barra de búsqueda fija con atajo `/`
 - **Navegación por fechas** — Revisa días anteriores, modifica o elimina entradas
 - **Metas diarias** — Define objetivos personalizados de calorías y macros con barras de progreso
+- **Favoritos** — Fija los alimentos que más usas para acceder rápidamente
+- **Recuerda la última comida** — Pre-selecciona la comida en la que sueles registrar cada alimento
 - **Modo oscuro/claro** — Tema adaptable con detección automática de preferencia del sistema
 - **Catálogo editable** — Pantalla de admin para agregar, editar y eliminar alimentos
 - **Bilingüe** — Interfaz en español e inglés
