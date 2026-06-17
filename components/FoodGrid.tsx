@@ -9,9 +9,11 @@ interface FoodGridProps {
   onAdd: (food: FoodItem) => void
   showCategory?: boolean
   searchQuery?: string
+  isFavorite?: (food: FoodItem) => boolean
+  onToggleFavorite?: (food: FoodItem) => void
 }
 
-export function FoodGrid({ foods, onAdd, showCategory, searchQuery }: FoodGridProps) {
+export function FoodGrid({ foods, onAdd, showCategory, searchQuery, isFavorite, onToggleFavorite }: FoodGridProps) {
   const t = useTranslations('FoodGrid')
 
   if (foods.length === 0) {
@@ -30,7 +32,14 @@ export function FoodGrid({ foods, onAdd, showCategory, searchQuery }: FoodGridPr
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
       {foods.map(f => (
-        <FoodCard key={`${f.category}-${f.name}`} food={f} onAdd={onAdd} showCategory={showCategory} />
+        <FoodCard
+          key={`${f.category}-${f.name}`}
+          food={f}
+          onAdd={onAdd}
+          showCategory={showCategory}
+          isFavorite={isFavorite?.(f)}
+          onToggleFavorite={onToggleFavorite}
+        />
       ))}
     </div>
   )

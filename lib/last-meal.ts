@@ -5,9 +5,9 @@ function makeKey(category: string, name: string): string {
 }
 
 function loadMap(): Record<string, string> {
-  if (typeof window === 'undefined') return {}
+  if (typeof globalThis.localStorage === 'undefined') return {}
   try {
-    const stored = localStorage.getItem(STORAGE_KEY)
+    const stored = globalThis.localStorage.getItem(STORAGE_KEY)
     if (stored) {
       const parsed = JSON.parse(stored)
       if (parsed && typeof parsed === 'object') return parsed
@@ -17,9 +17,9 @@ function loadMap(): Record<string, string> {
 }
 
 function saveMap(map: Record<string, string>): void {
-  if (typeof window === 'undefined') return
+  if (typeof globalThis.localStorage === 'undefined') return
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(map))
+    globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(map))
   } catch {}
 }
 

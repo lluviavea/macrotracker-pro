@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
@@ -13,6 +13,7 @@ import { CategoryTabs } from '@/components/CategoryTabs'
 import { FoodSearch } from '@/components/FoodSearch'
 import { FoodGrid } from '@/components/FoodGrid'
 import { RecentFoods } from '@/components/RecentFoods'
+import { FavoriteFoods } from '@/components/FavoriteFoods'
 import { CopyPreviousDay } from '@/components/CopyPreviousDay'
 import { LangSwitcher } from '@/components/LangSwitcher'
 import { AddFoodModal } from '@/components/AddFoodModal'
@@ -22,6 +23,7 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { showToast } from '@/components/Toast'
 import { getLocalISODate } from '@/lib/calendar'
 import { saveLastMeal } from '@/lib/last-meal'
+import { getFavorites, toggleFavorite, type FavoriteRef } from '@/lib/favorites'
 
 function getDate() {
   return getLocalISODate()
@@ -54,6 +56,7 @@ export default function HomeClient({ user }: HomeClientProps) {
   const [showGoals, setShowGoals] = useState(false)
   const [showWeekly, setShowWeekly] = useState(false)
   const [copying, setCopying] = useState(false)
+  const [favorites, setFavorites] = useState<FavoriteRef[]>(getFavorites)
   const searchRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -137,6 +140,17 @@ export default function HomeClient({ user }: HomeClientProps) {
       (f.name.toLowerCase().includes(search.toLowerCase()) ||
         (f.nameEn && f.nameEn.toLowerCase().includes(search.toLowerCase()))),
   )
+
+  const isFavoriteFood = useCallback(
+    (food: FoodItem) => favorites.some(f => f.category === food.category && f.name === food.name),
+    [favorites],
+  )
+
+  const handleToggleFavorite = useCallback((food: FoodItem) => {
+    setFavorites(toggleFavorite(food.category, food.name))
+  }, [])
+
+  const favoriteFoods = foods.filter(isFavoriteFood)
 
   if (loading) {
     return (
@@ -252,7 +266,20 @@ export default function HomeClient({ user }: HomeClientProps) {
         onAmountBlur={handleUpdateAmount}
       />
 
-      <RecentFoods foods={recents} loading={recentsLoading} onAdd={setPendingFood} />
+      <FavoriteFoods
+        foods={favoriteFoods}
+        onAdd={setPendingFood}
+        isFavorite={isFavoriteFood}
+        onToggleFavorite={handleToggleFavorite}
+      />
+
+      <RecentFoods
+        foods={recents}
+        loading={recentsLoading}
+        onAdd={setPendingFood}
+        isFavorite={isFavoriteFood}
+        onToggleFavorite={handleToggleFavorite}
+      />
 
       <div className="sticky top-0 z-30 -mx-4 px-4 py-2 bg-gray-50/95 dark:bg-gray-950/95 backdrop-blur-sm">
         <FoodSearch ref={searchRef} value={search} onChange={setSearch} />
@@ -260,7 +287,14 @@ export default function HomeClient({ user }: HomeClientProps) {
 
       <CategoryTabs selected={selectedCategory} onSelect={setSelectedCategory} />
 
-      <FoodGrid foods={filteredFoods} onAdd={setPendingFood} showCategory={isSearching} searchQuery={search} />
+      <FoodGrid
+        foods={filteredFoods}
+        onAdd={setPendingFood}
+        showCategory={isSearching}
+        searchQuery={search}
+        isFavorite={isFavoriteFood}
+        onToggleFavorite={handleToggleFavorite}
+      />
 
       {pendingFood && (
         <AddFoodModal

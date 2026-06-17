@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import type { FoodItem } from '@/lib/types'
 import { FoodCard } from './FoodCard'
 
-interface RecentFoodsProps {
+interface FavoriteFoodsProps {
   foods: FoodItem[]
   loading?: boolean
   onAdd: (food: FoodItem) => void
@@ -12,8 +12,8 @@ interface RecentFoodsProps {
   onToggleFavorite?: (food: FoodItem) => void
 }
 
-export function RecentFoods({ foods, loading, onAdd, isFavorite, onToggleFavorite }: RecentFoodsProps) {
-  const t = useTranslations('RecentFoods')
+export function FavoriteFoods({ foods, loading, onAdd, isFavorite, onToggleFavorite }: FavoriteFoodsProps) {
+  const t = useTranslations('FavoriteFoods')
 
   if (foods.length === 0 && !loading) return null
 
@@ -29,7 +29,7 @@ export function RecentFoods({ foods, loading, onAdd, isFavorite, onToggleFavorit
               />
             ))
           : foods.map(f => (
-              <div key={`recent-${f.category}-${f.name}`} className="shrink-0 w-36">
+              <div key={`fav-${f.category}-${f.name}`} className="shrink-0 w-36">
                 <FoodCard
                   food={f}
                   onAdd={onAdd}

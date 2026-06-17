@@ -134,7 +134,9 @@
     "per100g": "/100g",
     "perUnit": "/1{unit}",
     "crudo": "Raw",
-    "cocido": "Cooked"
+    "cocido": "Cooked",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites"
   },
   "LogEntryRow": {
     "crudo": "Raw",
@@ -142,6 +144,9 @@
   },
   "RecentFoods": {
     "title": "Recents"
+  },
+  "FavoriteFoods": {
+    "title": "Favorites"
   },
   "FoodGrid": {
     "empty": "No foods in this category",

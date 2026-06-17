@@ -7,40 +7,75 @@ interface FoodCardProps {
   food: FoodItem
   onAdd: (food: FoodItem) => void
   showCategory?: boolean
+  isFavorite?: boolean
+  onToggleFavorite?: (food: FoodItem) => void
 }
 
-export function FoodCard({ food, onAdd, showCategory }: FoodCardProps) {
+function BookmarkIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      className={`w-4 h-4 ${filled ? 'text-yellow-500 fill-current' : 'text-gray-400 dark:text-gray-500'}`}
+      viewBox="0 0 24 24"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <path d="M6 2h12v20l-6-3-6 3V2z" />
+    </svg>
+  )
+}
+
+export function FoodCard({ food, onAdd, showCategory, isFavorite, onToggleFavorite }: FoodCardProps) {
   const locale = useLocale()
   const t = useTranslations('FoodCard')
   const tc = useTranslations('CategoryTabs')
   const displayName = locale === 'en' && food.nameEn ? food.nameEn : food.name
 
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onToggleFavorite?.(food)
+  }
+
   return (
-    <button
-      onClick={() => onAdd(food)}
-      className="bg-white dark:bg-gray-900 rounded-xl p-3 border border-gray-200 dark:border-gray-700 text-left hover:[border-color:var(--macro-calories)] hover:shadow-sm transition-all text-sm animate-slide-up"
-    >
-      <p className="font-medium truncate dark:text-gray-100">{displayName}</p>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{food.protein}<span className="macro-protein">P</span> &middot; {food.fat}<span className="macro-fat">F</span> &middot; {food.carbs}<span className="macro-carbs">C</span> &middot; <span className="macro-calories">{food.calories}</span><span className="macro-calories">kcal</span></p>
-      <p className="text-xs text-gray-400/70 dark:text-gray-500/70">
-        {food.sugar > 0 && <span>{food.sugar}{t('sugar')} </span>}
-        {food.fiber > 0 && <span>{food.fiber}{t('fiber')}</span>}
-      </p>
-      <div className="flex items-center gap-1 mt-1 flex-wrap">
-        <span className="text-xs text-gray-400 dark:text-gray-500">
-          {food.measureType === 'unit' && food.unitName
-            ? t('perUnit', { unit: food.unitName })
-            : t('per100g')}
-        </span>
-        {showCategory && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-            {tc(food.category)}
+    <div className="relative animate-slide-up">
+      <button
+        onClick={() => onAdd(food)}
+        className="w-full bg-white dark:bg-gray-900 rounded-xl p-3 pr-8 border border-gray-200 dark:border-gray-700 text-left hover:[border-color:var(--macro-calories)] hover:shadow-sm transition-all text-sm"
+      >
+        <p className="font-medium truncate dark:text-gray-100">{displayName}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{food.protein}<span className="macro-protein">P</span> &middot; {food.fat}<span className="macro-fat">F</span> &middot; {food.carbs}<span className="macro-carbs">C</span> &middot; <span className="macro-calories">{food.calories}</span><span className="macro-calories">kcal</span></p>
+        <p className="text-xs text-gray-400/70 dark:text-gray-500/70">
+          {food.sugar > 0 && <span>{food.sugar}{t('sugar')} </span>}
+          {food.fiber > 0 && <span>{food.fiber}{t('fiber')}</span>}
+        </p>
+        <div className="flex items-center gap-1 mt-1 flex-wrap">
+          <span className="text-xs text-gray-400 dark:text-gray-500">
+            {food.measureType === 'unit' && food.unitName
+              ? t('perUnit', { unit: food.unitName })
+              : t('per100g')}
           </span>
-        )}
-        {food.preparation && (
-          <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium prep-${food.preparation}`}>{t(food.preparation)}</span>
-        )}
-      </div>
-    </button>
+          {showCategory && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+              {tc(food.category)}
+            </span>
+          )}
+          {food.preparation && (
+            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium prep-${food.preparation}`}>{t(food.preparation)}</span>
+          )}
+        </div>
+      </button>
+      {onToggleFavorite && (
+        <button
+          type="button"
+          onClick={handleToggle}
+          aria-pressed={isFavorite}
+          aria-label={isFavorite ? t('removeFavorite') : t('addFavorite')}
+          className="absolute top-2 right-2 p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        >
+          <BookmarkIcon filled={!!isFavorite} />
+        </button>
+      )}
+    </div>
   )
 }

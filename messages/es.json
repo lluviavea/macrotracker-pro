@@ -134,7 +134,9 @@
     "per100g": "/100g",
     "perUnit": "/1{unit}",
     "crudo": "Crudo",
-    "cocido": "Cocido"
+    "cocido": "Cocido",
+    "addFavorite": "Agregar a favoritos",
+    "removeFavorite": "Quitar de favoritos"
   },
   "LogEntryRow": {
     "crudo": "Crudo",
@@ -142,6 +144,9 @@
   },
   "RecentFoods": {
     "title": "Recientes"
+  },
+  "FavoriteFoods": {
+    "title": "Favoritos"
   },
   "FoodGrid": {
     "empty": "No hay alimentos en esta categoría",
