@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -94,6 +94,19 @@ export default function AdminPage() {
       setSortDir('desc')
     }
   }
+
+  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) setShowModal(false)
+  }, [])
+
+  useEffect(() => {
+    if (!showModal) return
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setShowModal(false)
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [showModal])
 
   const mapFood = (f: { id: number; name: string; nameEn: string | null; category: string; protein: number; fat: number; carbs: number; sugar: number; fiber: number; calories: number; measureType: string; unitName: string | null; unitGrams: number | null; preparation: string | null }): FoodRow => ({
     id: f.id,
@@ -370,7 +383,7 @@ export default function AdminPage() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60" onClick={handleBackdropClick}>
           <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">
               {editingId !== null ? t('editTitle') : t('addTitle')}

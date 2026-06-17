@@ -78,7 +78,7 @@ export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputC
       {grouped.map(group => (
         <div key={group.meal || '__none'} className={group.meal ? MEAL_COLORS[group.meal] ?? '' : ''}>
           {group.meal && (
-            <div className="px-4 py-2 border-b border-inherit">
+            <div className="px-4 py-2 border-b border-current/20">
               <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 {mealLabels[group.meal] || group.meal}
               </span>
