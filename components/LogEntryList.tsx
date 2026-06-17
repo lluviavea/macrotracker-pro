@@ -14,6 +14,8 @@ interface LogEntryListProps {
   onMealChange: (index: number, meal: string) => void
 }
 
+type MealGroup = { meal: string; entries: Entry[]; startIndex: number }
+
 const MEAL_COLORS: Record<string, string> = {
   desayuno: 'meal-desayuno border',
   comida: 'meal-comida border',
@@ -49,7 +51,7 @@ export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputC
     )
   }
 
-  const grouped: { meal: string; entries: Entry[]; startIndex: number }[] = []
+  const grouped: MealGroup[] = []
   let currentMeal = entries[0]?.meal ?? ''
   let groupStart = 0
 
@@ -76,8 +78,8 @@ export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputC
         <h2 className="font-semibold dark:text-gray-100">{t('title')}</h2>
         <span className="text-xs text-gray-400 dark:text-gray-500">{t('count', { count: entries.length })}</span>
       </div>
-      {grouped.map(group => (
-        <div key={group.meal || '__none'} className={group.meal ? MEAL_COLORS[group.meal] ?? '' : ''}>
+      {grouped.map((group, i) => (
+        <div key={`${group.meal}-${i}`} className={group.meal ? MEAL_COLORS[group.meal] ?? '' : ''}>
           {group.meal && (
             <div className="px-4 py-2 border-b border-current/20">
               <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
