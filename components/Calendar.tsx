@@ -69,7 +69,7 @@ export function Calendar({ value, today, onChange, onClose }: CalendarProps) {
             value={viewMonth}
             onChange={e => setViewDate(new Date(viewYear, Number(e.target.value)))}
             aria-label={t('selectMonth')}
-            className="text-sm font-semibold bg-transparent text-gray-900 dark:text-gray-100 border-none rounded-lg py-1 pl-2 pr-6 focus:ring-2 focus:ring-blue-500/30 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="text-sm font-semibold bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-none rounded-lg py-1 pl-2 pr-6 focus:ring-2 focus:ring-blue-500/30 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             {MONTHS.map(m => (
               <option key={m} value={m}>
@@ -81,7 +81,7 @@ export function Calendar({ value, today, onChange, onClose }: CalendarProps) {
             value={viewYear}
             onChange={e => setViewDate(new Date(Number(e.target.value), viewMonth))}
             aria-label={t('selectYear')}
-            className="text-sm font-semibold bg-transparent text-gray-900 dark:text-gray-100 border-none rounded-lg py-1 pl-2 pr-6 focus:ring-2 focus:ring-blue-500/30 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="text-sm font-semibold bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-none rounded-lg py-1 pl-2 pr-6 focus:ring-2 focus:ring-blue-500/30 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             {yearOptions.map(y => (
               <option key={y} value={y}>
