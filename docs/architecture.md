@@ -131,6 +131,14 @@ Add food  -> POST /api/log                -> useFoodLog prepends the food to loc
 
 The deduplication and limiting live in `lib/recents.ts` as a pure function (`selectRecents`) so it is unit-testable. The DB query fetches enough rows (`limit * 5`) to allow deduplication without scanning the full history.
 
+### Copy previous day
+
+```text
+User clicks "Copiar día anterior" -> POST /api/log/copy-day { targetDate } -> SELECT previous day -> INSERT copies for targetDate -> reload entries
+```
+
+Copied entries append to the target day; they do not replace existing entries. The operation is scoped to the authenticated user and copies macros, meal, and preparation verbatim.
+
 ### Optimistic updates (client side)
 
 The `useFoodLog` hook in `lib/useFoodLog.ts` uses **snapshot-based rollback** for update/delete:
@@ -212,6 +220,7 @@ RootLayout (app/layout.tsx)
         └── page.tsx  (Home)
               ├── DateNavigator       (date display + prev/next/today; opens Calendar)
               │     └── Calendar       (custom month grid date picker)
+              ├── CopyPreviousDay      (button to copy previous day's entries)
               ├── MacroSummary         (6 cards with goal progress bars)
               ├── LogEntryList         (loading skeleton + empty state)
               │   └── LogEntryRow      (food, amount input, delete, macro breakdown)
@@ -242,6 +251,7 @@ ToastContainer is mounted once at the root, siblings to children.
 | `lib/validation.ts` | Zod schemas for `/api/foods` and `/api/log` request bodies |
 | `lib/goals.ts` | `Goals` type + `getGoals` / `saveGoals` (localStorage) |
 | `lib/recents.ts` | `selectRecents` — deduplicate and limit recent foods from log history |
+| `lib/calendar.ts` | Date helpers: `parseISODate`, `formatISODate`, `addDays`, calendar grid |
 | `lib/useFoodLog.ts` | Main client hook — foods, entries, recents, CRUD, optimistic updates, totals, typed errors |
 | `lib/useFocusTrap.ts` | Traps Tab focus inside a modal for accessibility |
 
