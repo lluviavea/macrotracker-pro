@@ -5,6 +5,7 @@ import type { FoodItem, Entry } from '@/lib/types'
 import { calculateTotals } from '@/lib/macros'
 import { getGoals } from '@/lib/goals'
 import type { Goals } from '@/lib/goals'
+import type { RecentFoodRef } from '@/lib/recents'
 
 function redirectToLogin() {
   if (typeof window !== 'undefined') {
@@ -26,6 +27,8 @@ export function useFoodLog() {
   const [logDate, setLogDate] = useState(getDate())
   const [goals, setGoals] = useState<Goals>(getGoals)
   const [error, setError] = useState<LoadError>(null)
+  const [recents, setRecents] = useState<FoodItem[]>([])
+  const [recentsLoading, setRecentsLoading] = useState(false)
 
   useEffect(() => {
     fetch('/api/foods')
@@ -44,6 +47,35 @@ export function useFoodLog() {
         setLoading(false)
       })
   }, [])
+
+  const loadRecents = useCallback(async (currentFoods: FoodItem[]): Promise<FoodItem[]> => {
+    const r = await fetch('/api/log/recents?limit=8')
+    if (r.status === 401) { redirectToLogin(); throw new Error('Unauthorized') }
+    if (!r.ok) throw new Error('Failed to load recents')
+    const d = await r.json()
+    const refs: RecentFoodRef[] = d.recents
+    return refs
+      .map(ref => currentFoods.find(f => f.name === ref.name && f.category === ref.category))
+      .filter((f): f is FoodItem => f !== undefined)
+  }, [])
+
+  useEffect(() => {
+    if (foods.length === 0) return
+    let cancelled = false
+    const run = async () => {
+      setRecentsLoading(true)
+      try {
+        const next = await loadRecents(foods)
+        if (!cancelled) setRecents(next)
+      } catch {
+        // Recents are non-critical; leave empty on failure
+      } finally {
+        if (!cancelled) setRecentsLoading(false)
+      }
+    }
+    run()
+    return () => { cancelled = true }
+  }, [foods, loadRecents])
 
   const loadEntries = useCallback(async (date: string): Promise<Entry[]> => {
     const r = await fetch(`/api/log?date=${date}`)
@@ -99,6 +131,10 @@ export function useFoodLog() {
       const d = await r.json()
       if (d.success && d.id) {
         setEntries(prev => [...prev, { id: d.id, foodName: food.name, category: food.category, amount, amountInput: String(amount), meal }])
+        setRecents(prev => {
+          const next = [food, ...prev.filter(f => !(f.name === food.name && f.category === food.category))]
+          return next.slice(0, 8)
+        })
         return true
       }
       return false
@@ -187,6 +223,7 @@ export function useFoodLog() {
 
   return {
     foods, loading, entriesLoading, entries, logDate, goals, error, totals,
+    recents, recentsLoading,
     setLogDate, setGoals, setError,
     createEntry, updateEntry, deleteEntry, reloadEntries, reloadFoods,
     changeDate, handleAmountInputChange,

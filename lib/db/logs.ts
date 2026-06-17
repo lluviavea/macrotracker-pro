@@ -1,8 +1,9 @@
 import { db } from './index'
 import { logEntries } from './schema'
-import { eq, and, gte, lte } from 'drizzle-orm'
+import { eq, and, gte, lte, desc } from 'drizzle-orm'
 import { calculateMacros } from '../macros'
 import type { FoodItem } from '../types'
+import { selectRecents, type RecentFoodRef } from '../recents'
 
 export interface LogEntry {
   id: number
@@ -75,6 +76,24 @@ export async function getLogForRange(userId: number, startDate: string, endDate:
     preparation: r.preparation ?? '',
     meal: r.meal ?? '',
   }))
+}
+
+export async function getRecentFoods(userId: number, limit: number): Promise<RecentFoodRef[]> {
+  const rows = await db
+    .select()
+    .from(logEntries)
+    .where(eq(logEntries.userId, userId))
+    .orderBy(desc(logEntries.createdAt))
+    .limit(limit * 5)
+
+  return selectRecents(
+    rows.map(r => ({
+      food: r.foodName,
+      category: r.category,
+      createdAt: r.createdAt ?? new Date(0),
+    })),
+    limit,
+  )
 }
 
 export async function addLogEntry(

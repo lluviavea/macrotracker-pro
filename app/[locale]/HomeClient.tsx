@@ -12,6 +12,7 @@ import { LogEntryList } from '@/components/LogEntryList'
 import { CategoryTabs } from '@/components/CategoryTabs'
 import { FoodSearch } from '@/components/FoodSearch'
 import { FoodGrid } from '@/components/FoodGrid'
+import { RecentFoods } from '@/components/RecentFoods'
 import { LangSwitcher } from '@/components/LangSwitcher'
 import { AddFoodModal } from '@/components/AddFoodModal'
 import { GoalsModal } from '@/components/GoalsModal'
@@ -38,6 +39,7 @@ export default function HomeClient({ user }: HomeClientProps) {
 
   const {
     foods, loading, entriesLoading, entries, logDate, goals, error, totals,
+    recents, recentsLoading,
     setLogDate, setGoals, setError,
     createEntry, updateEntry, deleteEntry, reloadEntries, reloadFoods,
     changeDate, handleAmountInputChange,
@@ -214,6 +216,8 @@ export default function HomeClient({ user }: HomeClientProps) {
         onAmountInputChange={handleAmountInputChange}
         onAmountBlur={handleUpdateAmount}
       />
+
+      <RecentFoods foods={recents} loading={recentsLoading} onAdd={setPendingFood} />
 
       <CategoryTabs selected={selectedCategory} onSelect={setSelectedCategory} />
 

@@ -134,6 +134,9 @@
     "crudo": "Crudo",
     "cocido": "Cocido"
   },
+  "RecentFoods": {
+    "title": "Recientes"
+  },
   "FoodGrid": {
     "empty": "No hay alimentos en esta categoría",
     "emptyHint": "Selecciona otra categoría o usa el buscador.",

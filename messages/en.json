@@ -134,6 +134,9 @@
     "crudo": "Raw",
     "cocido": "Cooked"
   },
+  "RecentFoods": {
+    "title": "Recents"
+  },
   "FoodGrid": {
     "empty": "No foods in this category",
     "emptyHint": "Select another category or use the search box.",
