@@ -125,7 +125,8 @@
     "suplementos": "Supplements"
   },
   "FoodSearch": {
-    "placeholder": "Search..."
+    "placeholder": "Search...",
+    "clear": "Clear search"
   },
   "FoodCard": {
     "sugar": " sugar",

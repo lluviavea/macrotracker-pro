@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
@@ -53,6 +53,21 @@ export default function HomeClient({ user }: HomeClientProps) {
   const [showGoals, setShowGoals] = useState(false)
   const [showWeekly, setShowWeekly] = useState(false)
   const [copying, setCopying] = useState(false)
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === '/' &&
+        !['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement).tagName)
+      ) {
+        e.preventDefault()
+        searchRef.current?.focus()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   const displayName = (name: string, nameEn?: string | null) =>
     locale === 'en' && nameEn ? nameEn : name
@@ -237,9 +252,11 @@ export default function HomeClient({ user }: HomeClientProps) {
 
       <RecentFoods foods={recents} loading={recentsLoading} onAdd={setPendingFood} />
 
-      <CategoryTabs selected={selectedCategory} onSelect={setSelectedCategory} />
+      <div className="sticky top-0 z-30 -mx-4 px-4 py-2 bg-gray-50/95 dark:bg-gray-950/95 backdrop-blur-sm">
+        <FoodSearch ref={searchRef} value={search} onChange={setSearch} />
+      </div>
 
-      <FoodSearch value={search} onChange={setSearch} />
+      <CategoryTabs selected={selectedCategory} onSelect={setSelectedCategory} />
 
       <FoodGrid foods={filteredFoods} onAdd={setPendingFood} showCategory={isSearching} searchQuery={search} />
 
