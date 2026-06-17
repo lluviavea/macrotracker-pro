@@ -20,6 +20,7 @@ feature. For cross-cutting concerns, see the dedicated docs:
 - **ORM**: Drizzle ORM (postgres-js driver)
 - **Validation**: Zod
 - **Theme**: CSS variables + `dark` class on `<html>` (Tailwind v4 dark mode)
+- **Charts**: recharts (stacked bars, donut/pie, used in WeeklySummaryModal)
 - **Runtime**: Node.js 24 (pinned in `mise.toml`)
 
 ## Project Structure
@@ -63,7 +64,7 @@ components/
   FoodCard.tsx           - Single food item with add button
   AddFoodModal.tsx       - Amount + meal picker before adding to log
   GoalsModal.tsx         - Edit daily goals (calories, P/F/C)
-  WeeklySummaryModal.tsx - Weekly macro averages + daily calorie bar chart
+  WeeklySummaryModal.tsx - Weekly summary modal (stacked macro bar chart, donut chart, goal progress rings)
   lib/
   types.ts               - TypeScript types (FoodItem, FoodCategory, Entry)
   nutrition.ts           - Static NUTRITION_DATA lookup array (~180 entries)
@@ -232,6 +233,7 @@ RootLayout (app/layout.tsx)
               │   └── FoodCard         (add button; unit label; category badge; favorite toggle)
               ├── AddFoodModal         (amount + meal picker; presets; live preview)
               ├── GoalsModal           (edit daily goals)
+              ├── WeeklySummaryModal    (weekly summary: stacked bars, donut chart, goal rings)
               ├── ThemeToggle          (current theme icon: moon/sun)
               └── LangSwitcher         (current locale label: ES/EN)
         └── admin/page.tsx  (Admin)
