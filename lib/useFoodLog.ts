@@ -180,7 +180,26 @@ export function useFoodLog() {
       const r = await fetch('/api/log', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: entry.id, foodName: entry.foodName, category: entry.category, amount: num }),
+        body: JSON.stringify({ id: entry.id, foodName: entry.foodName, category: entry.category, amount: num, meal: entry.meal }),
+      })
+      if (r.status === 401) { redirectToLogin(); return false }
+      if (!r.ok) { setEntries(snapshot); return false }
+      return true
+    } catch {
+      setEntries(snapshot)
+      return false
+    }
+  }, [entries])
+
+  const changeMeal = useCallback(async (index: number, meal: string): Promise<boolean> => {
+    const entry = entries[index]
+    const snapshot = entries
+    setEntries(prev => prev.map((e, i) => (i === index ? { ...e, meal } : e)))
+    try {
+      const r = await fetch('/api/log', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: entry.id, foodName: entry.foodName, category: entry.category, amount: entry.amount, meal }),
       })
       if (r.status === 401) { redirectToLogin(); return false }
       if (!r.ok) { setEntries(snapshot); return false }
@@ -250,6 +269,6 @@ export function useFoodLog() {
     recents, recentsLoading,
     setLogDate, setGoals, setError,
     createEntry, updateEntry, deleteEntry, copyPreviousDay, reloadEntries, reloadFoods,
-    changeDate, handleAmountInputChange,
+    changeDate, handleAmountInputChange, changeMeal,
   }
 }

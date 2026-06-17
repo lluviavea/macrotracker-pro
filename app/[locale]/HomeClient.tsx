@@ -47,7 +47,7 @@ export default function HomeClient({ user }: HomeClientProps) {
     recents, recentsLoading,
     setLogDate, setGoals, setError,
     createEntry, updateEntry, deleteEntry, copyPreviousDay, reloadEntries, reloadFoods,
-    changeDate, handleAmountInputChange,
+    changeDate, handleAmountInputChange, changeMeal,
   } = useFoodLog()
 
   const [selectedCategory, setSelectedCategory] = useState<FoodCategory>('proteina')
@@ -106,6 +106,13 @@ export default function HomeClient({ user }: HomeClientProps) {
 
   const handleUpdateAmount = async (index: number) => {
     const ok = await updateEntry(index)
+    if (!ok) {
+      showToast(t('updateError'), 'error')
+    }
+  }
+
+  const handleMealChange = async (index: number, meal: string) => {
+    const ok = await changeMeal(index, meal)
     if (!ok) {
       showToast(t('updateError'), 'error')
     }
@@ -264,6 +271,7 @@ export default function HomeClient({ user }: HomeClientProps) {
         onRemove={handleRemove}
         onAmountInputChange={handleAmountInputChange}
         onAmountBlur={handleUpdateAmount}
+        onMealChange={handleMealChange}
       />
 
       <FavoriteFoods

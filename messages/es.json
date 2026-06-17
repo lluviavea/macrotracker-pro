@@ -143,7 +143,10 @@
   },
   "LogEntryRow": {
     "crudo": "Crudo",
-    "cocido": "Cocido"
+    "cocido": "Cocido",
+    "remove": "Eliminar",
+    "mealLabel": "Comida",
+    "noMeal": "Sin comida"
   },
   "RecentFoods": {
     "title": "Recientes"

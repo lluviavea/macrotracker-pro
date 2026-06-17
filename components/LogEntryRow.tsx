@@ -5,6 +5,8 @@ import { useTranslations, useLocale } from 'next-intl'
 import type { FoodItem, Entry } from '@/lib/types'
 import { findFood, calculateMacros } from '@/lib/macros'
 
+const MEAL_OPTIONS = ['', 'desayuno', 'comida', 'cena', 'snack'] as const
+
 interface LogEntryRowProps {
   entry: Entry
   index: number
@@ -12,17 +14,27 @@ interface LogEntryRowProps {
   onRemove: (index: number) => void
   onAmountInputChange: (index: number, value: string) => void
   onAmountBlur: (index: number) => void
+  onMealChange: (index: number, meal: string) => void
 }
 
-export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange, onAmountBlur }: LogEntryRowProps) {
+export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange, onAmountBlur, onMealChange }: LogEntryRowProps) {
   const locale = useLocale()
   const t = useTranslations('LogEntryRow')
+  const tLog = useTranslations('LogEntryList')
   const [isRemoving, setIsRemoving] = useState(false)
   const food = findFood(foods, entry.foodName, entry.category)
   const displayName = locale === 'en' && food?.nameEn ? food.nameEn : entry.foodName
   const liveAmount = parseFloat(entry.amountInput) || 0
   const macros = food ? calculateMacros(food, liveAmount) : { protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0 }
   const isUnit = food?.measureType === 'unit' && food?.unitName
+
+  const mealLabels: Record<string, string> = {
+    '': t('noMeal'),
+    desayuno: tLog('breakfast'),
+    comida: tLog('lunch'),
+    cena: tLog('dinner'),
+    snack: tLog('snack'),
+  }
 
   function handleRemove() {
     setIsRemoving(true)
@@ -31,11 +43,20 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
 
   return (
     <div className={`p-3 flex items-center gap-3 animate-slide-up transition-all duration-250 ${isRemoving ? 'opacity-0 -translate-x-4' : 'opacity-100 translate-x-0'}`}>
-      <button onClick={handleRemove} className="text-red-400 hover:text-red-600 dark:hover:text-red-300 text-lg leading-none">&times;</button>
+      <button onClick={handleRemove} className="text-red-400 hover:text-red-600 dark:hover:text-red-300 text-lg leading-none" aria-label={t('remove')}>×</button>
       <div className="flex-1 min-w-0">
         <p className="font-medium text-sm truncate dark:text-gray-100">{displayName}</p>
         <div className="flex gap-1 mt-0.5">
-          <span className="text-xs text-gray-400 dark:text-gray-500">{entry.category}</span>
+          <select
+            value={entry.meal}
+            onChange={e => onMealChange(index, e.target.value)}
+            aria-label={t('mealLabel')}
+            className="text-xs border-none bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-pointer p-0 -ml-1 focus:ring-0 focus:outline-none hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
+            {MEAL_OPTIONS.map(opt => (
+              <option key={opt} value={opt}>{mealLabels[opt]}</option>
+            ))}
+          </select>
           {food?.preparation && (
             <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium prep-${food.preparation}`}>{t(food.preparation)}</span>
           )}

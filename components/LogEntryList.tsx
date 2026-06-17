@@ -11,6 +11,7 @@ interface LogEntryListProps {
   onRemove: (index: number) => void
   onAmountInputChange: (index: number, value: string) => void
   onAmountBlur: (index: number) => void
+  onMealChange: (index: number, meal: string) => void
 }
 
 const MEAL_COLORS: Record<string, string> = {
@@ -20,7 +21,7 @@ const MEAL_COLORS: Record<string, string> = {
   snack: 'meal-snack border',
 }
 
-export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputChange, onAmountBlur }: LogEntryListProps) {
+export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputChange, onAmountBlur, onMealChange }: LogEntryListProps) {
   const t = useTranslations('LogEntryList')
 
   if (loading) {
@@ -94,6 +95,7 @@ export function LogEntryList({ entries, foods, loading, onRemove, onAmountInputC
                 onRemove={onRemove}
                 onAmountInputChange={onAmountInputChange}
                 onAmountBlur={onAmountBlur}
+                onMealChange={onMealChange}
               />
             ))}
           </div>

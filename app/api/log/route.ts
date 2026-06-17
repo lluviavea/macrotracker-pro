@@ -53,7 +53,7 @@ export async function PUT(req: NextRequest) {
     const food = await getFoodByNameAndCategory(parsed.foodName, parsed.category, session.userId)
     if (!food) return NextResponse.json({ error: 'Food not found' }, { status: 404 })
 
-    await updateLogEntry(session.userId, parsed.id, food, parsed.amount)
+    await updateLogEntry(session.userId, parsed.id, food, parsed.amount, parsed.meal)
     return NextResponse.json({ success: true })
   } catch (error) {
     if (error instanceof z.ZodError) {

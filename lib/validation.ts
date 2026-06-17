@@ -57,6 +57,7 @@ export const updateLogEntrySchema = z.object({
   foodName: z.string().min(1),
   category: z.string().min(1),
   amount: z.number().positive(),
+  meal: z.string().optional().default(''),
 })
 
 export const deleteLogEntrySchema = z.object({

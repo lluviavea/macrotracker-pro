@@ -163,22 +163,28 @@ export async function addLogEntry(
   return row.id
 }
 
-export async function updateLogEntry(userId: number, id: number, food: FoodItem, amount: number): Promise<void> {
+export async function updateLogEntry(userId: number, id: number, food: FoodItem, amount: number, meal?: string): Promise<void> {
   const isUnit = food.measureType === 'unit' && food.unitName
   const macros = calculateMacros(food, amount)
 
+  const updateData: Record<string, unknown> = {
+    amount: String(amount),
+    unit: isUnit ? food.unitName! : 'g',
+    protein: String(macros.protein),
+    fat: String(macros.fat),
+    carbs: String(macros.carbs),
+    sugar: String(macros.sugar),
+    fiber: String(macros.fiber),
+    calories: macros.calories,
+  }
+
+  if (meal !== undefined) {
+    updateData.meal = meal
+  }
+
   const result = await db
     .update(logEntries)
-    .set({
-      amount: String(amount),
-      unit: isUnit ? food.unitName! : 'g',
-      protein: String(macros.protein),
-      fat: String(macros.fat),
-      carbs: String(macros.carbs),
-      sugar: String(macros.sugar),
-      fiber: String(macros.fiber),
-      calories: macros.calories,
-    })
+    .set(updateData)
     .where(and(eq(logEntries.id, id), eq(logEntries.userId, userId)))
     .returning({ id: logEntries.id })
 
