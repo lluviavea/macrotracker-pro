@@ -21,6 +21,7 @@ import { WeeklySummaryModal } from '@/components/WeeklySummaryModal'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { showToast } from '@/components/Toast'
 import { getLocalISODate } from '@/lib/calendar'
+import { saveLastMeal } from '@/lib/last-meal'
 
 function getDate() {
   return getLocalISODate()
@@ -76,6 +77,7 @@ export default function HomeClient({ user }: HomeClientProps) {
     const ok = await createEntry(food, amount, meal)
     const name = displayName(food.name, food.nameEn)
     if (ok) {
+      saveLastMeal(food.category, food.name, meal)
       showToast(t('added', { name }))
     } else {
       showToast(t('addError', { name }), 'error')

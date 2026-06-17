@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import type { FoodItem } from '@/lib/types'
 import { calculateMacros } from '@/lib/macros'
+import { getLastMeal } from '@/lib/last-meal'
 import { useFocusTrap } from '@/lib/useFocusTrap'
 
 interface AddFoodModalProps {
@@ -18,7 +19,7 @@ export function AddFoodModal({ food, onAdd, onClose }: AddFoodModalProps) {
   const displayName = locale === 'en' && food.nameEn ? food.nameEn : food.name
 
   const [amount, setAmount] = useState(String(food.measureType === 'unit' ? 1 : 100))
-  const [meal, setMeal] = useState('')
+  const [meal, setMeal] = useState(getLastMeal(food.category, food.name))
   const trapRef = useFocusTrap(true)
 
   useEffect(() => {
