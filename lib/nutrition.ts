@@ -35,6 +35,7 @@ export const NUTRITION_DATA: NutritionEntry[] = [
   { matches: ['soya texturizada'], nameEn: 'Textured Soy', protein: 52, fat: 1, carbs: 33, sugar: 0, fiber: 13, calories: 290, measureType: 'gram', preparation: 'crudo' },
   { matches: ['tofu'], nameEn: 'Tofu', protein: 8, fat: 4, carbs: 2, sugar: 0.5, fiber: 0.5, calories: 76, measureType: 'gram', preparation: 'crudo' },
   { matches: ['pollo', 'pechuga'], nameEn: 'Chicken', protein: 31, fat: 3.6, carbs: 0, sugar: 0, fiber: 0, calories: 165, measureType: 'gram', preparation: 'crudo' },
+  { matches: ['leche', 'leche entera'], nameEn: 'Whole Milk', protein: 3.3, fat: 3.6, carbs: 4.8, sugar: 4.8, fiber: 0, calories: 62, measureType: 'gram', preparation: 'crudo' },
 
   { matches: ['frijol', 'frijoles'], nameEn: 'Beans', protein: 21, fat: 1.2, carbs: 63, sugar: 2, fiber: 15, calories: 347, measureType: 'gram', preparation: 'cocido' },
   { matches: ['lentejas'], nameEn: 'Lentils', protein: 25, fat: 1.1, carbs: 60, sugar: 2, fiber: 11, calories: 353, measureType: 'gram', preparation: 'cocido' },
@@ -79,6 +80,8 @@ export const NUTRITION_DATA: NutritionEntry[] = [
   { matches: ['tortilla de nixtamal'], nameEn: 'Corn Tortilla', protein: 2.5, fat: 0.5, carbs: 22, sugar: 0.5, fiber: 3, calories: 105, measureType: 'unit', unitName: 'tortilla', unitGrams: 45, preparation: 'cocido' },
   { matches: ['papa', 'papas'], nameEn: 'Potato', protein: 2, fat: 0.1, carbs: 20, sugar: 1, fiber: 2, calories: 87, measureType: 'gram', preparation: 'cocido' },
   { matches: ['camote', 'batata'], nameEn: 'Sweet Potato', protein: 1.6, fat: 0.1, carbs: 20, sugar: 6, fiber: 3, calories: 86, measureType: 'gram', preparation: 'cocido' },
+  { matches: ['maicena', 'almidon de maiz', 'almidón de maíz'], nameEn: 'Cornstarch', protein: 0.3, fat: 0.1, carbs: 91, sugar: 0.3, fiber: 0.9, calories: 381, measureType: 'gram', preparation: 'cocido' },
+  { matches: ['papel de arroz'], nameEn: 'Rice Paper', protein: 0.4, fat: 0.1, carbs: 84, sugar: 0.2, fiber: 0.5, calories: 340, measureType: 'gram', preparation: 'cocido' },
 
   { matches: ['aceite de aguacate'], nameEn: 'Avocado Oil', protein: 0, fat: 100, carbs: 0, sugar: 0, fiber: 0, calories: 884, measureType: 'gram' },
   { matches: ['aceite de oliva'], nameEn: 'Olive Oil', protein: 0, fat: 100, carbs: 0, sugar: 0, fiber: 0, calories: 884, measureType: 'gram' },
@@ -203,6 +206,7 @@ export const NUTRITION_DATA: NutritionEntry[] = [
   { matches: ['extracto de vainilla'], nameEn: 'Vanilla Extract', protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0, measureType: 'gram' },
   { matches: ['psyllum husk', 'psyllium'], nameEn: 'Psyllium Husk', protein: 0, fat: 0, carbs: 80, sugar: 0, fiber: 70, calories: 200, measureType: 'gram' },
   { matches: ['eritritol'], nameEn: 'Erythritol', protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0, measureType: 'gram' },
+  { matches: ['matcha', 'te matcha', 'té matcha'], nameEn: 'Matcha', protein: 30, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 345, measureType: 'gram' },
 
   { matches: ['glicinato de magnesio', 'magnesio'], nameEn: 'Magnesium Glycinate', protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0, measureType: 'unit', unitName: 'cápsula', unitGrams: 0 },
   { matches: ['vitamina d3', 'vitamina d', 'd3+k2'], nameEn: 'Vitamin D3', protein: 0, fat: 0, carbs: 0, sugar: 0, fiber: 0, calories: 0, measureType: 'unit', unitName: 'gota', unitGrams: 0 },

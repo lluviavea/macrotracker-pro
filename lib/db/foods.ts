@@ -185,13 +185,13 @@ export async function updateFood(
 }
 
 const CATEGORY_RANGES: [number, number, string][] = [
-  [0, 8, 'proteina'],
-  [9, 19, 'carbohidratos'],
-  [20, 27, 'grasas'],
-  [28, 34, 'frutas'],
-  [35, 53, 'verduras'],
-  [54, 72, 'condimentos'],
-  [73, 79, 'suplementos'],
+  [0, 21, 'proteina'],
+  [22, 66, 'carbohidratos'],
+  [67, 97, 'grasas'],
+  [98, 128, 'frutas'],
+  [129, 167, 'verduras'],
+  [168, 187, 'condimentos'],
+  [188, 194, 'suplementos'],
 ]
 
 function assignCategory(index: number): string {
