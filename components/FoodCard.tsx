@@ -11,17 +11,17 @@ interface FoodCardProps {
   onToggleFavorite?: (food: FoodItem) => void
 }
 
-function BookmarkIcon({ filled }: { filled: boolean }) {
+function HeartIcon({ filled }: { filled: boolean }) {
   return (
     <svg
-      className={`w-4 h-4 ${filled ? 'text-yellow-500 fill-current' : 'text-gray-400 dark:text-gray-500'}`}
+      className={`w-4 h-4 ${filled ? 'text-red-500 fill-current' : 'text-gray-400 dark:text-gray-500'}`}
       viewBox="0 0 24 24"
       fill={filled ? 'currentColor' : 'none'}
       stroke="currentColor"
       strokeWidth={2}
       aria-hidden="true"
     >
-      <path d="M6 2h12v20l-6-3-6 3V2z" />
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 7.26-8.55 11.54L12 21.35z" />
     </svg>
   )
 }
@@ -73,7 +73,7 @@ export function FoodCard({ food, onAdd, showCategory, isFavorite, onToggleFavori
           aria-label={isFavorite ? t('removeFavorite') : t('addFavorite')}
           className="absolute top-2 right-2 p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          <BookmarkIcon filled={!!isFavorite} />
+          <HeartIcon filled={!!isFavorite} />
         </button>
       )}
     </div>
