@@ -18,6 +18,12 @@ export function formatISODate(year: number, month: number, day: number): string 
   return `${y}-${m}-${da}`
 }
 
+export function addDays(date: string, days: number): string {
+  const d = parseISODate(date)
+  d.setDate(d.getDate() + days)
+  return formatISODate(d.getFullYear(), d.getMonth(), d.getDate())
+}
+
 export function isSameDay(a: Date, b: Date): boolean {
   return (
     a.getFullYear() === b.getFullYear() &&

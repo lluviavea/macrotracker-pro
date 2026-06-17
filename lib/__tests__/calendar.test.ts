@@ -3,6 +3,7 @@ import {
   parseISODate,
   formatISODate,
   isSameDay,
+  addDays,
   getCalendarDays,
   getMonthName,
   getWeekdayNames,
@@ -31,6 +32,19 @@ describe('isSameDay', () => {
 
   it('returns false for different days', () => {
     expect(isSameDay(new Date(2026, 5, 15), new Date(2026, 5, 16))).toBe(false)
+  })
+})
+
+describe('addDays', () => {
+  it('adds days across month boundaries', () => {
+    expect(addDays('2026-06-15', 1)).toBe('2026-06-16')
+    expect(addDays('2026-06-30', 1)).toBe('2026-07-01')
+    expect(addDays('2026-01-01', -1)).toBe('2025-12-31')
+  })
+
+  it('handles leap years', () => {
+    expect(addDays('2024-02-28', 1)).toBe('2024-02-29')
+    expect(addDays('2024-02-29', 1)).toBe('2024-03-01')
   })
 })
 
