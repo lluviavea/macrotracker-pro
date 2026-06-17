@@ -9,6 +9,7 @@ feature. For cross-cutting concerns, see the dedicated docs:
 - Dark/light mode → `docs/theme.md`
 - Nutrition data & formulas → `docs/nutrition.md`
 - PWA / installability → `docs/pwa.md`
+- Recent foods → this file
 
 ## Tech Stack
 
@@ -119,6 +120,17 @@ Page load                -> GET /api/log?date=... -> SELECT log_entries WHERE us
 Food list                -> GET /api/foods        -> SELECT * FROM foods WHERE user_id = ? (cached, 1h revalidation)
 ```
 
+### Recent foods
+
+Recents are derived from the user's log history, not a separate table.
+
+```text
+Page load -> GET /api/log/recents?limit=8 -> SELECT log_entries ORDER BY created_at DESC -> deduplicate by name + category -> limit 8
+Add food  -> POST /api/log                -> useFoodLog prepends the food to local recents
+```
+
+The deduplication and limiting live in `lib/recents.ts` as a pure function (`selectRecents`) so it is unit-testable. The DB query fetches enough rows (`limit * 5`) to allow deduplication without scanning the full history.
+
 ### Optimistic updates (client side)
 
 The `useFoodLog` hook in `lib/useFoodLog.ts` uses **snapshot-based rollback** for update/delete:
@@ -203,6 +215,7 @@ RootLayout (app/layout.tsx)
               ├── MacroSummary         (6 cards with goal progress bars)
               ├── LogEntryList         (loading skeleton + empty state)
               │   └── LogEntryRow      (food, amount input, delete, macro breakdown)
+              ├── RecentFoods          (horizontal scroll of recently logged foods)
               ├── CategoryTabs         (filter buttons; sticky while scrolling)
               ├── FoodSearch           (bilingual search; global across categories)
               ├── FoodGrid             (empty states for category/search)
@@ -228,7 +241,8 @@ ToastContainer is mounted once at the root, siblings to children.
 | `lib/nutrition-utils.ts` | `normalizeName`, `lookupNutrition` (from `NUTRITION_DATA`) |
 | `lib/validation.ts` | Zod schemas for `/api/foods` and `/api/log` request bodies |
 | `lib/goals.ts` | `Goals` type + `getGoals` / `saveGoals` (localStorage) |
-| `lib/useFoodLog.ts` | Main client hook — foods, entries, CRUD, optimistic updates, totals, typed errors |
+| `lib/recents.ts` | `selectRecents` — deduplicate and limit recent foods from log history |
+| `lib/useFoodLog.ts` | Main client hook — foods, entries, recents, CRUD, optimistic updates, totals, typed errors |
 | `lib/useFocusTrap.ts` | Traps Tab focus inside a modal for accessibility |
 
 ## Internationalization (i18n)
