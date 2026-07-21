@@ -24,13 +24,23 @@ The admin route is now protected. Only users with `role = 'admin'` can access it
 ## Data flow
 
 ```text
-Page load      → GET    /api/foods            → list all foods (cached 1h)
+Page load      → GET    /api/foods            → list all foods (no cache, fresh every request)
 Save (create)  → POST   /api/foods            → validate with createFoodSchema → insertFood
 Save (edit)    → PUT    /api/foods            → validate with updateFoodSchema → updateFood (also recalculates dependent log entries)
 Delete         → DELETE /api/foods            → validate with deleteFoodSchema → deleteFood
 ```
 
-All three mutating handlers call `revalidatePath('/api/foods')` so the GET cache is invalidated.
+The `GET /api/foods` route handler has **no `revalidate` segment config** and every
+client `fetch('/api/foods')` uses `{ cache: 'no-store' }`. This data is per-user and
+mutates often; caching it caused stale lists after edits. Do not reintroduce caching
+without a tag-based invalidation strategy (`revalidateTag`) that actually fires on
+mutation.
+
+After every successful mutation, `AdminClient` updates the local `foods` state
+optimistically (replace on PUT, append on POST, filter on DELETE) so the user sees
+the change without waiting for the refetch. `loadFoods()` runs immediately afterwards
+to reconcile with the server (picks up server-side normalization such as the
+`log_entries` recalculation).
 
 ## Auto-fill from `NUTRITION_DATA`
 
@@ -71,6 +81,20 @@ for (const row of logRows) {
 This keeps the denormalized macros in `log_entries` accurate when a food's nutrition values change.
 **Caveat**: the recalc only matches by `foodName + category`. If the admin renames a food, the
 existing log entries for the old name will not be recalculated.
+
+## Error handling
+
+`handleSave` and `handleDelete` in `AdminClient` check `r.ok` and surface failures via an
+`errorMessage` state rendered as a dismissible banner (`role="alert"`). The banner renders
+**inside the modal** when it is open (and the modal stays open so the user does not lose the
+form), or **above the table** otherwise. Error keys live under the `Admin` i18n namespace:
+
+- `validationError` — server returned a 400 from Zod (`{ error: 'Validation failed', details }`)
+- `saveError` — any other failure on POST/PUT
+- `deleteError` — any failure on DELETE
+- `dismissError` — aria-label for the `✕` button
+
+HTTP 401 still triggers a redirect to `/login` (via `redirectToLogin`), matching the home page.
 
 ## Zod schemas (`lib/validation.ts`)
 
