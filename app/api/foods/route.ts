@@ -10,8 +10,9 @@ export async function GET() {
   try {
     const session = await requireSession()
     const foods = await getAllFoods(session.userId)
-    console.log('[GET /api/foods] userId=', session.userId, 'count=', foods.length)
-    return NextResponse.json({ foods })
+    return NextResponse.json({ foods }, {
+      headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
+    })
   } catch (error) {
     console.error('Error fetching foods:', error)
     if (error instanceof Error && error.message === 'Unauthorized') {
@@ -25,11 +26,9 @@ export async function POST(req: NextRequest) {
   try {
     const session = await requireSession()
     const body = await req.json()
-    console.log('[POST /api/foods] userId=', session.userId, 'body=', JSON.stringify(body))
     const parsed = createFoodSchema.parse(body)
 
     const id = await insertFood(session.userId, parsed)
-    console.log('[POST /api/foods] inserted id=', id)
     return NextResponse.json({ success: true, id })
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -47,11 +46,9 @@ export async function PUT(req: NextRequest) {
   try {
     const session = await requireSession()
     const body = await req.json()
-    console.log('[PUT /api/foods] userId=', session.userId, 'body=', JSON.stringify(body))
     const parsed = updateFoodSchema.parse(body)
 
     await updateFood(parsed.id, session.userId, parsed)
-    console.log('[PUT /api/foods] updated id=', parsed.id)
     return NextResponse.json({ success: true })
   } catch (error) {
     if (error instanceof z.ZodError) {
