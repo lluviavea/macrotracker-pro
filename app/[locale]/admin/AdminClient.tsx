@@ -251,6 +251,17 @@ export default function AdminPage() {
       return
     }
 
+    if (editingId !== null) {
+      const updated: FoodRow = { id: editingId, ...form }
+      setFoods(prev => prev.map(f => (f.id === editingId ? updated : f)))
+    } else {
+      const result = await r.json().catch(() => null)
+      if (typeof result?.id === 'number') {
+        const created: FoodRow = { id: result.id, ...form }
+        setFoods(prev => [...prev, created])
+      }
+    }
+
     setShowModal(false)
     loadFoods()
   }
@@ -274,6 +285,7 @@ export default function AdminPage() {
       setErrorMessage(t('deleteError'))
       return
     }
+    setFoods(prev => prev.filter(f => f.id !== id))
     loadFoods()
   }
 
