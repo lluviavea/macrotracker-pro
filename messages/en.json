@@ -150,7 +150,8 @@
     "cocido": "Cooked",
     "remove": "Remove",
     "mealLabel": "Meal",
-    "noMeal": "No meal"
+    "noMeal": "No meal",
+    "amount": "Amount"
   },
   "RecentFoods": {
     "title": "Recents"

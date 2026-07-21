@@ -70,6 +70,7 @@ export function LogEntryRow({ entry, index, foods, onRemove, onAmountInputChange
           onChange={e => onAmountInputChange(index, e.target.value)}
           onBlur={() => onAmountBlur(index)}
           placeholder="0"
+          aria-label={t('amount')}
           className="w-24 sm:w-28 text-center border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1.5 text-sm dark:bg-gray-800 dark:text-gray-100"
           min={0}
           step={isUnit ? 1 : 10}
