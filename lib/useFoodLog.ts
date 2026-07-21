@@ -32,7 +32,7 @@ export function useFoodLog() {
   const [recentsLoading, setRecentsLoading] = useState(false)
 
   useEffect(() => {
-    fetch('/api/foods')
+    fetch('/api/foods', { cache: 'no-store' })
       .then(r => {
         if (r.status === 401) { redirectToLogin(); throw new Error('Unauthorized') }
         if (!r.ok) throw new Error('Failed to fetch foods')
@@ -157,7 +157,7 @@ export function useFoodLog() {
   const reloadFoods = useCallback(async () => {
     setLoading(true)
     try {
-      const r = await fetch('/api/foods')
+      const r = await fetch('/api/foods', { cache: 'no-store' })
       if (r.status === 401) { redirectToLogin(); return }
       if (!r.ok) throw new Error('Failed to fetch foods')
       const d = await r.json()

@@ -127,7 +127,7 @@ export default function AdminPage() {
 
   async function loadFoods() {
     try {
-      const r = await fetch('/api/foods')
+      const r = await fetch('/api/foods', { cache: 'no-store' })
       if (r.status === 401) { redirectToLogin(); return }
       const d = await r.json()
       setFoods(d.foods.map(mapFood))
@@ -139,7 +139,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/api/foods')
+    fetch('/api/foods', { cache: 'no-store' })
       .then(r => {
         if (r.status === 401) { redirectToLogin(); throw new Error('Unauthorized') }
         if (!r.ok) throw new Error('Failed to fetch foods')
