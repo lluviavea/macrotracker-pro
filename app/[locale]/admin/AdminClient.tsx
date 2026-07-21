@@ -66,6 +66,7 @@ export default function AdminPage() {
   const [search, setSearch] = useState('')
   const [sortField, setSortField] = useState<string | null>(null)
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const filteredAndSorted = useMemo(() => {
     let result = foods
@@ -153,6 +154,7 @@ export default function AdminPage() {
   function openAdd() {
     setForm(EMPTY_FORM)
     setEditingId(null)
+    setErrorMessage(null)
     setShowModal(true)
   }
 
@@ -173,6 +175,7 @@ export default function AdminPage() {
       preparation: food.preparation,
     })
     setEditingId(food.id)
+    setErrorMessage(null)
     setShowModal(true)
   }
 
@@ -210,6 +213,7 @@ export default function AdminPage() {
   }
 
   async function handleSave() {
+    setErrorMessage(null)
     const payload = {
       name: form.name,
       nameEn: form.nameEn || null,
@@ -226,20 +230,25 @@ export default function AdminPage() {
       preparation: form.preparation || null,
     }
 
-    if (editingId !== null) {
-      const r = await fetch('/api/foods', {
-        method: 'PUT',
+    const method = editingId !== null ? 'PUT' : 'POST'
+    const body = editingId !== null ? { id: editingId, ...payload } : payload
+
+    let r: Response
+    try {
+      r = await fetch('/api/foods', {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: editingId, ...payload }),
+        body: JSON.stringify(body),
       })
-      if (r.status === 401) { redirectToLogin(); return }
-    } else {
-      const r = await fetch('/api/foods', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      if (r.status === 401) { redirectToLogin(); return }
+    } catch {
+      setErrorMessage(t('saveError'))
+      return
+    }
+    if (r.status === 401) { redirectToLogin(); return }
+    if (!r.ok) {
+      const errBody = await r.json().catch(() => null)
+      setErrorMessage(errBody?.error === 'Validation failed' ? t('validationError') : t('saveError'))
+      return
     }
 
     setShowModal(false)
@@ -248,12 +257,23 @@ export default function AdminPage() {
 
   async function handleDelete(id: number, name: string) {
     if (!confirm(t('deleteConfirm', { name }))) return
-    const r = await fetch('/api/foods', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    })
+    setErrorMessage(null)
+    let r: Response
+    try {
+      r = await fetch('/api/foods', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      })
+    } catch {
+      setErrorMessage(t('deleteError'))
+      return
+    }
     if (r.status === 401) { redirectToLogin(); return }
+    if (!r.ok) {
+      setErrorMessage(t('deleteError'))
+      return
+    }
     loadFoods()
   }
 
@@ -274,8 +294,26 @@ export default function AdminPage() {
     calories: t('calories'),
   }
 
+  const errorBanner = errorMessage ? (
+    <div
+      role="alert"
+      className="flex items-start gap-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 px-4 py-3 text-sm text-red-700 dark:text-red-300"
+    >
+      <span className="flex-1">{errorMessage}</span>
+      <button
+        type="button"
+        onClick={() => setErrorMessage(null)}
+        className="text-red-500 hover:text-red-700 dark:hover:text-red-200 text-xs"
+        aria-label={t('dismissError')}
+      >
+        ✕
+      </button>
+    </div>
+  ) : null
+
   return (
     <div className="max-w-6xl mx-auto p-4 space-y-6">
+      {!showModal && errorBanner}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">{t('back')}</Link>
@@ -388,6 +426,8 @@ export default function AdminPage() {
             <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">
               {editingId !== null ? t('editTitle') : t('addTitle')}
             </h2>
+
+            {errorBanner && <div className="mb-4">{errorBanner}</div>}
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">

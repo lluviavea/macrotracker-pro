@@ -89,7 +89,11 @@
     "caloriesPlaceholder": "e.g. 200",
     "unitNamePlaceholder": "e.g. egg, tortilla",
     "unitGramsPlaceholder": "e.g. 60",
-    "gramUnit": "gram"
+    "gramUnit": "gram",
+    "validationError": "Some fields have invalid values. Fix them and try again.",
+    "saveError": "Could not save the food. Please try again.",
+    "deleteError": "Could not delete the food. Please try again.",
+    "dismissError": "Dismiss"
   },
   "MacroSummary": {
     "calories": "Calories",

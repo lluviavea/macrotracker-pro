@@ -89,7 +89,11 @@
     "caloriesPlaceholder": "ej. 200",
     "unitNamePlaceholder": "ej. huevo, tortilla",
     "unitGramsPlaceholder": "ej. 60",
-    "gramUnit": "gramo"
+    "gramUnit": "gramo",
+    "validationError": "Algunos campos tienen valores inválidos. Corrígelos e inténtalo de nuevo.",
+    "saveError": "No se pudo guardar la comida. Inténtalo de nuevo.",
+    "deleteError": "No se pudo eliminar la comida. Inténtalo de nuevo.",
+    "dismissError": "Cerrar"
   },
   "MacroSummary": {
     "calories": "Calorías",
