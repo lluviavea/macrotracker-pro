@@ -4,6 +4,8 @@ import { createFoodSchema, updateFoodSchema, deleteFoodSchema } from '@/lib/vali
 import { getAllFoods, insertFood, updateFood, deleteFood } from '@/lib/db/foods'
 import { requireSession } from '@/lib/auth'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const session = await requireSession()
