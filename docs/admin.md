@@ -37,10 +37,15 @@ without a tag-based invalidation strategy (`revalidateTag`) that actually fires 
 mutation.
 
 After every successful mutation, `AdminClient` updates the local `foods` state
-optimistically (replace on PUT, append on POST, filter on DELETE) so the user sees
-the change without waiting for the refetch. `loadFoods()` runs immediately afterwards
-to reconcile with the server (picks up server-side normalization such as the
-`log_entries` recalculation).
+**only** via optimistic update (replace on PUT, append on POST, filter on DELETE).
+No refetch is fired after a mutation. The optimistic state is correct because:
+- PUT sends exactly what the server persists (same field defaults).
+- POST returns the new row's `id`, which is the only field the client didn't know.
+- DELETE is filtered by `id`, deterministic.
+
+`loadFoods()` is reserved for the initial page load. Re-fetching after a mutation
+caused React to replace the foods array and detach the row being interacted with,
+which broke rapid clicks on the freshly-saved row.
 
 ## Auto-fill from `NUTRITION_DATA`
 

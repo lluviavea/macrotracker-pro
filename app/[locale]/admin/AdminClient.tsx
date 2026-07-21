@@ -126,18 +126,6 @@ export default function AdminPage() {
     preparation: f.preparation ?? '',
   })
 
-  async function loadFoods() {
-    try {
-      const r = await fetch('/api/foods', { cache: 'no-store' })
-      if (r.status === 401) { redirectToLogin(); return }
-      const d = await r.json()
-      setFoods(d.foods.map(mapFood))
-      setLoading(false)
-    } catch {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
     let cancelled = false
     fetch('/api/foods', { cache: 'no-store' })
@@ -263,7 +251,6 @@ export default function AdminPage() {
     }
 
     setShowModal(false)
-    loadFoods()
   }
 
   async function handleDelete(id: number, name: string) {
@@ -286,7 +273,6 @@ export default function AdminPage() {
       return
     }
     setFoods(prev => prev.filter(f => f.id !== id))
-    loadFoods()
   }
 
   if (loading) {
