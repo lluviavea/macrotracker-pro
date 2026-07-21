@@ -309,6 +309,7 @@ export default function AdminPage() {
   const errorBanner = errorMessage ? (
     <div
       role="alert"
+      data-testid="admin-error-banner"
       className="flex items-start gap-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 px-4 py-3 text-sm text-red-700 dark:text-red-300"
     >
       <span className="flex-1">{errorMessage}</span>
