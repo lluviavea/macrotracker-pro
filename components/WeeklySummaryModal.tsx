@@ -356,18 +356,18 @@ export function WeeklySummaryModal({ currentDate, goals, onClose }: WeeklySummar
                         <ReferenceLine y={calorieGoal} stroke="#9a9cea" strokeDasharray="4 4" strokeWidth={1.5} />
                       )}
                       <Bar dataKey="protein" stackId="macros" radius={[0, 0, 0, 0]}>
-                        {barData.map((entry) => (
-                          <Cell key={entry.name} fill={entry.isToday ? MACRO_COLORS.protein : '#d4a0b0'} />
+                        {barData.map((entry, i) => (
+                          <Cell key={`${entry.name}-${i}`} fill={entry.isToday ? MACRO_COLORS.protein : '#d4a0b0'} />
                         ))}
                       </Bar>
                       <Bar dataKey="fat" stackId="macros" radius={[0, 0, 0, 0]}>
-                        {barData.map((entry) => (
-                          <Cell key={entry.name} fill={entry.isToday ? MACRO_COLORS.fat : '#e0c9a0'} />
+                        {barData.map((entry, i) => (
+                          <Cell key={`${entry.name}-${i}`} fill={entry.isToday ? MACRO_COLORS.fat : '#e0c9a0'} />
                         ))}
                       </Bar>
                       <Bar dataKey="carbs" stackId="macros" radius={[4, 4, 0, 0]}>
-                        {barData.map((entry) => (
-                          <Cell key={entry.name} fill={entry.isToday ? MACRO_COLORS.carbs : '#a8d5a8'} />
+                        {barData.map((entry, i) => (
+                          <Cell key={`${entry.name}-${i}`} fill={entry.isToday ? MACRO_COLORS.carbs : '#a8d5a8'} />
                         ))}
                       </Bar>
                     </BarChart>
