@@ -10,15 +10,15 @@ test.describe("admin catalog", () => {
 
   let testFoodName: string | null = null;
 
-  test.afterEach(async ({ request }) => {
+  test.afterEach(async ({ page }) => {
     if (testFoodName) {
       try {
-        const response = await request.get('/api/foods');
+        const response = await page.request.get('/api/foods');
         if (response.ok()) {
           const data = await response.json();
           const testFood = data.foods.find((f: { name: string; id: number }) => f.name === testFoodName);
           if (testFood) {
-            await request.delete('/api/foods', {
+            await page.request.delete('/api/foods', {
               data: { id: testFood.id }
             });
           }
@@ -29,21 +29,6 @@ test.describe("admin catalog", () => {
     }
   });
 
-  test.afterAll(async ({ request }) => {
-    try {
-      const response = await request.get('/api/foods');
-      if (response.ok()) {
-        const data = await response.json();
-        const e2eFoods = data.foods.filter((f: { name: string; id: number }) => f.name.startsWith("E2E-"));
-        for (const food of e2eFoods) {
-          await request.delete('/api/foods', { data: { id: food.id } });
-        }
-      }
-    } catch (error) {
-      console.log("afterAll cleanup error:", error);
-    }
-  });
-
   test("admin can edit a food and see the change without reload", async ({ page }) => {
     await page.goto("/es/login");
     await page.waitForLoadState("networkidle");
@@ -51,6 +36,16 @@ test.describe("admin catalog", () => {
     await page.fill('input[id="password"]', ADMIN_PASSWORD!);
     await page.getByRole("button", { name: /iniciar/i }).click();
     await page.waitForURL("/es");
+
+    // Clean up any leftover E2E foods from previous failed runs.
+    const foodsResponse = await page.request.get('/api/foods');
+    if (foodsResponse.ok()) {
+      const { foods } = await foodsResponse.json();
+      const e2eFoods = foods.filter((f: { name: string }) => f.name.startsWith("E2E-"));
+      for (const food of e2eFoods) {
+        await page.request.delete('/api/foods', { data: { id: food.id } });
+      }
+    }
 
     await page.goto("/es/admin");
     await page.waitForLoadState("networkidle");
