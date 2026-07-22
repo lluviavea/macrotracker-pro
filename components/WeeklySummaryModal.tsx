@@ -57,10 +57,9 @@ const MACRO_COLORS = {
 
 const MACRO_CALORIES_PER_GRAM = { protein: 4, fat: 9, carbs: 4 }
 
-function CustomTooltip({ active, payload, label, labels }: {
+function CustomTooltip({ active, payload, labels }: {
   active?: boolean
   payload?: Array<{ payload: { protein: number; fat: number; carbs: number } }>
-  label?: string
   labels: { protein: string; fat: string; carbs: string }
 }) {
   if (!active || !payload || !payload.length) return null
@@ -83,9 +82,8 @@ function CustomTooltip({ active, payload, label, labels }: {
 
   return (
     <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 shadow-lg text-xs">
-      <p className="font-semibold dark:text-gray-100 mb-1">{label}</p>
       {macros.map(m => (
-        <div key={m.name} className="flex items-center gap-2">
+        <div key={m.name} className="flex items-center justify-center gap-2">
           <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: m.color }} />
           <span className="font-bold dark:text-gray-100 w-8 text-right">{m.pct}%</span>
           <span className="text-gray-500 dark:text-gray-400 w-6 text-right">{m.grams}g</span>
