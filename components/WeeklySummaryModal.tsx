@@ -57,6 +57,45 @@ const MACRO_COLORS = {
 
 const MACRO_CALORIES_PER_GRAM = { protein: 4, fat: 9, carbs: 4 }
 
+function CustomTooltip({ active, payload, label, labels }: {
+  active?: boolean
+  payload?: Array<{ payload: { protein: number; fat: number; carbs: number } }>
+  label?: string
+  labels: { protein: string; fat: string; carbs: string }
+}) {
+  if (!active || !payload || !payload.length) return null
+  const data = payload[0].payload
+  const proteinCals = data.protein * MACRO_CALORIES_PER_GRAM.protein
+  const fatCals = data.fat * MACRO_CALORIES_PER_GRAM.fat
+  const carbsCals = data.carbs * MACRO_CALORIES_PER_GRAM.carbs
+  const totalCals = proteinCals + fatCals + carbsCals
+  if (totalCals === 0) return null
+
+  const proteinPct = Math.round((proteinCals / totalCals) * 100)
+  const fatPct = Math.round((fatCals / totalCals) * 100)
+  const carbsPct = 100 - proteinPct - fatPct
+
+  const macros = [
+    { name: labels.protein, grams: data.protein, pct: proteinPct, color: MACRO_COLORS.protein },
+    { name: labels.fat, grams: data.fat, pct: fatPct, color: MACRO_COLORS.fat },
+    { name: labels.carbs, grams: data.carbs, pct: carbsPct, color: MACRO_COLORS.carbs },
+  ]
+
+  return (
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 shadow-lg text-xs">
+      <p className="font-semibold dark:text-gray-100 mb-1">{label}</p>
+      {macros.map(m => (
+        <div key={m.name} className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: m.color }} />
+          <span className="font-bold dark:text-gray-100 w-8 text-right">{m.pct}%</span>
+          <span className="text-gray-500 dark:text-gray-400 w-6 text-right">{m.grams}g</span>
+          <span className="text-gray-600 dark:text-gray-300">{m.name}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function GoalRing({ value, goal, label, unit, colorClass }: {
   value: number
   goal: number
@@ -305,21 +344,15 @@ export function WeeklySummaryModal({ currentDate, goals, onClose }: WeeklySummar
                         width={40}
                       />
                       <Tooltip
-                        contentStyle={{
-                          backgroundColor: 'var(--color-background)',
-                          border: '1px solid #e5e7eb',
-                          borderRadius: '0.75rem',
-                          fontSize: '0.75rem',
-                        }}
-                        itemStyle={{ padding: '2px 0' }}
-                        formatter={(value: unknown, name: unknown) => {
-                          const labels: Record<string, string> = {
-                            protein: t('avgProtein'),
-                            fat: t('avgFat'),
-                            carbs: t('avgCarbs'),
-                          }
-                          return [`${value}g`, labels[String(name)] || String(name)]
-                        }}
+                        content={
+                          <CustomTooltip
+                            labels={{
+                              protein: t('avgProtein'),
+                              fat: t('avgFat'),
+                              carbs: t('avgCarbs'),
+                            }}
+                          />
+                        }
                       />
                       {calorieGoal > 0 && (
                         <ReferenceLine y={calorieGoal} stroke="#9a9cea" strokeDasharray="4 4" strokeWidth={1.5} />
