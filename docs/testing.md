@@ -57,6 +57,15 @@ Add tests when you:
   await page.waitForURL("/es");
   ```
 
+### E2E cleanup
+
+E2E tests create temporary data (food items with `E2E-` prefix). Each test file has:
+
+- **`afterEach`**: Tries to delete the specific test food created during that test
+- **`afterAll`**: Safety net — deletes ALL foods with `E2E-` prefix, catching any leftovers from failed cleanups
+
+If you see `E2E-Edit-*` items in your catalog after running tests, it means the cleanup failed (usually due to API errors or expired session). Run `just db-seed` to reset.
+
 ### E2E requirements
 
 - `just test-e2e` reuses an existing dev server on `localhost:3000` when one is running.

@@ -13,22 +13,34 @@ test.describe("admin catalog", () => {
   test.afterEach(async ({ request }) => {
     if (testFoodName) {
       try {
-        // Get all foods and find the one matching our test name
         const response = await request.get('/api/foods');
         if (response.ok()) {
           const data = await response.json();
-          const testFood = data.foods.find((f: any) => f.name === testFoodName);
+          const testFood = data.foods.find((f: { name: string; id: number }) => f.name === testFoodName);
           if (testFood) {
-            // Delete the food directly via API
             await request.delete('/api/foods', {
               data: { id: testFood.id }
             });
           }
         }
       } catch (error) {
-        // Log cleanup error but don't fail the test
         console.log("API cleanup error for", testFoodName, ":", error);
       }
+    }
+  });
+
+  test.afterAll(async ({ request }) => {
+    try {
+      const response = await request.get('/api/foods');
+      if (response.ok()) {
+        const data = await response.json();
+        const e2eFoods = data.foods.filter((f: { name: string; id: number }) => f.name.startsWith("E2E-"));
+        for (const food of e2eFoods) {
+          await request.delete('/api/foods', { data: { id: food.id } });
+        }
+      }
+    } catch (error) {
+      console.log("afterAll cleanup error:", error);
     }
   });
 
