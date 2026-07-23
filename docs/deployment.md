@@ -26,7 +26,7 @@ Set these in **Vercel → Project → Settings → Environment Variables** (all 
 
 | Key | Purpose |
 | --- | --- |
-| `DATABASE_URL` | Neon pooled connection string (`postgresql://...neon.tech/...?sslmode=require`) |
+| `DATABASE_URL` | Neon **pooled** connection string (`postgresql://...neon.tech/...?sslmode=require`). In the Neon "Connect" dialog pick the **Pooled connection** (hostname contains `-pooler`). The app disables prepared statements to work with PgBouncer. |
 | `SESSION_SECRET` | JWT signing secret, ≥32 chars (`openssl rand -base64 32`) |
 | `INITIAL_ADMIN_EMAIL` | Admin login email |
 | `INITIAL_ADMIN_PASSWORD` | Admin login password |
