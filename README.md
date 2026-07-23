@@ -1,5 +1,9 @@
 # MacroTracker Pro
 
+[![Live](https://img.shields.io/website?up_color=%23dd4470&up_message=live&down_color=gray&down_message=down&url=https%3A%2F%2Fmacrotracker-pro.vercel.app%2F)](https://macrotracker-pro.vercel.app)
+[![GitHub stars](https://img.shields.io/github/stars/lluviavea/macrotracker-pro?style=social)](https://github.com/lluviavea/macrotracker-pro)
+[![Made with Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org)
+
 Una app para registrar tu comida diaria y llevar el control de tus macronutrientes (proteína, grasa, carbohidratos y calorías).
 
 🌐 **[Demo en vivo](https://macrotracker-pro.vercel.app)** · ✨ **[Landing page](https://lluviavea.github.io/macrotracker-pro/)**
