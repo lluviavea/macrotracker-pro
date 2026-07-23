@@ -69,6 +69,9 @@ test-e2e:
 test-e2e-ui:
     npx playwright test --ui
 
+screenshots:
+    node scripts/capture-screenshots.mjs
+
 typecheck:
     npx tsc --noEmit
 

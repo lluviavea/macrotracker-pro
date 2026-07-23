@@ -11,6 +11,7 @@
 just test          # Run vitest unit tests
 just test-e2e      # Run Playwright e2e tests
 just test-e2e-ui   # Run Playwright in UI mode
+just screenshots   # Capture README/landing screenshots (requires dev server running)
 ```
 
 ## When to add tests
@@ -71,3 +72,21 @@ If you see `E2E-Edit-*` items in your catalog after running tests, it means the 
 - `just test-e2e` reuses an existing dev server on `localhost:3000` when one is running.
 - If no server is running, Playwright starts `just run`, which is slower and requires Docker.
 - E2E tests share the local Docker database with any running dev instance, so test data can collide with manual usage.
+
+## Screenshot capture
+
+`scripts/capture-screenshots.mjs` (run via `just screenshots`) generates the screenshots used in
+`README.md` and the GitHub Pages landing (`docs/index.html`). It is **not** part of the test suite.
+
+How it works:
+
+1. Requires a dev server already running (`just run` in another terminal).
+2. Logs in as the admin via `POST /api/auth/login` (uses `INITIAL_ADMIN_*` from `.env.local`).
+3. Creates demo log entries across the last 6 days via `POST /api/log` (uses real catalog foods,
+    no `E2E-` items needed).
+4. Captures light/dark home, weekly summary, goals modal, admin, and mobile views into
+    `docs/screenshots/`.
+5. Deletes every demo entry it created (tracked by ID, removed via `DELETE /api/log`).
+
+If cleanup fails, leftover entries are harmless log rows for past dates — delete them manually in
+the UI by navigating to the affected days.
