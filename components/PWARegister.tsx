@@ -6,14 +6,22 @@ export function PWARegister() {
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
 
+    const hadController = !!navigator.serviceWorker.controller
+
     navigator.serviceWorker
       .register('/sw.js')
-      .then(registration => {
-        console.log('SW registered:', registration.scope)
-      })
       .catch(error => {
         console.error('SW registration failed:', error)
       })
+
+    if (hadController) {
+      let refreshing = false
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return
+        refreshing = true
+        window.location.reload()
+      })
+    }
   }, [])
 
   return null
