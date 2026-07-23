@@ -2,6 +2,8 @@
 
 Una app para registrar tu comida diaria y llevar el control de tus macronutrientes (proteína, grasa, carbohidratos y calorías).
 
+🌐 **[Demo en vivo](https://macrotracker-pro.vercel.app)** · ✨ **[Landing page](https://lluviavea.github.io/macrotracker-pro/)**
+
 Tu información se guarda en una base de datos PostgreSQL local (vía Docker), así que tienes control total de tus datos sin depender de servicios externos ni suscripciones.
 
 ## 🤔 ¿Por qué MacroTracker?
@@ -22,6 +24,17 @@ Porque las apps de conteo de calorías suelen ser lentas, llenas de anuncios, o 
 - **Catálogo editable** — Pantalla de admin para agregar, editar y eliminar alimentos
 - **Bilingüe** — Interfaz en español e inglés
 - **Totales en tiempo real** — Ve el resumen del día al instante
+
+## 📸 Capturas
+
+| Modo oscuro | Modo claro |
+| --- | --- |
+| ![Registro diario en modo oscuro](docs/screenshots/home-dark.png) | ![Registro diario en modo claro](docs/screenshots/home-light.png) |
+| ![Resumen semanal](docs/screenshots/weekly-chart.png) | ![Catálogo de admin](docs/screenshots/admin.png) |
+
+![Vista móvil](docs/screenshots/mobile-home.png)
+
+> Las capturas se regeneran con `just screenshots` (requiere el dev server corriendo). Ver [`docs/testing.md`](docs/testing.md).
 
 ## 🚀 Comenzar
 
