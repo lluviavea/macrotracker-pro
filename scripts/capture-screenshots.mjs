@@ -16,6 +16,12 @@ const PASSWORD = process.env.INITIAL_ADMIN_PASSWORD
 
 const GOALS = { calories: 2200, protein: 140, fat: 70, carbs: 240 }
 
+const HIDE_DEV_UI_CSS = `
+  nextjs-portal, [data-nextjs-dialog-overlay], [data-nextjs-toast] {
+    display: none !important;
+  }
+`
+
 const MEAL_PLAN = [
   { meal: 'desayuno', categories: ['frutas', 'carbohidratos'] },
   { meal: 'comida', categories: ['proteina', 'carbohidratos', 'verduras'] },
@@ -40,7 +46,7 @@ function pickFood(foods, category, salt) {
 
 function amountFor(food, salt) {
   if (food.measureType === 'unit') return (salt % 2) + 1
-  return 100 + (salt % 4) * 50
+  return 60 + (salt % 3) * 30
 }
 
 async function main() {
@@ -67,6 +73,7 @@ async function main() {
       baseURL: BASE_URL,
       viewport: { width: 1440, height: 900 },
       deviceScaleFactor: 2,
+      serviceWorkers: 'block',
     })
 
     const loginRes = await context.request.post('/api/auth/login', {
@@ -115,8 +122,9 @@ async function main() {
         localStorage.setItem('theme', themeValue)
         localStorage.setItem('macrotracker-goals', goalsValue)
       }, [theme, JSON.stringify(GOALS)])
-      await page.goto(urlPath)
-      await page.waitForLoadState('networkidle')
+      await page.goto(urlPath, { timeout: 90000, waitUntil: 'domcontentloaded' })
+      await page.waitForLoadState('networkidle', { timeout: 45000 }).catch(() => {})
+      await page.addStyleTag({ content: HIDE_DEV_UI_CSS })
       if (action) await action(page)
       await page.screenshot({ path: path.join(OUT_DIR, name) })
       console.log(`  ${name}`)
@@ -151,6 +159,7 @@ async function main() {
       deviceScaleFactor: 3,
       isMobile: true,
       hasTouch: true,
+      serviceWorkers: 'block',
     })
     const mobileCookies = await context.cookies()
     await mobile.addCookies(mobileCookies)
@@ -159,8 +168,9 @@ async function main() {
       localStorage.setItem('theme', themeValue)
       localStorage.setItem('macrotracker-goals', goalsValue)
     }, ['dark', JSON.stringify(GOALS)])
-    await mp.goto('/es')
-    await mp.waitForLoadState('networkidle')
+    await mp.goto('/es', { timeout: 90000, waitUntil: 'domcontentloaded' })
+    await mp.waitForLoadState('networkidle', { timeout: 45000 }).catch(() => {})
+    await mp.addStyleTag({ content: HIDE_DEV_UI_CSS })
     await mp.screenshot({ path: path.join(OUT_DIR, 'mobile-home.png') })
     console.log('  mobile-home.png')
     await mobile.close()
