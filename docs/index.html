@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MacroTracker Pro — Track your macros, own your data</title>
+  <meta name="description" content="Minimalist, bilingual macro tracker. Your data lives in your own PostgreSQL database — no ads, no subscriptions." />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="stylesheet" href="assets/landing.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <span class="logo">🥝 MacroTracker <span class="logo-pro">Pro</span></span>
+      <nav class="header-nav">
+        <button id="lang-toggle" class="btn btn-ghost" type="button" aria-label="Switch language">ES</button>
+        <a class="btn btn-ghost" href="https://github.com/lluviavea/macrotracker-pro" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-primary js-live-url" href="#" target="_blank" rel="noopener" data-en="Live Demo" data-es="Demo en vivo">Live Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1 data-en="Your macros. Your data. Zero noise." data-es="Tus macros. Tus datos. Cero ruido.">
+            Your macros. Your data. Zero noise.
+          </h1>
+          <p class="hero-sub" data-en="A minimalist, bilingual food log with automatic macro tracking. No ads, no subscriptions — your data lives in your own PostgreSQL database." data-es="Un registro de comidas minimalista y bilingüe con cálculo automático de macros. Sin anuncios, sin suscripciones — tus datos viven en tu propia base PostgreSQL.">
+            A minimalist, bilingual food log with automatic macro tracking. No ads, no subscriptions — your data lives in your own PostgreSQL database.
+          </p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary btn-lg js-live-url" href="#" target="_blank" rel="noopener" data-en="Try the live app" data-es="Probar la app en vivo">Try the live app</a>
+            <a class="btn btn-outline btn-lg" href="https://github.com/lluviavea/macrotracker-pro" target="_blank" rel="noopener" data-en="View source" data-es="Ver código">View source</a>
+          </div>
+          <ul class="hero-badges">
+            <li data-en="Self-hosted" data-es="Auto-hospedada">Self-hosted</li>
+            <li data-en="Bilingual ES/EN" data-es="Bilingüe ES/EN">Bilingual ES/EN</li>
+            <li data-en="Dark mode" data-es="Modo oscuro">Dark mode</li>
+            <li>PWA</li>
+          </ul>
+        </div>
+        <div class="hero-shot">
+          <img src="screenshots/home-dark.png" alt="MacroTracker Pro home screen in dark mode" loading="eager" />
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 data-en="See it in action" data-es="Mírala en acción">See it in action</h2>
+        <div class="gallery">
+          <figure class="shot shot-wide">
+            <img src="screenshots/home-light.png" alt="Daily log with macro progress bars, light mode" loading="lazy" />
+            <figcaption data-en="Daily log with real-time macro progress" data-es="Registro diario con progreso de macros en tiempo real">Daily log with real-time macro progress</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="screenshots/weekly-chart.png" alt="Weekly summary chart" loading="lazy" />
+            <figcaption data-en="Weekly trends at a glance" data-es="Tendencias semanales de un vistazo">Weekly trends at a glance</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="screenshots/goals-modal.png" alt="Daily goals modal" loading="lazy" />
+            <figcaption data-en="Custom daily goals" data-es="Metas diarias personalizadas">Custom daily goals</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="screenshots/admin.png" alt="Admin catalog screen" loading="lazy" />
+            <figcaption data-en="Editable food catalog" data-es="Catálogo de alimentos editable">Editable food catalog</figcaption>
+          </figure>
+          <figure class="shot shot-mobile">
+            <img src="screenshots/mobile-home.png" alt="Mobile view" loading="lazy" />
+            <figcaption data-en="Mobile-first, installable PWA" data-es="PWA instalable, mobile-first">Mobile-first, installable PWA</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <h2 data-en="Everything you need, nothing you don't" data-es="Todo lo que necesitas, nada que no">Everything you need, nothing you don't</h2>
+        <div class="features">
+          <div class="feature">
+            <span class="feature-dot dot-cal"></span>
+            <h3 data-en="Automatic macros" data-es="Macros automáticos">Automatic macros</h3>
+            <p data-en="Log a food, get calories, protein, fat, carbs, sugar and fiber instantly." data-es="Registra un alimento y obtén calorías, proteína, grasa, carbos, azúcar y fibra al instante.">Log a food, get calories, protein, fat, carbs, sugar and fiber instantly.</p>
+          </div>
+          <div class="feature">
+            <span class="feature-dot dot-pro"></span>
+            <h3 data-en="Daily goals" data-es="Metas diarias">Daily goals</h3>
+            <p data-en="Custom calorie and macro targets with live progress bars." data-es="Objetivos personalizados de calorías y macros con barras de progreso en vivo.">Custom calorie and macro targets with live progress bars.</p>
+          </div>
+          <div class="feature">
+            <span class="feature-dot dot-carb"></span>
+            <h3 data-en="Bilingual search" data-es="Búsqueda bilingüe">Bilingual search</h3>
+            <p data-en="Find any food in Spanish or English, with a fixed search bar and / shortcut." data-es="Encuentra cualquier alimento en español o inglés, con barra fija y atajo /.">Find any food in Spanish or English, with a fixed search bar and / shortcut.</p>
+          </div>
+          <div class="feature">
+            <span class="feature-dot dot-fat"></span>
+            <h3 data-en="Date navigation" data-es="Navegación por fechas">Date navigation</h3>
+            <p data-en="Review past days, edit or delete entries, copy a full day in one click." data-es="Revisa días anteriores, edita o elimina entradas, copia un día completo con un clic.">Review past days, edit or delete entries, copy a full day in one click.</p>
+          </div>
+          <div class="feature">
+            <span class="feature-dot dot-sugar"></span>
+            <h3 data-en="Favorites & recents" data-es="Favoritos y recientes">Favorites & recents</h3>
+            <p data-en="Pin your go-to foods and re-log recent items in seconds." data-es="Fija tus alimentos favoritos y vuelve a registrar recientes en segundos.">Pin your go-to foods and re-log recent items in seconds.</p>
+          </div>
+          <div class="feature">
+            <span class="feature-dot dot-fiber"></span>
+            <h3 data-en="Dark & light mode" data-es="Modo oscuro y claro">Dark & light mode</h3>
+            <p data-en="Adaptive theme with system preference detection and zero flash." data-es="Tema adaptable con detección de preferencia del sistema y sin parpadeo.">Adaptive theme with system preference detection and zero flash.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 data-en="Built with a serious stack" data-es="Construida con un stack serio">Built with a serious stack</h2>
+        <ul class="stack">
+          <li>Next.js 16</li>
+          <li>React 19</li>
+          <li>PostgreSQL</li>
+          <li>Drizzle ORM</li>
+          <li>Tailwind CSS 4</li>
+          <li>next-intl</li>
+          <li>Recharts</li>
+          <li>Playwright + Vitest</li>
+          <li>Docker</li>
+        </ul>
+        <div class="final-cta">
+          <a class="btn btn-primary btn-lg js-live-url" href="#" target="_blank" rel="noopener" data-en="Open the app" data-es="Abrir la app">Open the app</a>
+          <a class="btn btn-outline btn-lg" href="https://github.com/lluviavea/macrotracker-pro" target="_blank" rel="noopener">★ <span data-en="Star on GitHub" data-es="Estrella en GitHub">Star on GitHub</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-en="Built with 💜 by Lluvia — data stays yours, always." data-es="Hecha con 💜 por Lluvia — tus datos siempre son tuyos.">
+        Built with 💜 by Lluvia — data stays yours, always.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const LIVE_URL = 'https://macrotracker-pro.vercel.app'
+    document.querySelectorAll('.js-live-url').forEach(a => { a.href = LIVE_URL })
+
+    const toggle = document.getElementById('lang-toggle')
+    let lang = localStorage.getItem('landing-lang') || 'en'
+    function applyLang() {
+      document.documentElement.lang = lang
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.textContent = el.dataset[lang]
+      })
+      toggle.textContent = lang === 'en' ? 'ES' : 'EN'
+    }
+    toggle.addEventListener('click', () => {
+      lang = lang === 'en' ? 'es' : 'en'
+      localStorage.setItem('landing-lang', lang)
+      applyLang()
+    })
+    applyLang()
+  </script>
+</body>
+</html>
