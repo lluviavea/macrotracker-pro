@@ -121,6 +121,14 @@ Page load                -> GET /api/log?date=... -> SELECT log_entries WHERE us
 Food list                -> GET /api/foods        -> SELECT * FROM foods WHERE user_id = ? (cached, 1h revalidation)
 ```
 
+**Date invariant.** The client owns the calendar day; the server never guesses.
+`GET /api/log` requires a `date` query param and `POST /api/log` requires `date` in the body
+(enforced by `createLogEntrySchema` in `lib/validation.ts`). Missing either returns `400 Bad
+Request`. This is intentional: `getLocalISODate()` in `lib/calendar.ts` returns the runtime's
+local date, which on Vercel's Node runtime is UTC — letting the server default the date would
+land a CST user's late-night entry in "tomorrow". The client (`lib/useFoodLog.ts`) seeds
+`logDate` from the browser's TZ and passes it on every call.
+
 ### Recent foods
 
 Recents are derived from the user's log history, not a separate table.

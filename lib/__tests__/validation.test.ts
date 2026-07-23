@@ -71,24 +71,34 @@ describe('updateFoodSchema', () => {
 describe('createLogEntrySchema', () => {
   it('accepts valid log entry with required fields', () => {
     const result = createLogEntrySchema.parse({
+      date: '2026-06-15',
       foodName: 'Pollo',
       category: 'proteina',
       amount: 100,
     })
     expect(result.foodName).toBe('Pollo')
     expect(result.meal).toBe('')
+    expect(result.date).toBe('2026-06-15')
+  })
+
+  it('rejects missing date', () => {
+    expect(() => createLogEntrySchema.parse({ foodName: 'Pollo', category: 'proteina', amount: 100 })).toThrow()
+  })
+
+  it('rejects empty date', () => {
+    expect(() => createLogEntrySchema.parse({ date: '', foodName: 'Pollo', category: 'proteina', amount: 100 })).toThrow()
   })
 
   it('rejects empty food name', () => {
-    expect(() => createLogEntrySchema.parse({ foodName: '', category: 'proteina', amount: 100 })).toThrow()
+    expect(() => createLogEntrySchema.parse({ date: '2026-06-15', foodName: '', category: 'proteina', amount: 100 })).toThrow()
   })
 
   it('rejects negative amount', () => {
-    expect(() => createLogEntrySchema.parse({ foodName: 'Pollo', category: 'proteina', amount: -1 })).toThrow()
+    expect(() => createLogEntrySchema.parse({ date: '2026-06-15', foodName: 'Pollo', category: 'proteina', amount: -1 })).toThrow()
   })
 
   it('rejects zero amount', () => {
-    expect(() => createLogEntrySchema.parse({ foodName: 'Pollo', category: 'proteina', amount: 0 })).toThrow()
+    expect(() => createLogEntrySchema.parse({ date: '2026-06-15', foodName: 'Pollo', category: 'proteina', amount: 0 })).toThrow()
   })
 })
 

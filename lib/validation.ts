@@ -45,7 +45,7 @@ export const deleteFoodSchema = z.object({
 })
 
 export const createLogEntrySchema = z.object({
-  date: z.string().optional(),
+  date: z.string().min(1, 'Date is required'),
   foodName: z.string().min(1, 'Food name is required'),
   category: z.string().min(1, 'Category is required'),
   amount: z.number().positive('Amount must be positive'),

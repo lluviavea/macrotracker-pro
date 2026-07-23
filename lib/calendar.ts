@@ -24,6 +24,14 @@ export function addDays(date: string, days: number): string {
   return formatISODate(d.getFullYear(), d.getMonth(), d.getDate())
 }
 
+/**
+ * Returns the YYYY-MM-DD representation of `d` in the runtime's local timezone.
+ *
+ * WARNING: "local" means wherever this function executes. On the client it is
+ * the user's browser TZ; on the server (Vercel Node) it is UTC. Callers that
+ * need the user's calendar day must pass an explicit date — never rely on the
+ * default `new Date()` from a server context.
+ */
 export function getLocalISODate(d = new Date()): string {
   return formatISODate(d.getFullYear(), d.getMonth(), d.getDate())
 }
