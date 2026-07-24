@@ -29,10 +29,13 @@ feature. For cross-cutting concerns, see the dedicated docs:
 app/
   [locale]/
     layout.tsx           - Locale layout (NextIntlClientProvider, lang setter)
-    page.tsx             - Main UI (client component, 'use client')
+    page.tsx             - Server component: getSession() → redirect or render HomeClient
+    HomeClient.tsx       - Main UI (client component, 'use client')
+    error.tsx            - Error boundary for locale routes (bilingual recovery UI)
     admin/
       page.tsx           - Admin catalog CRUD (table, modal, sort, search)
   layout.tsx             - Root layout (HTML shell, fonts, ThemeProvider, ToastContainer)
+  global-error.tsx       - Global error boundary (catches root-layout errors, replaces HTML shell)
   globals.css            - Tailwind v4 base styles + CSS variables for theme
   api/
     foods/route.ts       - GET/POST/PUT/DELETE: food catalog (admin)
