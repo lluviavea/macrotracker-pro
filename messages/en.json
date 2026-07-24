@@ -192,6 +192,11 @@
     "en": "EN",
     "es": "ES"
   },
+  "Errors": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred while loading this page.",
+    "retry": "Try again"
+  },
   "Auth": {
     "loginTitle": "Log in",
     "registerTitle": "Register",

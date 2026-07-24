@@ -192,6 +192,11 @@
     "en": "EN",
     "es": "ES"
   },
+  "Errors": {
+    "title": "Algo salió mal",
+    "description": "Ocurrió un error inesperado al cargar esta página.",
+    "retry": "Reintentar"
+  },
   "Auth": {
     "loginTitle": "Iniciar sesión",
     "registerTitle": "Registrarse",
